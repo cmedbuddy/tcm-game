@@ -66,10 +66,10 @@
     }
 
     .game-logo {
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       margin-bottom: 8px;
-      filter: drop-shadow(0px 0px 8px rgba(243, 198, 35, 0.6));
+      filter: drop-shadow(0px 0px 10px rgba(243, 198, 35, 0.7));
     }
 
     .header { 
@@ -174,19 +174,29 @@
   </div>
 
   <div class="header-container">
-    <!-- 原生 Vector SVG Logo: 經典太極雙葫蘆象徵 -->
+    <!-- 全新設計：懸壺濟世吉祥金光葫蘆徽章 Logo -->
     <svg class="game-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="46" fill="#120914" stroke="#e0a96d" stroke-width="4"/>
-      <circle cx="50" cy="50" r="41" fill="none" stroke="#f3c623" stroke-width="2" stroke-dasharray="4,3"/>
-      <!-- 葫蘆外形 -->
-      <path d="M 50 18 C 42 18 38 26 38 34 C 38 40 42 44 45 46 C 36 49 30 58 30 70 C 30 84 39 90 50 90 C 61 90 70 84 70 70 C 70 58 64 49 55 46 C 58 44 62 40 62 34 C 62 26 58 18 50 18 Z" fill="#2d1832" stroke="#f3c623" stroke-width="3"/>
-      <!-- 葫蘆腰帶 -->
-      <path d="M 40 46 Q 50 50 60 46" fill="none" stroke="#8c2520" stroke-width="4"/>
-      <!-- 太極圖案裝飾 -->
-      <path d="M 50 54 A 12 12 0 0 0 50 78 A 6 6 0 0 0 50 66 A 6 6 0 0 1 50 54" fill="#f3c623"/>
-      <path d="M 50 54 A 12 12 0 0 1 50 78 A 6 6 0 0 1 50 66 A 6 6 0 0 0 50 54" fill="#120914"/>
-      <circle cx="50" cy="60" r="2" fill="#120914"/>
-      <circle cx="50" cy="72" r="2" fill="#f3c623"/>
+      <!-- 圓形背景邊框與外飾邊 -->
+      <circle cx="50" cy="50" r="46" fill="#120914" stroke="#e0a96d" stroke-width="3"/>
+      <circle cx="50" cy="50" r="41" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <!-- 光芒底襯 -->
+      <polygon points="50,12 53,20 60,15 58,23 67,22 62,29 70,32 63,37 72,43 63,46 70,53 61,53 66,61 57,59 59,68 51,63 50,72 49,63 41,68 43,59 34,61 39,53 30,53 37,46 28,43 37,37 30,32 38,29 33,22 42,23 40,15 47,20" fill="#f3c623" opacity="0.15"/>
+      <!-- 上下兩球金黃葫蘆身 -->
+      <!-- 上球 -->
+      <circle cx="50" cy="35" r="13" fill="#f3c623" stroke="#e0a96d" stroke-width="2"/>
+      <!-- 下球 -->
+      <circle cx="50" cy="62" r="21" fill="#f3c623" stroke="#e0a96d" stroke-width="2"/>
+      <!-- 葫蘆高光亮點 -->
+      <path d="M 43 30 A 8 8 0 0 1 50 25" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+      <path d="M 39 54 A 14 14 0 0 1 50 44" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+      <!-- 葫蘆蓋子 (蔓藤與塞子) -->
+      <rect x="47" y="18" width="6" height="5" rx="1" fill="#8c2520" stroke="#f3c623" stroke-width="1"/>
+      <!-- 腰間吉祥紅結綁帶 -->
+      <ellipse cx="50" cy="46" rx="10" ry="3.5" fill="#8c2520"/>
+      <circle cx="50" cy="46" r="3" fill="#f3c623"/>
+      <!-- 飄逸紅絲帶 (往兩側下方自然垂掛) -->
+      <path d="M 48 48 Q 42 56 38 65" fill="none" stroke="#8c2520" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M 52 48 Q 58 56 62 65" fill="none" stroke="#8c2520" stroke-width="2.5" stroke-linecap="round"/>
     </svg>
     <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
   </div>
@@ -492,7 +502,7 @@ const stagesData = {
       titleSuccess: "草堂養生達人",
       questionSets: [
         [
-          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 熱薑茶", "C. 菊花涼茶", "D. 桂圓紅棗茶"], ans: 2 },
+          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 熱薑茶", "C. 菊花茶", "D. 桂圓紅棗茶"], ans: 2 },
           { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 合谷穴", "C. 足三里", "D. 太衝穴"], ans: 1 },
           { q: "3. 秋天天氣乾燥容易乾咳，食療常推薦以下哪種食物潤肺？", options: ["A. 雪梨川貝", "B. 麻辣火鍋", "C. 烤香腸", "D. 炸雞塊"], ans: 0 },
           { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 汗腺毛孔", "C. 腸胃消化", "D. 氣血經絡"], ans: 3 },
@@ -501,7 +511,7 @@ const stagesData = {
         [
           { q: "1. 夏日消暑解毒、清熱利尿，廣東街坊最常煲哪種豆湯？", options: ["A. 紅豆湯", "B. 黑豆湯", "C. 綠豆湯", "D. 黃豆湯"], ans: 2 },
           { q: "2. 當感覺眼睛乾澀疲勞時，中醫常建議枸杞配搭哪種花沖泡？", options: ["A. 玫瑰花", "B. 茉莉花", "C. 菊花", "D. 荷花"], ans: 2 },
-          { q: "3. 中醫常說「汗為心之液」，過度大汗最易損傷人體的什麼？", options: ["A. 肺氣", "B. 心氣", "C. 脾胃", "D. 腎精"], ans: 1 },
+          { q: "3. 中醫認為經常晚睡熬夜最容易傷及體內的什麼，從而出現口乾、手足心熱？", options: ["A. 陰液", "B. 陽氣", "C. 骨骼", "D. 肌肉"], ans: 0 },
           { q: "4. (保底題) 俗稱「吃得太飽、消化不良」在中醫稱為？", options: ["A. 風寒", "B. 血瘀", "C. 陰虛", "D. 食滯"], ans: 3 },
           { q: "5. 常用於化痰止咳、健脾理氣的廣東三寶之一是？", options: ["A. 羅漢果", "B. 燕窩", "C. 鹿茸", "D. 陳皮"], ans: 3 }
         ],
@@ -577,14 +587,14 @@ const stagesData = {
       questionSets: [
         [
           { q: "1. 經絡學說中，手太陰肺經的循行起於身體的哪裡？", options: ["A. 肺臟", "B. 大拇指", "C. 中焦胃部", "D. 心包經"], ans: 2 },
-          { q: "2. 診脈時，左手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心肝腎", "B. 肺脾命", "C. 肝心腎", "D. 脾胃肺"], ans: 0 },
+          { q: "2. 診脈時，左手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心肝腎", "B. 肺脾命門", "C. 肝心腎", "D. 脾胃肺"], ans: 0 },
           { q: "3. 著名方劑「六味地黃丸」的核心主治證型是？", options: ["A. 腎陽不足", "B. 腎陰不足", "C. 脾胃虛弱", "D. 肝膽濕熱"], ans: 1 },
           { q: "4. (保底題) 在方劑學「君臣佐使」組方原則中，輔助君藥加強治療主證的藥物稱為？", options: ["A. 佐藥", "B. 臣藥", "C. 使藥", "D. 導藥"], ans: 1 },
           { q: "5. 「氣血津液」中，具有溫煦分肉、充膚、司開合防禦作用的是？", options: ["A. 營氣", "B. 宗氣", "C. 元氣", "D. 衛氣"], ans: 3 }
         ],
         [
           { q: "1. 十二經脈中，行於背部脊柱兩旁、分支最多、穴位最多的經脈是？", options: ["A. 足陽明胃經", "B. 足太陽膀胱經", "C. 手少陽三焦經", "D. 足少陰腎經"], ans: 1 },
-          { q: "2. 診脈時，右手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心肝腎", "B. 肺脾命", "C. 胃膽膀", "D. 肝脾心"], ans: 1 },
+          { q: "2. 診脈時，右手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心肝腎", "B. 肺脾命門", "C. 胃膽膀", "D. 肝脾心"], ans: 1 },
           { q: "3. 方劑「補中益氣湯」的主治病證核心是？", options: ["A. 脾氣下陷", "B. 肝鬱血虛", "C. 熱入心包", "D. 陰虛火旺"], ans: 0 },
           { q: "4. (保底題) 方劑「君臣佐使」中，引藥直達病所或調和諸藥的稱為？", options: ["A. 君藥", "B. 臣藥", "C. 佐藥", "D. 使藥"], ans: 3 },
           { q: "5. 積於胸中、貫心脈而行呼吸、走息道以司呼吸的氣是？", options: ["A. 宗氣", "B. 衛氣", "C. 營氣", "D. 元氣"], ans: 0 }
@@ -649,7 +659,7 @@ const stagesData = {
         [
           { q: "1. Which bean soup is most popular in summer for clearing heat and draining dampness?", options: ["A. Red Bean", "B. Black Bean", "C. Mung Bean", "D. Soy Bean"], ans: 2 },
           { q: "2. When experiencing eye dry fatigue, TCM recommends pairing Goji Berries with?", options: ["A. Rose", "B. Jasmine", "C. Chrysanthemum", "D. Lotus"], ans: 2 },
-          { q: "3. In TCM, excessive sweating is believed to injure which organ's Qi?", options: ["A. Lungs", "B. Heart", "C. Spleen", "D. Kidneys"], ans: 1 },
+          { q: "3. Staying up late habitually in TCM easily damages which aspect of the body?", options: ["A. Yin Fluid", "B. Yang Qi", "C. Bones", "D. Muscles"], ans: 0 },
           { q: "4. (Guaranteed) Indigestion caused by overeating is known in TCM as?", options: ["A. Wind-Cold", "B. Blood Stasis", "C. Yin Deficiency", "D. Food Stagnation"], ans: 3 },
           { q: "5. Which dried fruit peel is famous in Guangdong for transforming phlegm and harmonizing stomach?", options: ["A. Monk Fruit", "B. Longan", "C. Lychee", "D. Tangerine Peel"], ans: 3 }
         ],
