@@ -40,9 +40,36 @@
       position: relative; 
       overscroll-behavior-y: contain;
     }
-    
-    .lang-switch { position: absolute; top: 15px; right: 15px; }
+
+    .header-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    .game-logo {
+      width: 68px;
+      height: 68px;
+      filter: drop-shadow(0px 0px 8px rgba(129, 199, 132, 0.6));
+    }
+
     .btn-lang { 
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
       background: #3a1c40; 
       color: #f3c623; 
       border: 2px solid #e0a96d; 
@@ -55,22 +82,6 @@
       box-shadow: 2px 2px 0px #000;
     }
     .btn-lang:hover { background: #e0a96d; color: #1a0f1d; border-color: #f3c623; }
-
-    .header-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      padding-right: 0px;
-    }
-
-    .game-logo {
-      width: 76px;
-      height: 76px;
-      margin-bottom: 8px;
-      filter: drop-shadow(0px 0px 10px rgba(243, 198, 35, 0.7));
-    }
 
     .header { 
       text-align: center; 
@@ -169,35 +180,28 @@
 <body>
 
 <div id="game-container">
-  <div class="lang-switch">
-    <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
-  </div>
-
   <div class="header-container">
-    <!-- 全新設計：懸壺濟世吉祥金光葫蘆徽章 Logo -->
-    <svg class="game-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <!-- 圓形背景邊框與外飾邊 -->
-      <circle cx="50" cy="50" r="46" fill="#120914" stroke="#e0a96d" stroke-width="3"/>
-      <circle cx="50" cy="50" r="41" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-dasharray="5,3"/>
-      <!-- 光芒底襯 -->
-      <polygon points="50,12 53,20 60,15 58,23 67,22 62,29 70,32 63,37 72,43 63,46 70,53 61,53 66,61 57,59 59,68 51,63 50,72 49,63 41,68 43,59 34,61 39,53 30,53 37,46 28,43 37,37 30,32 38,29 33,22 42,23 40,15 47,20" fill="#f3c623" opacity="0.15"/>
-      <!-- 上下兩球金黃葫蘆身 -->
-      <!-- 上球 -->
-      <circle cx="50" cy="35" r="13" fill="#f3c623" stroke="#e0a96d" stroke-width="2"/>
-      <!-- 下球 -->
-      <circle cx="50" cy="62" r="21" fill="#f3c623" stroke="#e0a96d" stroke-width="2"/>
-      <!-- 葫蘆高光亮點 -->
-      <path d="M 43 30 A 8 8 0 0 1 50 25" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-      <path d="M 39 54 A 14 14 0 0 1 50 44" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-      <!-- 葫蘆蓋子 (蔓藤與塞子) -->
-      <rect x="47" y="18" width="6" height="5" rx="1" fill="#8c2520" stroke="#f3c623" stroke-width="1"/>
-      <!-- 腰間吉祥紅結綁帶 -->
-      <ellipse cx="50" cy="46" rx="10" ry="3.5" fill="#8c2520"/>
-      <circle cx="50" cy="46" r="3" fill="#f3c623"/>
-      <!-- 飄逸紅絲帶 (往兩側下方自然垂掛) -->
-      <path d="M 48 48 Q 42 56 38 65" fill="none" stroke="#8c2520" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M 52 48 Q 58 56 62 65" fill="none" stroke="#8c2520" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>
+    <div class="header-top-row">
+      <!-- 全新設計：清新草本翡翠綠葉 Logo -->
+      <svg class="game-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="#120914" stroke="#e0a96d" stroke-width="3"/>
+        <circle cx="50" cy="50" r="41" fill="none" stroke="#81c784" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <!-- 綠葉主體 -->
+        <path d="M 25 75 C 25 35 45 18 78 22 C 80 55 65 78 25 75 Z" fill="#2e7d32" stroke="#81c784" stroke-width="2.5"/>
+        <!-- 葉片內側漸層襯葉 -->
+        <path d="M 32 72 C 32 42 48 26 73 26 C 74 50 62 70 32 72 Z" fill="#4caf50" opacity="0.6"/>
+        <!-- 葉脈 -->
+        <path d="M 25 75 Q 50 50 78 22" fill="none" stroke="#f3c623" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 40 60 Q 48 52 55 50" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 50 48 Q 60 40 68 38" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M 35 68 Q 38 58 45 58" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- 金黃露珠 -->
+        <circle cx="62" cy="38" r="3.5" fill="#f3c623"/>
+        <circle cx="63" cy="37" r="1" fill="#ffffff"/>
+      </svg>
+      <!-- 與 Logo 水平平行的語言切換按鈕 -->
+      <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
+    </div>
     <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
   </div>
 
@@ -493,7 +497,7 @@ const bodyTestQuestionsEn = [
   { q: "33. Do you adapt well to environmental/climate changes?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "平和質" }
 ];
 
-// 完整關卡題庫（選項長度均衡、排除洩底題）
+// 完整關卡題庫
 const stagesData = {
   zh: [
     {
@@ -637,7 +641,7 @@ const stagesData = {
       ]
     },
     {
-      name: "🩺 特別篇：【中醫九種體質標準測試 (33題)】",
+      name: "🩺 號外：【中醫體質測試 (33條)】",
       desc: "體質不止寒熱，自測九種體質",
       isBodyTest: true,
       titleSuccess: "體質鑑定完成"
@@ -785,7 +789,7 @@ const stagesData = {
       ]
     },
     {
-      name: "🩺 Special: [9 Body Constitution Test (33 Qs)]",
+      name: "🩺 Special: [TCM Body Constitution Test (33 Qs)]",
       desc: "Discover your unique body constitution beyond cold and heat.",
       isBodyTest: true,
       titleSuccess: "Test Completed"
