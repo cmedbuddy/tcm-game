@@ -2,33 +2,46 @@
 <html lang="zh-HK">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    /* 核心修復：徹底禁止瀏覽器下拉刷新的彈跳效果 */
+    html, body { 
+      overscroll-behavior: none; 
+      touch-action: pan-x pan-y;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      position: fixed;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body { 
       background-color: #1a0f1d; 
       color: #fff; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
-      min-height: 100vh; 
       padding: 12px; 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans HK", sans-serif;
     }
+    
     #game-container { 
       width: 100%; 
       max-width: 850px; 
+      max-height: 95vh;
+      overflow-y: auto;
       background: #2d1832; 
       border: 5px solid #e0a96d; 
       border-radius: 10px; 
       padding: 20px; 
       box-shadow: 0 0 25px rgba(0,0,0,0.9); 
       position: relative; 
+      overscroll-behavior-y: contain; /* 避免遊戲框內滑動時穿透到外層 */
     }
     
-    /* 語言切換按鈕 */
     .lang-switch { position: absolute; top: 15px; right: 15px; }
     .btn-lang { 
       background: #3a1c40; 
@@ -42,7 +55,6 @@
     }
     .btn-lang:hover { background: #66fcf1; color: #1a0f1d; }
 
-    /* 標題 */
     .header { 
       text-align: center; 
       color: #f3c623; 
@@ -54,7 +66,6 @@
       padding-right: 70px; 
     }
     
-    /* 關卡選擇選單 */
     #level-select-screen { text-align: center; padding: 10px 0; }
     .stage-card { 
       background: #120914; 
@@ -101,7 +112,6 @@
     .npc-avatar { font-size: 32px; border: 2px solid #f3c623; padding: 6px; background: #3a1c40; border-radius: 6px; }
     .npc-text { font-size: 15px; line-height: 1.6; color: #e0a96d; font-weight: bold; }
 
-    /* 題目框與選項大字體 */
     .question-box { 
       background: #120914; 
       border: 3px solid #f3c623; 
@@ -134,9 +144,9 @@
     .cashout-btn { background: #2e7d32; color: #fff; border: 3px solid #81c784; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: #2d1832; border: 4px solid #f3c623; padding: 25px; max-width: 550px; width: 92%; text-align: center; border-radius: 10px; }
+    .modal-content { background: #2d1832; border: 4px solid #f3c623; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 10px; max-height: 90vh; overflow-y: auto; }
     .modal-title { font-size: 20px; font-weight: bold; color: #f3c623; margin-bottom: 18px; }
-    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 22px; color: #fff; white-space: pre-line; }
+    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 22px; color: #fff; text-align: left; white-space: pre-line; }
   </style>
 </head>
 <body>
@@ -148,13 +158,11 @@
 
   <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
 
-  <!-- 關卡選擇畫面 -->
   <div id="level-select-screen">
-    <div style="font-size: 15px; color: #e0a96d; margin-bottom: 16px; font-weight: bold;" id="txt-select-title">請選擇考核難度：</div>
+    <div style="font-size: 15px; color: #e0a96d; margin-bottom: 16px; font-weight: bold;" id="txt-select-title">請選擇考核關卡或體質自測：</div>
     <div id="stages-list"></div>
   </div>
 
-  <!-- 遊戲主畫面 -->
   <div id="quiz-screen" style="display: none;">
     <div class="top-panel">
       <div class="lifelines">
@@ -181,7 +189,6 @@
   </div>
 </div>
 
-<!-- 結算彈窗 -->
 <div id="modal" class="modal">
   <div class="modal-content">
     <div class="modal-title" id="modal-title">...</div>
@@ -195,7 +202,12 @@
 </div>
 
 <script>
-// --- 音效系統 (Web Audio API) ---
+// 防刷新的手勢監聽加強防護
+document.addEventListener('touchmove', function(e) {
+  if (e.scale !== 1) { e.preventDefault(); }
+}, { passive: false });
+
+// 音效系統 (Web Audio API)
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
@@ -211,7 +223,6 @@ function playSound(type) {
     const gain = audioCtx.createGain();
     osc.connect(gain);
     gain.connect(audioCtx.destination);
-
     const now = audioCtx.currentTime;
 
     if (type === 'click') {
@@ -223,17 +234,17 @@ function playSound(type) {
       osc.stop(now + 0.05);
     } else if (type === 'correct') {
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(523.25, now); // C5
-      osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-      osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+      osc.frequency.setValueAtTime(523.25, now);
+      osc.frequency.setValueAtTime(659.25, now + 0.1);
+      osc.frequency.setValueAtTime(783.99, now + 0.2);
       gain.gain.setValueAtTime(0.15, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
       osc.start(now);
       osc.stop(now + 0.35);
     } else if (type === 'wrong') {
       osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(220, now); // A3
-      osc.frequency.setValueAtTime(164.81, now + 0.15); // E3
+      osc.frequency.setValueAtTime(220, now);
+      osc.frequency.setValueAtTime(164.81, now + 0.15);
       gain.gain.setValueAtTime(0.2, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
       osc.start(now);
@@ -262,10 +273,49 @@ function playSound(type) {
 
 let currentLang = 'zh';
 
+const bodyTypeInfo = {
+  "氣虚質": {
+    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨蔘、大棗、黨參等補氣食物，避免劇烈運動及熬夜。",
+    descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Eat Astragalus, Yam, Codonopsis, and Red Dates. Avoid overexertion."
+  },
+  "陽虛質": {
+    desc: "【特徵】畏寒怕冷、手腳冰涼、喜熱飲食、性格較沉靜。\n【調理建議】宜溫補脾腎。多吃羊肉、生薑、韭菜、桂圓，少吃生冷寒涼食物，常曬太陽與熱水泡腳。",
+    descEn: "[Features] Aversion to cold, cold limbs, prefers warm food/drinks.\n[Advice] Warm Spleen and Kidney. Eat Lamb, Ginger, Leek, Longan. Avoid cold/raw food."
+  },
+  "陰虛質": {
+    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙蔘、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
+    descEn: "[Features] Warm palms/soles, dry mouth/skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
+  },
+  "痰濕質": {
+    desc: "【特徵】腹部肥滿鬆軟、面部皮膚油膩、多汗且黏、口中黏膩、頭重如裹。\n【調理建議】宜健脾利濕、化痰祛濕。多吃薏苡仁、茯苓、陳皮、冬瓜、赤小豆，少吃甜食與肥甘厚味。",
+    descEn: "[Features] Abdominal fullness, oily skin, sticky sweat, heavy sensation in body.\n[Advice] Strengthen Spleen and resolve dampness. Eat Job's tears, Poria, Tangerine peel, Winter melon."
+  },
+  "濕熱質": {
+    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、小便短赤、性格較急躁。\n【調理建議】宜分消濕熱、清熱利濕。多吃綠豆、苦瓜、黃瓜、薏米、蓮子，少吃煎炸烤辣食物及飲酒。",
+    descEn: "[Features] Acne-prone, bitter mouth/halitosis, sticky stools, dark urine.\n[Advice] Clear heat and drain dampness. Eat Mung bean, Bitter gourd, Cucumber, Lotus seed. Avoid alcohol & spicy food."
+  },
+  "血瘀質": {
+    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點、牙齦容易出血。\n【調理建議】宜活血化瘀、疏通經絡。多吃山楂、黑豆、玫瑰花、山藥、紅酒（適量），保持規律運動與心情舒暢。",
+    descEn: "[Features] Dull complexion, dark lips/tongue, easy bruising, bleeding gums.\n[Advice] Promote blood circulation. Eat Hawthorn, Black bean, Rose tea. Keep moving and stay relaxed."
+  },
+  "氣鬱質": {
+    desc: "【特徵】神情抑鬱、情緒低沉、無緣無故嘆氣、胸脅脹滿、多愁善感。\n【調理建議】宜疏肝理氣、解鬱安神。多喝玫瑰花茶、薄荷茶、柑橘、合歡花，適度戶外運動，放鬆心境。",
+    descEn: "[Features] Depressed mood, frequent sighing, chest fullness, emotionally sensitive.\n[Advice] Soothe Liver and regulate Qi. Drink Rose tea, Mint tea. Exercise outdoors and manage stress."
+  },
+  "特稟質": {
+    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表、養血消風。多吃靈芝、黃耆、紅棗，飲食宜清淡，遠離已知過敏原及注意保暖。",
+    descEn: "[Features] Allergic constitution (easy sneezing, runny nose, asthma, hives).\n[Advice] Boost immunity and consolidate exterior. Eat Reishi mushroom, Astragalus. Avoid allergens."
+  },
+  "平和質": {
+    desc: "【特徵】體形勻稱、面色紅潤、精力充沛、睡眠良好、適應能力強。\n【調理建議】完美的健康體質！保持均衡飲食、規律作息與樂觀心態，順應四時養生即可。",
+    descEn: "[Features] Balanced constitution, vibrant complexion, good sleep, high energy.\n[Advice] Ideal health status! Maintain balanced diet, sleep schedule, and positive mindset."
+  }
+};
+
 const i18n = {
   zh: {
     header: "📜 懸壺濟世：百萬問答 📜",
-    selectTitle: "請選擇考核關卡或自我測試：",
+    selectTitle: "請選擇考核關卡或體質自測：",
     audBtn: "👥 問街坊",
     phoneBtn: "📜 飛鴿",
     cashoutBtn: "💰 見好就收",
@@ -364,9 +414,9 @@ const stagesData = {
       questions: [
         { q: "1. 經絡學說中，手太陰肺經的循行起於身體的哪裡？", options: ["A. 肺臟", "B. 中焦（胃部）", "C. 大拇指端", "D. 心包"], ans: 1 },
         { q: "2. 診脈時，左手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心、肝、腎", "B. 肺、脾、命門", "C. 肝、心、腎", "D. 脾、胃、肺"], ans: 0 },
-        { q: "3. 著名方劑「六味地黃丸」的原方主治病證是？", options: ["A. 腎陽不足", "B. 小兒囟開不合、腎陰不足", "C. 脾胃虛弱", "D. 肝膽濕熱"], ans: 1 },
-        { q: "4. (保底題) 「氣血津液」中，具有溫煦、防禦、固攝等作用的主要是？", options: ["A. 營氣", "B. 衛氣", "C. 宗氣", "D. 元氣"], ans: 1 },
-        { q: "5. 中藥「十七單行/七情」中，相惡是指什麼意思？", options: ["A. 兩藥合用增強療效", "B. 一藥減弱另一藥的功效", "C. 兩藥合用產生毒性", "D. 一藥消除另一藥毒性"], ans: 1 }
+        { q: "3. 著名方劑「六味地黃丸」的核心主治證型是？", options: ["A. 腎陽不足、畏寒肢冷", "B. 腎陰不足、腰膝酸軟、潮熱盜汗", "C. 脾胃虛弱、食少便溏", "D. 肝膽濕熱、黃疸"], ans: 1 },
+        { q: "4. (保底題) 「氣血津液」中，具有溫煦分肉、充膚、肥腠理、司開合防禦作用的是？", options: ["A. 營氣", "B. 衛氣", "C. 宗氣", "D. 元氣"], ans: 1 },
+        { q: "5. 中藥「七情配伍」中，相惡（例如人蔘惡萊菔子）是指？", options: ["A. 兩藥合用增強療效", "B. 一種藥物能減弱另一種藥物的功效", "C. 兩藥合用產生毒性", "D. 一種藥物能消除另一種藥物的毒性"], ans: 1 }
       ]
     },
     {
@@ -374,28 +424,52 @@ const stagesData = {
       desc: "難度：★★★★★ | 執業醫師/專業學生：經典條文、十八反與經典方劑。",
       titleSuccess: "懸壺濟世・國醫大師",
       questions: [
-        { q: "1. 《傷寒論》太陽病中，「桂枝湯」的服法要求中，以下哪項是正確的？", options: ["A. 服後即飲冷水", "B. 服後須臾啜熱稀粥，溫覆令一時許微似汗", "C. 大汗淋漓為佳", "D. 忌食熱食"], ans: 1 },
+        { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後即飲冰水", "B. 服後須臾啜熱稀粥，溫覆令一時許，微似有汗", "C. 大汗淋漓流瀉為佳", "D. 禁食一切熱食"], ans: 1 },
         { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、貝母", "B. 半夏、瓜蔞、貝母、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
         { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了痰飲的什麼病機？", options: ["A. 痰飲本於水濕，陰邪非溫不化", "B. 痰飲宜用大熱大燥破之", "C. 痰飲皆由肝鬱所致", "D. 痰飲只能用瀉下法"], ans: 0 },
-        { q: "4. (保底題) 方劑學中「補中益氣湯」重用黃耆為君，其配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升舉清陽，柴麻相合以升提下陷之中氣", "D. 疏肝理氣"], ans: 2 },
+        { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升舉清陽，升提下陷之中氣", "D. 疏肝理氣"], ans: 2 },
         { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二七 (2x7=14歲)", "C. 三七 (3x7=21歲)", "D. 四七 (4x7=28歲)"], ans: 1 }
       ]
     },
     {
-      name: "☯️ 特別篇：【中醫九種體質自測】",
-      desc: "測試篇 | 答 9 道題目，快速評估你的體質類型（氣虛、陽虛、濕熱等）與調理建議！",
+      name: "☯️ 特別篇：【中醫九種體質標準測試 (33題)】",
+      desc: "專業自測 | 參照標準 33 題全量體質測驗，準確分析體質（氣虛/陽虛/陰虛/濕熱等）並給予調理建議！",
       isBodyTest: true,
-      titleSuccess: "體質自測完成",
+      titleSuccess: "體質鑑定完成",
       questions: [
-        { q: "1. 平時說話聲音低弱，容易氣短少言、疲倦乏力？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "氣虛" },
-        { q: "2. 比其他人怕冷，手腳經常冰涼，吃冷食容易不適？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "陽虛" },
-        { q: "3. 經常感覺手腳心發熱，皮膚口唇乾燥，容易口乾？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "陰虛" },
-        { q: "4. 身材較肥胖，胸腹滿悶，面部皮膚經常黏膩？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "痰濕" },
-        { q: "5. 面部容易生痘痘，口苦口臭，大便黏滯不爽？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "濕熱" },
-        { q: "6. 面色晦暗，皮膚容易有青紫斑塊，刷牙容易牙齦出血？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "血瘀" },
-        { q: "7. 情緒容易低落沉悶，無緣無故嘆氣，易胸脅脹滿？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "氣鬱" },
-        { q: "8. 容易對花粉、食物或氣味過敏，常打噴嚏流鼻水？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "特稟" },
-        { q: "9. 精力充沛，面色紅潤，睡眠良好，適應環境能力強？", options: ["A. 經常會", "B. 偶爾會", "C. 完全不會", "D. 不清楚"], type: "平和" }
+        { q: "1. 你平時容易疲倦乏力嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
+        { q: "2. 你說話聲音低弱，容易感到氣短少言嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
+        { q: "3. 你比一般人容易感冒嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
+        { q: "4. 你活動稍多就比別人容易出汗嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
+        { q: "5. 你平時手腳經常感到冰涼嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陽虛質" },
+        { q: "6. 你比一般人怕冷（衣服穿得比人多）嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陽虛質" },
+        { q: "7. 你吃涼或冷的食物時容易肚子不適或拉肚子嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陽虛質" },
+        { q: "8. 你受涼或吹冷氣後容易胃痛或關節酸痛嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陽虛質" },
+        { q: "9. 你感到手心或腳心發熱嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
+        { q: "10. 你感到口乾舌燥、總想喝冷水嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
+        { q: "11. 你皮膚經常乾燥、容易起皮嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
+        { q: "12. 你容易大便乾結或經常便秘嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
+        { q: "13. 你感到胸腹滿悶或腹部鬆軟肥胖嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "痰濕質" },
+        { q: "14. 你面部皮膚經常油膩、油脂分泌多嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "痰濕質" },
+        { q: "15. 你口中經常感到黏膩或舌苔厚膩嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "痰濕質" },
+        { q: "16. 你感到身體沉重、頭重如裹（像戴了沉帽子）嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "痰濕質" },
+        { q: "17. 你面部或鼻部容易生痘痘、瘡癤嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "濕熱質" },
+        { q: "18. 你感到口苦或口臭嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "濕熱質" },
+        { q: "19. 你小便顏色深黃、或大便黏滯衝不乾淨嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "濕熱質" },
+        { q: "20. 你陰部容易潮濕發癢嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "濕熱質" },
+        { q: "21. 你面色晦暗或眼圈發黑嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "血瘀質" },
+        { q: "22. 你身上皮膚碰撞後容易出現紫青瘀斑嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "血瘀質" },
+        { q: "23. 你嘴唇顏色紫暗或舌頭上有紫色瘀點嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "血瘀質" },
+        { q: "24. 你身體局部常有固定位置的刺痛感嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "血瘀質" },
+        { q: "25. 你情緒容易低落、鬱鬱寡歡嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣鬱質" },
+        { q: "26. 你容易無緣無故嘆氣嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣鬱質" },
+        { q: "27. 你感到胸脅脹滿、或喉嚨像有東西吐不出來吞不下嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣鬱質" },
+        { q: "28. 你多愁善感、容易緊張焦慮嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣鬱質" },
+        { q: "29. 你容易過敏（皮膚蕁麻疹、花粉過敏）嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "特稟質" },
+        { q: "30. 你沒感冒時也容易打噴嚏、流鼻水嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "特稟質" },
+        { q: "31. 你精力充沛、不易感到疲倦嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "平和質" },
+        { q: "32. 你睡眠良好、食慾適中嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "平和質" },
+        { q: "33. 你對氣候變化有良好的適應能力嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "平和質" }
       ]
     }
   ],
@@ -443,7 +517,7 @@ const stagesData = {
       questions: [
         { q: "1. Where does the Lung Meridian originate?", options: ["A. Lungs organ", "B. Middle Jiao (Stomach)", "C. Tip of thumb", "D. Pericardium"], ans: 1 },
         { q: "2. Left wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen", "C. Liver, Heart, Kidney", "D. Spleen, Stomach, Lung"], ans: 0 },
-        { q: "3. Original indication for 'Liu Wei Di Huang Wan'?", options: ["A. Kidney Yang deficiency", "B. Pediatric delayed fontanelle closure / Kidney Yin deficiency", "C. Spleen weakness", "D. Damp-Heat"], ans: 1 },
+        { q: "3. Original indication for 'Liu Wei Di Huang Wan'?", options: ["A. Kidney Yang deficiency", "B. Kidney Yin deficiency with sore knees & night sweats", "C. Spleen weakness", "D. Damp-Heat"], ans: 1 },
         { q: "4. (Guaranteed) Which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi", "B. Wei Qi", "C. Zong Qi", "D. Yuan Qi"], ans: 1 },
         { q: "5. In herbal compatibility, 'Antagonism (Xiang E)' means?", options: ["A. Enhancing efficacy", "B. One herb reducing another's efficacy", "C. Producing toxicity", "D. Eliminating toxicity"], ans: 1 }
       ]
@@ -567,8 +641,13 @@ function checkAnswer(selected) {
   
   if (stage.isBodyTest) {
     playSound('click');
-    if (selected === 0) bodyTestScores[q.type] = (bodyTestScores[q.type] || 0) + 2;
-    else if (selected === 1) bodyTestScores[q.type] = (bodyTestScores[q.type] || 0) + 1;
+    let points = 0;
+    if (selected === 0) points = 3;
+    else if (selected === 1) points = 2;
+    else if (selected === 2) points = 1;
+    else points = 0;
+
+    bodyTestScores[q.type] = (bodyTestScores[q.type] || 0) + points;
 
     currentQuestionIndex++;
     if (currentQuestionIndex >= stage.questions.length) {
@@ -609,8 +688,11 @@ function finishBodyTest() {
     }
   }
 
-  const resultMsg = `經過 9 道題評估，你傾向於【${topType}】！\n建議：順應四季調理，保持作息規律與飲食均衡。`;
-  endGame(true, resultMsg, `${topType}評估完成`);
+  const info = bodyTypeInfo[topType] || bodyTypeInfo["平和質"];
+  const descText = (currentLang === 'zh') ? info.desc : info.descEn;
+
+  const resultMsg = `【中醫九種體質鑑定結果】\n\n經 33 題標準量表測算，你的主要體質傾向為：【${topType}】！\n\n${descText}`;
+  endGame(true, resultMsg, `${topType}體質`);
 }
 
 function use5050() {
@@ -691,7 +773,7 @@ function copyResult() {
   
   let text = "";
   if (currentLang === 'zh') {
-    text = `我在《懸壺濟世：百萬問答》的【${stageName}】獲得了【${playerTitle}】！\n快來挑戰中醫知識與體質自測：${currentUrl}`;
+    text = `我在《懸壺濟世：百萬問答》的【${stageName}】獲得了【${playerTitle}】！\n快來挑戰中醫知識與 33 題體質測驗：${currentUrl}`;
   } else {
     text = `I completed [${stageName}] in TCM Millionaire Quiz and earned title: 【${playerTitle}】!\nChallenge here: ${currentUrl}`;
   }
@@ -709,4 +791,3 @@ showSelectScreen();
 </script>
 </body>
 </html>
-
