@@ -6,7 +6,6 @@
   <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    /* 核心修復：徹底禁止瀏覽器下拉刷新的彈跳效果 */
     html, body { 
       overscroll-behavior: none; 
       touch-action: pan-x pan-y;
@@ -39,7 +38,7 @@
       padding: 20px; 
       box-shadow: 0 0 25px rgba(0,0,0,0.9); 
       position: relative; 
-      overscroll-behavior-y: contain; /* 避免遊戲框內滑動時穿透到外層 */
+      overscroll-behavior-y: contain;
     }
     
     .lang-switch { position: absolute; top: 15px; right: 15px; }
@@ -142,6 +141,7 @@
 
     .action-panel { display: flex; justify-content: space-between; align-items: center; }
     .cashout-btn { background: #2e7d32; color: #fff; border: 3px solid #81c784; }
+    .prev-btn { background: #3a1c40; color: #66fcf1; border: 3px solid #66fcf1; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; }
     .modal-content { background: #2d1832; border: 4px solid #f3c623; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 10px; max-height: 90vh; overflow-y: auto; }
@@ -165,10 +165,9 @@
 
   <div id="quiz-screen" style="display: none;">
     <div class="top-panel">
-      <div class="lifelines">
+      <div class="lifelines" id="lifelines-box">
         <button id="l-5050" class="btn-pixel" onclick="use5050()">☯️ 50:50</button>
-        <button id="l-audience" class="btn-pixel" onclick="useAudience()"><span id="txt-l-audience">👥 問街坊</span></button>
-        <button id="l-phone" class="btn-pixel" onclick="usePhone()"><span id="txt-l-phone">📜 飛鴿</span></button>
+        <button id="l-phone" class="btn-pixel" onclick="usePhone()"><span id="txt-l-phone">📜 飛鴿問朋友</span></button>
       </div>
       <div class="prize-info" id="prize-display">目前銀兩: 0 兩</div>
     </div>
@@ -184,6 +183,7 @@
 
     <div class="action-panel">
       <button class="btn-pixel cashout-btn" onclick="cashOut()" id="txt-cashout">💰 見好就收</button>
+      <button class="btn-pixel prev-btn" onclick="prevQuestion()" id="txt-prev" style="display: none;">⬅️ 回上一題</button>
       <div style="font-size: 14px; color: #aaa; font-weight: bold;" id="level-display">關卡: 1 / 5</div>
     </div>
   </div>
@@ -202,12 +202,10 @@
 </div>
 
 <script>
-// 防刷新的手勢監聽加強防護
 document.addEventListener('touchmove', function(e) {
   if (e.scale !== 1) { e.preventDefault(); }
 }, { passive: false });
 
-// 音效系統 (Web Audio API)
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx = null;
 
@@ -275,7 +273,7 @@ let currentLang = 'zh';
 
 const bodyTypeInfo = {
   "氣虚質": {
-    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨蔘、大棗、黨參等補氣食物，避免劇烈運動及熬夜。",
+    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨蔘、大棗等補氣食物，避免劇烈運動及熬夜。",
     descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Eat Astragalus, Yam, Codonopsis, and Red Dates. Avoid overexertion."
   },
   "陽虛質": {
@@ -295,7 +293,7 @@ const bodyTypeInfo = {
     descEn: "[Features] Acne-prone, bitter mouth/halitosis, sticky stools, dark urine.\n[Advice] Clear heat and drain dampness. Eat Mung bean, Bitter gourd, Cucumber, Lotus seed. Avoid alcohol & spicy food."
   },
   "血瘀質": {
-    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點、牙齦容易出血。\n【調理建議】宜活血化瘀、疏通經絡。多吃山楂、黑豆、玫瑰花、山藥、紅酒（適量），保持規律運動與心情舒暢。",
+    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點、牙齦容易出血。\n【調理建議】宜活血化瘀、疏通經絡。多吃山楂、黑豆、玫瑰花、山藥，保持規律運動與心情舒暢。",
     descEn: "[Features] Dull complexion, dark lips/tongue, easy bruising, bleeding gums.\n[Advice] Promote blood circulation. Eat Hawthorn, Black bean, Rose tea. Keep moving and stay relaxed."
   },
   "氣鬱質": {
@@ -316,9 +314,9 @@ const i18n = {
   zh: {
     header: "📜 懸壺濟世：百萬問答 📜",
     selectTitle: "請選擇考核關卡或體質自測：",
-    audBtn: "👥 問街坊",
-    phoneBtn: "📜 飛鴿",
+    phoneBtn: "📜 飛鴿問朋友",
     cashoutBtn: "💰 見好就收",
+    prevBtn: "⬅️ 回上一題",
     backBtn: "返回關卡選擇",
     nextBtn: "挑戰下一關 ➔",
     shareBtn: "🕊️ 複製網址飛鴿傳書給朋友",
@@ -328,13 +326,13 @@ const i18n = {
     npcReady: "少俠，準備好挑戰未？",
     npcCorrect: "答得好！順利晉級，累積銀兩 ",
     npc5050: "老中醫掌櫃：「施展陰陽化煞，為你排除兩個錯誤干擾！」",
-    npcAud: "老中醫掌櫃：「問過街坊，有 80% 嘅人都投票支持選項 ",
-    npcPhone: "飛鴿傳書至遠方師父：「徒兒，老夫掐指一算，此題極有可能是 ",
+    npcPhone: "飛鴿問朋友：「徒兒，老夫掐指一算，此題極有可能是 ",
     cashoutAlert: "你目前仲未有銀兩，先答對一題啦！",
     cashoutTitle: "明哲保身大夫",
     winTitle: "📜 考核結算 📜",
     loseTitle: "💀 考核結束 💀",
     winMsg: "🎉 恭喜完全通關 ",
+    allWinMsg: "🎉 恭喜通關全部關卡！您已融會貫通中醫精髓，榮登【懸壺濟世・國醫大師】之位！",
     loseMsg: "遺憾答錯！正確答案係 ",
     titleFail: "考核未順利通過",
     shareAlert: "🕊️ 飛鴿已傳書！戰報與遊戲網址已複製到剪貼簿，快貼給朋友挑戰吧！"
@@ -342,9 +340,9 @@ const i18n = {
   en: {
     header: "📜 TCM Millionaire Quiz 📜",
     selectTitle: "Select Quiz Level or Body Test:",
-    audBtn: "👥 Audience",
-    phoneBtn: "📜 Pigeon",
+    phoneBtn: "📜 Ask Friend",
     cashoutBtn: "💰 Cash Out",
+    prevBtn: "⬅️ Previous",
     backBtn: "Level Select",
     nextBtn: "Next Level ➔",
     shareBtn: "🕊️ Copy Link & Share via Pigeon",
@@ -354,13 +352,13 @@ const i18n = {
     npcReady: "Greetings scholar! Ready to test your TCM knowledge?",
     npcCorrect: "Splendid! Correct answer! Accumulated Taels: ",
     npc5050: "Master Herbalist: 'Using Yin-Yang elimination to remove 2 wrong choices!'",
-    npcAud: "Master Herbalist: '80% of townfolks voted for option ",
-    npcPhone: "Carrier Pigeon from Master: 'Disciple, I predict the answer is likely ",
+    npcPhone: "Ask Friend: 'Disciple, I predict the answer is likely ",
     cashoutAlert: "You haven't earned any taels yet! Answer at least 1 question.",
     cashoutTitle: "Prudent Physician",
     winTitle: "📜 Exam Result 📜",
     loseTitle: "💀 Game Over 💀",
     winMsg: "🎉 Congratulations on completing ",
+    allWinMsg: "🎉 Congratulations on completing ALL levels! You have mastered TCM and earned [Grandmaster Physician]!",
     loseMsg: "Incorrect! The correct answer was ",
     titleFail: "Exam Failed",
     shareAlert: "🕊️ Carrier pigeon dispatched! Result and URL copied to clipboard!"
@@ -409,14 +407,14 @@ const stagesData = {
     },
     {
       name: "🪨 第四關：【岐黃妙理】",
-      desc: "難度：★★★★☆ | 深造學生：舌脈辨證、經絡循行與方劑基礎。",
+      desc: "難度：★★★★☆ | 深造學生：舌脈辨證、經絡循行與組方原則。",
       titleSuccess: "岐黃高手",
       questions: [
         { q: "1. 經絡學說中，手太陰肺經的循行起於身體的哪裡？", options: ["A. 肺臟", "B. 中焦（胃部）", "C. 大拇指端", "D. 心包"], ans: 1 },
         { q: "2. 診脈時，左手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心、肝、腎", "B. 肺、脾、命門", "C. 肝、心、腎", "D. 脾、胃、肺"], ans: 0 },
         { q: "3. 著名方劑「六味地黃丸」的核心主治證型是？", options: ["A. 腎陽不足、畏寒肢冷", "B. 腎陰不足、腰膝酸軟、潮熱盜汗", "C. 脾胃虛弱、食少便溏", "D. 肝膽濕熱、黃疸"], ans: 1 },
-        { q: "4. (保底題) 「氣血津液」中，具有溫煦分肉、充膚、肥腠理、司開合防禦作用的是？", options: ["A. 營氣", "B. 衛氣", "C. 宗氣", "D. 元氣"], ans: 1 },
-        { q: "5. 中藥「七情配伍」中，相惡（例如人蔘惡萊菔子）是指？", options: ["A. 兩藥合用增強療效", "B. 一種藥物能減弱另一種藥物的功效", "C. 兩藥合用產生毒性", "D. 一種藥物能消除另一種藥物的毒性"], ans: 1 }
+        { q: "4. (保底題) 在方劑學「君臣佐使」組方原則中，輔助君藥加強治療主證的藥物稱為？", options: ["A. 臣藥", "B. 佐藥", "C. 使藥", "D. 導藥"], ans: 0 },
+        { q: "5. 「氣血津液」中，具有溫煦分肉、充膚、肥腠理、司開合防禦作用的是？", options: ["A. 營氣", "B. 衛氣", "C. 宗氣", "D. 元氣"], ans: 1 }
       ]
     },
     {
@@ -433,7 +431,7 @@ const stagesData = {
     },
     {
       name: "☯️ 特別篇：【中醫九種體質標準測試 (33題)】",
-      desc: "專業自測 | 分析體質（氣虛/陽虛/陰虛/濕熱等）",
+      desc: "體質不止寒熱，自測九種體質",
       isBodyTest: true,
       titleSuccess: "體質鑑定完成",
       questions: [
@@ -518,8 +516,8 @@ const stagesData = {
         { q: "1. Where does the Lung Meridian originate?", options: ["A. Lungs organ", "B. Middle Jiao (Stomach)", "C. Tip of thumb", "D. Pericardium"], ans: 1 },
         { q: "2. Left wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen", "C. Liver, Heart, Kidney", "D. Spleen, Stomach, Lung"], ans: 0 },
         { q: "3. Original indication for 'Liu Wei Di Huang Wan'?", options: ["A. Kidney Yang deficiency", "B. Kidney Yin deficiency with sore knees & night sweats", "C. Spleen weakness", "D. Damp-Heat"], ans: 1 },
-        { q: "4. (Guaranteed) Which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi", "B. Wei Qi", "C. Zong Qi", "D. Yuan Qi"], ans: 1 },
-        { q: "5. In herbal compatibility, 'Antagonism (Xiang E)' means?", options: ["A. Enhancing efficacy", "B. One herb reducing another's efficacy", "C. Producing toxicity", "D. Eliminating toxicity"], ans: 1 }
+        { q: "4. In 'Monarch, Minister, Assistant, Envoy' formula principle, the herb assisting the Monarch herb is?", options: ["A. Minister Herb", "B. Assistant Herb", "C. Envoy Herb", "D. Guide Herb"], ans: 0 },
+        { q: "5. Which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi", "B. Wei Qi", "C. Zong Qi", "D. Yuan Qi"], ans: 1 }
       ]
     },
     {
@@ -543,7 +541,7 @@ let currentPrize = 0;
 let lastCheckpointPrize = 0;
 let finalScore = 0;
 let playerTitle = "";
-let bodyTestScores = {};
+let bodyTestHistory = [];
 
 function toggleLanguage() {
   playSound('click');
@@ -557,9 +555,9 @@ function updateStaticUI() {
   const t = i18n[currentLang];
   document.getElementById("txt-header").innerText = t.header;
   document.getElementById("txt-select-title").innerText = t.selectTitle;
-  document.getElementById("txt-l-audience").innerText = t.audBtn;
   document.getElementById("txt-l-phone").innerText = t.phoneBtn;
   document.getElementById("txt-cashout").innerText = t.cashoutBtn;
+  document.getElementById("txt-prev").innerText = t.prevBtn;
   document.getElementById("txt-btn-back").innerText = t.backBtn;
   document.getElementById("txt-btn-next").innerText = t.nextBtn;
   document.getElementById("txt-btn-share").innerText = t.shareBtn;
@@ -593,13 +591,21 @@ function startStage(stageIdx) {
   currentQuestionIndex = 0;
   currentPrize = 0;
   lastCheckpointPrize = 0;
-  bodyTestScores = {};
+  bodyTestHistory = [];
 
   const stage = stagesData[currentLang][currentStageIndex];
   
-  document.getElementById("l-5050").disabled = stage.isBodyTest || false;
-  document.getElementById("l-audience").disabled = stage.isBodyTest || false;
-  document.getElementById("l-phone").disabled = stage.isBodyTest || false;
+  if (stage.isBodyTest) {
+    document.getElementById("lifelines-box").style.display = "none";
+    document.getElementById("txt-cashout").style.display = "none";
+    document.getElementById("txt-prev").style.display = "none";
+  } else {
+    document.getElementById("lifelines-box").style.display = "flex";
+    document.getElementById("txt-cashout").style.display = "inline-block";
+    document.getElementById("txt-prev").style.display = "none";
+    document.getElementById("l-5050").disabled = false;
+    document.getElementById("l-phone").disabled = false;
+  }
 
   document.getElementById("level-select-screen").style.display = "none";
   document.getElementById("quiz-screen").style.display = "block";
@@ -618,6 +624,7 @@ function loadQuestion() {
   
   if (stage.isBodyTest) {
     document.getElementById("prize-display").innerText = "體質分析中...";
+    document.getElementById("txt-prev").style.display = (currentQuestionIndex > 0) ? "inline-block" : "none";
   } else {
     document.getElementById("prize-display").innerText = `${t.prizeLabel}: ${currentPrize} ${t.unit}`;
   }
@@ -647,7 +654,7 @@ function checkAnswer(selected) {
     else if (selected === 2) points = 1;
     else points = 0;
 
-    bodyTestScores[q.type] = (bodyTestScores[q.type] || 0) + points;
+    bodyTestHistory.push({ type: q.type, points: points });
 
     currentQuestionIndex++;
     if (currentQuestionIndex >= stage.questions.length) {
@@ -666,24 +673,42 @@ function checkAnswer(selected) {
     currentQuestionIndex++;
     if (currentQuestionIndex >= stage.questions.length) {
       playSound('win');
-      endGame(true, `${t.winMsg}${stage.name}!`, stage.titleSuccess);
+      if (currentStageIndex === 4) {
+        endGame(true, t.allWinMsg, stage.titleSuccess, true);
+      } else {
+        endGame(true, `${t.winMsg}${stage.name}!`, stage.titleSuccess, false);
+      }
     } else {
       document.getElementById("npc-dialog").innerText = `${t.npcCorrect}${currentPrize} ${t.unit}!`;
       loadQuestion();
     }
   } else {
     playSound('wrong');
-    endGame(false, `${t.loseMsg}${q.options[q.ans]}.`, t.titleFail);
+    endGame(false, `${t.loseMsg}${q.options[q.ans]}.`, t.titleFail, false);
+  }
+}
+
+function prevQuestion() {
+  playSound('click');
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    bodyTestHistory.pop();
+    loadQuestion();
   }
 }
 
 function finishBodyTest() {
   playSound('win');
+  let scores = {};
+  bodyTestHistory.forEach(item => {
+    scores[item.type] = (scores[item.type] || 0) + item.points;
+  });
+
   let topType = "平和質";
   let maxScore = -1;
-  for (let type in bodyTestScores) {
-    if (bodyTestScores[type] > maxScore) {
-      maxScore = bodyTestScores[type];
+  for (let type in scores) {
+    if (scores[type] > maxScore) {
+      maxScore = scores[type];
       topType = type;
     }
   }
@@ -692,7 +717,7 @@ function finishBodyTest() {
   const descText = (currentLang === 'zh') ? info.desc : info.descEn;
 
   const resultMsg = `【中醫九種體質鑑定結果】\n\n經 33 題標準量表測算，你的主要體質傾向為：【${topType}】！\n\n${descText}`;
-  endGame(true, resultMsg, `${topType}體質`);
+  endGame(true, resultMsg, `${topType}體質`, true);
 }
 
 function use5050() {
@@ -710,14 +735,6 @@ function use5050() {
   document.getElementById("npc-dialog").innerText = i18n[currentLang].npc5050;
 }
 
-function useAudience() {
-  playSound('lifeline');
-  const q = stagesData[currentLang][currentStageIndex].questions[currentQuestionIndex];
-  const optLetter = ["A","B","C","D"][q.ans];
-  document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcAud}${optLetter}!`;
-  document.getElementById("l-audience").disabled = true;
-}
-
 function usePhone() {
   playSound('lifeline');
   const q = stagesData[currentLang][currentStageIndex].questions[currentQuestionIndex];
@@ -732,10 +749,10 @@ function cashOut() {
     alert(t.cashoutAlert);
     return;
   }
-  endGame(true, `見好就收！安全帶走 ${currentPrize} ${t.unit}！`, t.cashoutTitle);
+  endGame(true, `見好就收！安全帶走 ${currentPrize} ${t.unit}！`, t.cashoutTitle, false);
 }
 
-function endGame(isWin, msg, title) {
+function endGame(isWin, msg, title, isFinalOrTest = false) {
   const t = i18n[currentLang];
   const stage = stagesData[currentLang][currentStageIndex];
   finalScore = isWin ? currentPrize : lastCheckpointPrize;
@@ -750,7 +767,7 @@ function endGame(isWin, msg, title) {
   }
   
   const nextBtn = document.getElementById("next-stage-btn");
-  if (isWin && currentStageIndex < stagesData[currentLang].length - 1 && !stage.isBodyTest) {
+  if (isWin && currentStageIndex < 4 && !stage.isBodyTest && !isFinalOrTest) {
     nextBtn.style.display = "inline-block";
   } else {
     nextBtn.style.display = "none";
