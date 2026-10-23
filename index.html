@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Press Start 2P', monospace, sans-serif; }
+    body { background-color: #1a0f1d; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+    #game-container { width: 100%; max-width: 800px; background: #2d1832; border: 4px solid #e0a96d; border-radius: 8px; padding: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.8); position: relative; }
+    
+    /* 語言切換按鈕 */
+    .lang-switch { position: absolute; top: 12px; right: 12px; }
+    .btn-lang { background: #3a1c40; color: #66fcf1; border: 2px solid #66fcf1; padding: 4px 8px; cursor: pointer; font-size: 8px; border-radius: 4px; }
+    .btn-lang:hover { background: #66fcf1; color: #1a0f1d; }
+
+    /* 標題與 Credit */
+    .header { text-align: center; color: #f3c623; font-size: 13px; margin-bottom: 5px; text-shadow: 2px 2px #000; line-height: 1.5; padding-right: 60px; }
+    .credits { text-align: center; font-size: 8px; margin-bottom: 15px; }
+    .credits a { color: #66fcf1; text-decoration: none; }
+    .credits a:hover { text-decoration: underline; }
+    
+    /* 關卡選擇選單 */
+    #level-select-screen { text-align: center; padding: 10px; }
+    .stage-card { background: #120914; border: 3px solid #e0a96d; border-radius: 6px; padding: 12px; margin-bottom: 10px; cursor: pointer; text-align: left; transition: 0.2s; }
+    .stage-card:hover { border-color: #f3c623; background: #200f24; transform: scale(1.01); }
+    .stage-title { color: #f3c623; font-size: 10px; margin-bottom: 6px; }
+    .stage-desc { color: #aaa; font-size: 8px; line-height: 1.5; }
+
+    .top-panel { display: flex; justify-content: space-between; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+    .lifelines { display: flex; gap: 8px; }
+    .btn-pixel { background: #8c2520; color: #f3c623; border: 3px solid #e0a96d; padding: 8px 12px; cursor: pointer; font-size: 8.5px; border-radius: 4px; box-shadow: 2px 2px 0px #000; }
+    .btn-pixel:disabled { background: #4a4a4a; color: #888; border-color: #666; cursor: not-allowed; }
+    .btn-pixel:hover:not(:disabled) { background: #a8322a; }
+    .prize-info { color: #f3c623; font-size: 9px; align-self: center; }
+    
+    .npc-box { background: #120914; border: 3px solid #e0a96d; padding: 10px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; min-height: 60px; }
+    .npc-avatar { font-size: 24px; border: 2px solid #f3c623; padding: 4px; background: #3a1c40; }
+    .npc-text { font-size: 8.5px; line-height: 1.6; color: #e0a96d; }
+
+    .question-box { background: #120914; border: 3px solid #f3c623; padding: 15px; border-radius: 6px; font-size: 9.5px; line-height: 1.6; margin-bottom: 15px; color: #ffffff; text-align: center; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+    @media (max-width: 600px) { .options-grid { grid-template-columns: 1fr; } }
+    .option-btn { background: #1f2833; color: #fff; border: 3px solid #45a29e; padding: 12px; cursor: pointer; font-size: 8px; border-radius: 4px; text-align: left; line-height: 1.4; }
+    .option-btn:hover { background: #0b0c10; border-color: #66fcf1; color: #66fcf1; }
+
+    .action-panel { display: flex; justify-content: space-between; align-items: center; }
+    .cashout-btn { background: #2e7d32; color: #fff; border: 3px solid #81c784; }
+
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: #2d1832; border: 4px solid #f3c623; padding: 20px; max-width: 500px; width: 90%; text-align: center; border-radius: 8px; }
+    .modal-title { font-size: 13px; color: #f3c623; margin-bottom: 15px; }
+    .modal-text { font-size: 9px; line-height: 1.6; margin-bottom: 20px; color: #fff; white-space: pre-line; }
+  </style>
+</head>
+<body>
+
+<div id="game-container">
+  <div class="lang-switch">
+    <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
+  </div>
+
+  <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
+  <div class="credits">Created by <a href="https://www.instagram.com/cmedbuddy" target="_blank">IG: @cmedbuddy</a></div>
+
+  <!-- 關卡選擇畫面 -->
+  <div id="level-select-screen">
+    <div style="font-size: 9px; color: #e0a96d; margin-bottom: 15px;" id="txt-select-title">請選擇考核難度：</div>
+    <div id="stages-list"></div>
+  </div>
+
+  <!-- 遊戲主畫面 -->
+  <div id="quiz-screen" style="display: none;">
+    <div class="top-panel">
+      <div class="lifelines">
+        <button id="l-5050" class="btn-pixel" onclick="use5050()">☯️ 50:50</button>
+        <button id="l-audience" class="btn-pixel" onclick="useAudience()"><span id="txt-l-audience">👥 問街坊</span></button>
+        <button id="l-phone" class="btn-pixel" onclick="usePhone()"><span id="txt-l-phone">📜 飛鴿</span></button>
+      </div>
+      <div class="prize-info" id="prize-display">目前銀兩: 0 兩</div>
+    </div>
+
+    <div class="npc-box">
+      <div class="npc-avatar">👨‍⚕️</div>
+      <div class="npc-text" id="npc-dialog">...</div>
+    </div>
+
+    <div class="question-box" id="question-text">...</div>
+
+    <div class="options-grid" id="options-container"></div>
+
+    <div class="action-panel">
+      <button class="btn-pixel cashout-btn" onclick="cashOut()" id="txt-cashout">💰 見好就收</button>
+      <div style="font-size: 8px; color: #aaa;" id="level-display">關卡: 1 / 5</div>
+    </div>
+  </div>
+</div>
+
+<!-- 結算彈窗 -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <div class="modal-title" id="modal-title">...</div>
+    <div class="modal-text" id="modal-text">...</div>
+    <div id="modal-buttons" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+      <button class="btn-pixel" onclick="showSelectScreen()" id="txt-btn-back">返回關卡選擇</button>
+      <button id="next-stage-btn" class="btn-pixel" style="background:#2b580c; border-color:#639a67; display:none;" onclick="nextStage()"><span id="txt-btn-next">挑戰下一關 ➔</span></button>
+    </div>
+    <button class="btn-pixel" style="background:#1f2833; border-color:#45a29e; margin-top:12px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
+  </div>
+</div>
+
+<script>
+let currentLang = 'zh'; // 'zh' 或 'en'
+
+const i18n = {
+  zh: {
+    header: "📜 懸壺濟世：百萬問答 📜",
+    selectTitle: "請選擇考核難度：",
+    audBtn: "👥 問街坊",
+    phoneBtn: "📜 飛鴿",
+    cashoutBtn: "💰 見好就收",
+    backBtn: "返回關卡選擇",
+    nextBtn: "挑戰下一關 ➔",
+    shareBtn: "🕊️ 複製網址飛鴿傳書給朋友",
+    prizeLabel: "目前銀兩",
+    progressLabel: "進度",
+    npcReady: "少俠，準備好挑戰未？",
+    npcCorrect: "答得好！順利晉級，累積銀兩 ",
+    npc5050: "老中醫掌櫃：「施展陰陽化煞，為你排除兩個錯誤干擾！」",
+    npcAud: "老中醫掌櫃：「問過街坊，有 80% 嘅人都投票支持選項 ",
+    npcPhone: "飛鴿傳書至遠方師父：「徒兒，老夫掐指一算，此題極有可能是 ",
+    cashoutAlert: "你目前仲未有銀兩，先答對一題啦！",
+    cashoutTitle: "明哲保身大夫",
+    winTitle: "📜 考核結算 📜",
+    loseTitle: "💀 考核結束 💀",
+    winMsg: "🎉 恭喜完全通關 ",
+    loseMsg: "遺憾答錯！正確答案係 ",
+    titleFail: "考核未順利通過",
+    shareAlert: "🕊️ 飛鴿已傳書！戰報與遊戲網址已複製到剪貼簿，快貼給朋友挑戰吧！"
+  },
+  en: {
+    header: "📜 TCM Millionaire Quiz 📜",
+    selectTitle: "Select Difficulty Level:",
+    audBtn: "👥 Audience",
+    phoneBtn: "📜 Pigeon",
+    cashoutBtn: "💰 Cash Out",
+    backBtn: "Level Select",
+    nextBtn: "Next Level ➔",
+    shareBtn: "🕊️ Copy Link & Share via Pigeon",
+    prizeLabel: "Taels",
+    progressLabel: "Progress",
+    npcReady: "Greetings scholar! Ready to test your TCM knowledge?",
+    npcCorrect: "Splendid! Correct answer! Accumulated Taels: ",
+    npc5050: "Master Herbalist: 'Using Yin-Yang elimination to remove 2 wrong choices!'",
+    npcAud: "Master Herbalist: '80% of townfolks voted for option ",
+    npcPhone: "Carrier Pigeon from Master: 'Disciple, I predict the answer is likely ",
+    cashoutAlert: "You haven't earned any taels yet! Answer at least 1 question.",
+    cashoutTitle: "Prudent Physician",
+    winTitle: "📜 Exam Result 📜",
+    loseTitle: "💀 Game Over 💀",
+    winMsg: "🎉 Congratulations on completing ",
+    loseMsg: "Incorrect! The correct answer was ",
+    titleFail: "Exam Failed",
+    shareAlert: "🕊️ Carrier pigeon dispatched! Result and URL copied to clipboard!"
+  }
+};
+
+const prizes = [1000, 5000, 20000, 100000, 1000000];
+
+const stagesData = {
+  zh: [
+    {
+      name: "第一關：【草堂初試】",
+      desc: "難度：★☆☆☆☆ | 大眾普及：生活養生、涼茶食療與日常保健常識。",
+      titleSuccess: "草堂養生達人",
+      questions: [
+        { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 菊花涼茶", "C. 熱薑茶", "D. 桂圓紅棗茶"], ans: 1 },
+        { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 足三里", "C. 合谷穴", "D. 太衝穴"], ans: 2 },
+        { q: "3. 秋天天氣乾燥容易乾咳，食療常推薦以下哪種食物潤肺？", options: ["A. 麻辣火鍋", "B. 烤香腸", "C. 雪梨川貝", "D. 炸雞塊"], ans: 2 },
+        { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 氣血經絡", "C. 汗腺毛孔", "D. 腸胃消化"], ans: 1 },
+        { q: "5. 淋雨著涼引致「風寒感冒」初期，民間常用什麼食材煮湯發汗？", options: ["A. 蔥白與生薑", "B. 苦瓜與綠豆", "C. 西瓜與薄荷", "D. 菊花與金銀花"], ans: 0 }
+      ]
+    },
+    {
+      name: "第二關：【懸壺登堂】",
+      desc: "難度：★★☆☆☆ | 養生愛好者：基礎穴位、四診觀念與五行初探。",
+      titleSuccess: "坐堂大夫",
+      questions: [
+        { q: "1. 保健要穴「足三里」位於身體的哪一個部位？", options: ["A. 頭頂正中央", "B. 手腕內側", "C. 小腿外側（膝眼下三寸）", "D. 腳底凹陷處"], ans: 2 },
+        { q: "2. 中醫四診「望聞問切」中，「切」診主要是指什麼？", options: ["A. 觀察面色", "B. 按脈與按診", "C. 聽聲音氣味", "D. 詢問病史"], ans: 1 },
+        { q: "3. 「五行」學說（木火土金水）中，「土」對應五臟中的哪一個？", options: ["A. 肝", "B. 心", "C. 脾", "D. 肺"], ans: 2 },
+        { q: "4. (保底題) 常見中藥「枸杞子」主要具有以下哪種功效？", options: ["A. 滋補肝腎、明目", "B. 大瀉胃火", "C. 發汗解表", "D. 破血化瘀"], ans: 0 },
+        { q: "5. 《黃帝內經》提及四季養生，其中「夏」季養生原則重點在於養什麼？", options: ["A. 養肝", "B. 養心", "C. 養肺", "D. 養腎"], ans: 1 }
+      ]
+    },
+    {
+      name: "第三關：【杏林論道】",
+      desc: "難度：★★★☆☆ | 中醫入門學者：陰陽學說、臟腑氣血與常用藥性。",
+      titleSuccess: "杏林名醫",
+      questions: [
+        { q: "1. 中醫「陰陽」學說中，以下哪項屬於「陰」的屬性？", options: ["A. 溫熱", "B. 明亮", "C. 靜止與滋潤", "D. 興奮與上升"], ans: 2 },
+        { q: "2. 中醫認為「脾胃為後天之本」，主要負責以下哪項功能？", options: ["A. 運化水谷精微", "B. 主宰血液循環", "C. 思考與記憶", "D. 氣體交換"], ans: 0 },
+        { q: "3. 熬夜傷陰容易導致「陰虛火旺」，常見徵狀不包括以下哪項？", options: ["A. 手足心熱", "B. 潮熱盜汗", "C. 口乾舌燥", "D. 大便極度稀爛流瀉"], ans: 3 },
+        { q: "4. (保底題) 五味（酸苦甘辛鹹）中，「甘」味藥物主要具有什麼作用？", options: ["A. 能瀉能燥", "B. 能補能和能緩", "C. 能收能澀", "D. 能軟堅散結"], ans: 1 },
+        { q: "5. 「舌診」中，若舌苔呈現厚黃膩，通常提示體內有什麼狀況？", options: ["A. 虛寒無火", "B. 濕熱內蘊", "C. 氣血兩虛", "D. 津液大虧"], ans: 1 }
+      ]
+    },
+    {
+      name: "第四關：【岐黃妙理】",
+      desc: "難度：★★★★☆ | 深造學生：舌脈辨證、經絡循行與方劑基礎。",
+      titleSuccess: "岐黃高手",
+      questions: [
+        { q: "1. 經絡學說中，手太陰肺經的循行起於身體的哪裡？", options: ["A. 肺臟", "B. 中焦（胃部）", "C. 大拇指端", "D. 心包"], ans: 1 },
+        { q: "2. 診脈時，左手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心、肝、腎", "B. 肺、脾、命門", "C. 肝、心、腎", "D. 脾、胃、肺"], ans: 0 },
+        { q: "3. 著名方劑「六味地黃丸」的原方主治病證是？", options: ["A. 腎陽不足", "B. 小兒囟開不合、腎陰不足", "C. 脾胃虛弱", "D. 肝膽濕熱"], ans: 1 },
+        { q: "4. (保底題) 「氣血津液」中，具有溫煦、防禦、固攝等作用的主要是？", options: ["A. 營氣", "B. 衛氣", "C. 宗氣", "D. 元氣"], ans: 1 },
+        { q: "5. 中藥「十七單行/七情」中，相惡是指什麼意思？", options: ["A. 兩藥合用增強療效", "B. 一藥減弱另一藥的功效", "C. 兩藥合用產生毒性", "D. 一藥消除另一藥毒性"], ans: 1 }
+      ]
+    },
+    {
+      name: "第五關：【國醫大師】",
+      desc: "難度：★★★★★ | 執業醫師/專業學生：經典條文、十八反與經典方劑。",
+      titleSuccess: "懸壺濟世・國醫大師",
+      questions: [
+        { q: "1. 《傷寒論》太陽病中，「桂枝湯」的服法要求中，以下哪項是正確的？", options: ["A. 服後即飲冷水", "B. 服後須臾啜熱稀粥，溫覆令一時許微似汗", "C. 大汗淋漓為佳", "D. 忌食熱食"], ans: 1 },
+        { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、貝母", "B. 半夏、瓜蔞、貝母、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
+        { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了痰飲的什麼病機？", options: ["A. 痰飲本於水濕，陰邪非溫不化", "B. 痰飲宜用大熱大燥破之", "C. 痰飲皆由肝鬱所致", "D. 痰飲只能用瀉下法"], ans: 0 },
+        { q: "4. (保底題) 方劑學中「補中益氣湯」重用黃耆為君，其配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升舉清陽，柴麻相合以升提下陷之中氣", "D. 疏肝理氣"], ans: 2 },
+        { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二七 (2x7=14歲)", "C. 三七 (3x7=21歲)", "D. 四七 (4x7=28歲)"], ans: 1 }
+      ]
+    }
+  ],
+  en: [
+    {
+      name: "Level 1: [Herbal Apprentice]",
+      desc: "Difficulty: ★☆☆☆☆ | General Knowledge: Wellness, herbal tea, & daily health tips.",
+      titleSuccess: "Wellness Master",
+      questions: [
+        { q: "1. What herbal tea in TCM is best for clearing heat after eating too much spicy food?", options: ["A. Ginseng Red Tea", "B. Chrysanthemum Tea", "C. Hot Ginger Tea", "D. Red Date Tea"], ans: 1 },
+        { q: "2. Which famous acupoint located between the thumb and index finger is known as the 'Universal Point'?", options: ["A. Yongquan (KI1)", "B. Zusanli (ST36)", "C. Hegu (LI4)", "D. Taichong (LR3)"], ans: 2 },
+        { q: "3. Which food therapy is commonly recommended in dry autumn for moistening the lungs?", options: ["A. Spicy Hotpot", "B. Grilled Sausage", "C. Snow Pear with Fritillaria", "D. Fried Chicken"], ans: 2 },
+        { q: "4. (Guaranteed) The TCM saying 'Free flow brings no pain, obstruction causes pain' refers to?", options: ["A. Joints & Bones", "B. Qi, Blood & Meridians", "C. Sweat Glands", "D. Digestive Tract"], ans: 1 },
+        { q: "5. What ingredient soup is traditionally used in early stage Wind-Cold common cold to promote sweating?", options: ["A. Scallion & Ginger", "B. Bitter Gourd & Mung Bean", "C. Watermelon & Mint", "D. Chrysanthemum"], ans: 0 }
+      ]
+    },
+    {
+      name: "Level 2: [Hall Scholar]",
+      desc: "Difficulty: ★★☆☆☆ | Health Enthusiasts: Acupoints, 4 Examinations, & 5 Elements.",
+      titleSuccess: "Resident Physician",
+      questions: [
+        { q: "1. Where is the health-promoting acupoint 'Zusanli (ST36)' located?", options: ["A. Crown of head", "B. Inner wrist", "C. Below knee (3 cun below)", "D. Sole of foot"], ans: 2 },
+        { q: "2. In TCM Four Examinations (Looking, Listening/Smelling, Asking, Touching), 'Touching' refers to?", options: ["A. Facial diagnosis", "B. Pulse & Abdominal palpation", "C. Listening to breath", "D. Taking medical history"], ans: 1 },
+        { q: "3. In 5 Elements theory (Wood, Fire, Earth, Metal, Water), 'Earth' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Spleen", "D. Lungs"], ans: 2 },
+        { q: "4. (Guaranteed) What is the main action of Goji Berries (Gou Qi Zi) in TCM?", options: ["A. Tonify Liver & Kidney, improve vision", "B. Clear stomach fire", "C. Release exterior via sweating", "D. Break blood stasis"], ans: 0 },
+        { q: "5. According to Yellow Emperor's Inner Canon, summer health preservation focuses on nourishing?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Kidneys"], ans: 1 }
+      ]
+    },
+    {
+      name: "Level 3: [Apothecary Master]",
+      desc: "Difficulty: ★★★☆☆ | TCM Students: Yin-Yang, Organs, Qi-Blood, & Herb properties.",
+      titleSuccess: "Renowned Physician",
+      questions: [
+        { q: "1. In TCM Yin-Yang theory, which property belongs to 'Yin'?", options: ["A. Warm & Hot", "B. Brightness", "C. Stillness & Moistening", "D. Excitement & Rising"], ans: 2 },
+        { q: "2. Spleen & Stomach are considered the 'Foundation of Post-natal Life'. Main function is?", options: ["A. Transforming water & food essence", "B. Governing blood circulation", "C. Memory & thinking", "D. Gas exchange"], ans: 0 },
+        { q: "3. Staying up late causes Yin Deficiency. Which is NOT a symptom of Yin Deficiency Fire?", options: ["A. Heat in palms/soles", "B. Night sweats", "C. Dry mouth", "D. Severe watery diarrhea"], ans: 3 },
+        { q: "4. (Guaranteed) Among 5 Flavors (Sour, Bitter, Sweet, Pungent, Salty), 'Sweet' herbs mainly?", options: ["A. Drain & Dry", "B. Tonify, Harmonize, & Moderate", "C. Astringe & Bind", "D. Soften hardness"], ans: 1 },
+        { q: "5. In tongue diagnosis, a thick yellow greasy coating usually indicates?", options: ["A. Deficiency Cold", "B. Damp-Heat accumulation", "C. Qi & Blood Deficiency", "D. Fluid exhaustion"], ans: 1 }
+      ]
+    },
+    {
+      name: "Level 4: [Qi & Meridian Expert]",
+      desc: "Difficulty: ★★★★☆ | Advanced Students: Pulse/Tongue differentiation, Meridians, & Formulas.",
+      titleSuccess: "Qi Master",
+      questions: [
+        { q: "1. Where does the Lung Meridian of Hand-Taiyin originate?", options: ["A. Lungs organ", "B. Middle Jiao (Stomach)", "C. Tip of thumb", "D. Pericardium"], ans: 1 },
+        { q: "2. Left wrist pulse positions (Cun, Guan, Chi) correspond respectively to which organs?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen", "C. Liver, Heart, Kidney", "D. Spleen, Stomach, Lung"], ans: 0 },
+        { q: "3. What was the original indication for 'Liu Wei Di Huang Wan'?", options: ["A. Kidney Yang deficiency", "B. Pediatric delayed fontanelle closure / Kidney Yin deficiency", "C. Spleen weakness", "D. Damp-Heat in Gallbladder"], ans: 1 },
+        { q: "4. (Guaranteed) Among Qi, Blood, & Fluid, which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi (Nutritive)", "B. Wei Qi (Defensive)", "C. Zong Qi (Pectoral)", "D. Yuan Qi (Primary)"], ans: 1 },
+        { q: "5. In herbal compatibility (Seven Relationships), 'Antagonism (Xiang E)' means?", options: ["A. Enhancing efficacy", "B. One herb reducing another's efficacy", "C. Producing toxicity together", "D. Eliminating toxicity"], ans: 1 }
+      ]
+    },
+    {
+      name: "Level 5: [National TCM Master]",
+      desc: "Difficulty: ★★★★★ | Licensed Practitioners: Classics, Incompatibilities, & Complex Cases.",
+      titleSuccess: "Grandmaster Physician",
+      questions: [
+        { q: "1. In Shang Han Lun, what is required when taking Gui Zhi Tang for Taiyang disease?", options: ["A. Drink cold water immediately", "B. Sip warm porridge shortly after and cover warmly for mild sweat", "C. Induce profuse sweating", "D. Avoid warm food"], ans: 1 },
+        { q: "2. In Eighteen Incompatibilities (Shi Ba Fan), Aconite (Wu Tou/Fu Zi) is incompatible with?", options: ["A. Hai Zao, Kun Bu", "B. Ban Xia, Gua Lou, Bei Mu, Bai Lian, Bai Ji", "C. Xi Xin, Shao Yao", "D. Ren Shen, Dan Shen"], ans: 1 },
+        { q: "3. 'Phlegm-fluid diseases should be treated with warming herbs' in Jin Gui Yao Lue highlights?", options: ["A. Phlegm stems from dampness; Yin evil requires warmth to transform", "B. Use harsh dry-heat herbs", "C. Stagnation of Liver Qi", "D. Purgative method only"], ans: 0 },
+        { q: "4. (Guaranteed) In Bu Zhong Yi Qi Tang, why are Sheng Ma and Chai Hu paired with Huang Qi?", options: ["A. Release exterior sweating", "B. Clear heat and toxins", "C. Raise clear Yang and elevate sunken Middle Qi", "D. Soothe Liver Qi"], ans: 2 },
+        { q: "5. In Su Wen (Chapter 1), at what age does a female's Chong Vessel flourish & menstruation begin?", options: ["A. Age 7", "B. Age 14 (2x7)", "C. Age 21 (3x7)", "D. Age 28 (4x7)"], ans: 1 }
+      ]
+    }
+  ]
+};
+
+let currentStageIndex = 0;
+let currentQuestionIndex = 0;
+let currentPrize = 0;
+let lastCheckpointPrize = 0;
+let finalScore = 0;
+let playerTitle = "";
+
+function toggleLanguage() {
+  currentLang = (currentLang === 'zh') ? 'en' : 'zh';
+  document.getElementById("lang-btn").innerText = (currentLang === 'zh') ? 'English' : '中文';
+  updateStaticUI();
+  showSelectScreen();
+}
+
+function updateStaticUI() {
+  const t = i18n[currentLang];
+  document.getElementById("txt-header").innerText = t.header;
+  document.getElementById("txt-select-title").innerText = t.selectTitle;
+  document.getElementById("txt-l-audience").innerText = t.audBtn;
+  document.getElementById("txt-l-phone").innerText = t.phoneBtn;
+  document.getElementById("txt-cashout").innerText = t.cashoutBtn;
+  document.getElementById("txt-btn-back").innerText = t.backBtn;
+  document.getElementById("txt-btn-next").innerText = t.nextBtn;
+  document.getElementById("txt-btn-share").innerText = t.shareBtn;
+}
+
+function renderStageList() {
+  const container = document.getElementById("stages-list");
+  container.innerHTML = "";
+  const list = stagesData[currentLang];
+  
+  list.forEach((stg, idx) => {
+    const card = document.createElement("div");
+    card.className = "stage-card";
+    card.onclick = () => startStage(idx);
+    card.innerHTML = `<div class="stage-title">${stg.name}</div><div class="stage-desc">${stg.desc}</div>`;
+    container.appendChild(card);
+  });
+}
+
+function showSelectScreen() {
+  document.getElementById("modal").style.display = "none";
+  document.getElementById("quiz-screen").style.display = "none";
+  document.getElementById("level-select-screen").style.display = "block";
+  renderStageList();
+}
+
+function startStage(stageIdx) {
+  currentStageIndex = stageIdx;
+  currentQuestionIndex = 0;
+  currentPrize = 0;
+  lastCheckpointPrize = 0;
+  
+  document.getElementById("l-5050").disabled = false;
+  document.getElementById("l-audience").disabled = false;
+  document.getElementById("l-phone").disabled = false;
+
+  document.getElementById("level-select-screen").style.display = "none";
+  document.getElementById("quiz-screen").style.display = "block";
+  
+  const stgName = stagesData[currentLang][currentStageIndex].name;
+  document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcReady} (${stgName})`;
+  loadQuestion();
+}
+
+function loadQuestion() {
+  const t = i18n[currentLang];
+  const stage = stagesData[currentLang][currentStageIndex];
+  const q = stage.questions[currentQuestionIndex];
+  
+  document.getElementById("question-text").innerText = q.q;
+  document.getElementById("level-display").innerText = `${t.progressLabel}: ${currentQuestionIndex + 1} / ${stage.questions.length}`;
+  document.getElementById("prize-display").innerText = `${t.prizeLabel}: ${currentPrize} Taels`;
+  
+  const container = document.getElementById("options-container");
+  container.innerHTML = "";
+  
+  q.options.forEach((opt, idx) => {
+    const btn = document.createElement("button");
+    btn.className = "option-btn";
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(idx);
+    container.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected) {
+  const t = i18n[currentLang];
+  const stage = stagesData[currentLang][currentStageIndex];
+  const q = stage.questions[currentQuestionIndex];
+  
+  if (selected === q.ans) {
+    currentPrize = prizes[currentQuestionIndex];
+    if (currentQuestionIndex === 3) lastCheckpointPrize = prizes[3];
+    
+    currentQuestionIndex++;
+    if (currentQuestionIndex >= stage.questions.length) {
+      endGame(true, `${t.winMsg}${stage.name}!`, stage.titleSuccess);
+    } else {
+      document.getElementById("npc-dialog").innerText = `${t.npcCorrect}${currentPrize} Taels!`;
+      loadQuestion();
+    }
+  } else {
+    endGame(false, `${t.loseMsg}${q.options[q.ans]}.`, t.titleFail);
+  }
+}
+
+function use5050() {
+  const q = stagesData[currentLang][currentStageIndex].questions[currentQuestionIndex];
+  const btns = document.querySelectorAll(".option-btn");
+  let removed = 0;
+  btns.forEach((btn, idx) => {
+    if (idx !== q.ans && removed < 2) {
+      btn.style.visibility = "hidden";
+      removed++;
+    }
+  });
+  document.getElementById("l-5050").disabled = true;
+  document.getElementById("npc-dialog").innerText = i18n[currentLang].npc5050;
+}
+
+function useAudience() {
+  const q = stagesData[currentLang][currentStageIndex].questions[currentQuestionIndex];
+  const optLetter = ["A","B","C","D"][q.ans];
+  document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcAud}${optLetter}!`;
+  document.getElementById("l-audience").disabled = true;
+}
+
+function usePhone() {
+  const q = stagesData[currentLang][currentStageIndex].questions[currentQuestionIndex];
+  document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcPhone}${q.options[q.ans]}!`;
+  document.getElementById("l-phone").disabled = true;
+}
+
+function cashOut() {
+  const t = i18n[currentLang];
+  if (currentPrize === 0) {
+    alert(t.cashoutAlert);
+    return;
+  }
+  endGame(true, `Cash out! Safely took away ${currentPrize} Taels!`, t.cashoutTitle);
+}
+
+function endGame(isWin, msg, title) {
+  const t = i18n[currentLang];
+  finalScore = isWin ? currentPrize : lastCheckpointPrize;
+  playerTitle = title;
+  
+  document.getElementById("modal-title").innerText = isWin ? t.winTitle : t.loseTitle;
+  document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} Taels\nTitle: 【${playerTitle}】`;
+  
+  const nextBtn = document.getElementById("next-stage-btn");
+  if (isWin && currentStageIndex < stagesData[currentLang].length - 1) {
+    nextBtn.style.display = "inline-block";
+  } else {
+    nextBtn.style.display = "none";
+  }
+  
+  document.getElementById("modal").style.display = "flex";
+}
+
+function nextStage() {
+  document.getElementById("modal").style.display = "none";
+  startStage(currentStageIndex + 1);
+}
+
+function copyResult() {
+  const t = i18n[currentLang];
+  const stageName = stagesData[currentLang][currentStageIndex].name;
+  const currentUrl = window.location.href;
+  
+  let text = "";
+  if (currentLang === 'zh') {
+    text = `我在《懸壺濟世：百萬問答》的【${stageName}】贏得了 ${finalScore} 兩銀兩！獲封【${playerTitle}】！ (by IG: @cmedbuddy)\n快來挑戰中醫知識：${currentUrl}`;
+  } else {
+    text = `I won ${finalScore} Taels in TCM Millionaire Quiz [${stageName}]! Title earned: 【${playerTitle}】! (by IG: @cmedbuddy)\nChallenge yourself here: ${currentUrl}`;
+  }
+  
+  navigator.clipboard.writeText(text).then(() => {
+    alert(t.shareAlert);
+  }).catch(() => {
+    alert("Copy failed. Please copy URL manually!");
+  });
+}
+
+// 初始化
+updateStaticUI();
+showSelectScreen();
+</script>
+</body>
+</html>
