@@ -206,17 +206,27 @@ document.addEventListener('touchmove', function(e) {
   if (e.scale !== 1) { e.preventDefault(); }
 }, { passive: false });
 
-const AudioCtx = window.AudioContext || window.webkitAudioContext;
+// 強健的音效系統 (Web Audio API)
 let audioCtx = null;
 
 function initAudio() {
-  if (!audioCtx) audioCtx = new AudioCtx();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
+  try {
+    if (!audioCtx) {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (AudioContextClass) {
+        audioCtx = new AudioContextClass();
+      }
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  } catch(e) {}
 }
 
 function playSound(type) {
   try {
     initAudio();
+    if (!audioCtx) return;
     const osc = audioCtx.createOscillator();
     const gain = audioCtx.createGain();
     osc.connect(gain);
@@ -440,7 +450,7 @@ const bodyTestQuestionsEn = [
   { q: "33. Do you adapt well to environmental/climate changes?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "平和質" }
 ];
 
-// 多套題庫資料結構 (Set A, Set B, Set C)
+// 完整關卡題庫（選項已隨機分佈，正確答案不集中於A）
 const stagesData = {
   zh: [
     {
@@ -449,25 +459,25 @@ const stagesData = {
       titleSuccess: "草堂養生達人",
       questionSets: [
         [
-          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 菊花涼茶", "C. 熱薑茶", "D. 桂圓紅棗茶"], ans: 1 },
-          { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 足三里", "C. 合谷穴", "D. 太衝穴"], ans: 2 },
-          { q: "3. 秋天天氣乾燥容易乾咳，食療常推薦以下哪種食物潤肺？", options: ["A. 麻辣火鍋", "B. 烤香腸", "C. 雪梨川貝", "D. 炸雞塊"], ans: 2 },
-          { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 氣血經絡", "C. 汗腺毛孔", "D. 腸胃消化"], ans: 1 },
-          { q: "5. 淋雨著涼引致「風寒感冒」初期，民間常用什麼食材煮湯發汗？", options: ["A. 蔥白與生薑", "B. 苦瓜與綠豆", "C. 西瓜與薄荷", "D. 菊花與金銀花"], ans: 0 }
+          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 熱薑茶", "C. 菊花涼茶", "D. 桂圓紅棗茶"], ans: 2 },
+          { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 合谷穴", "C. 足三里", "D. 太衝穴"], ans: 1 },
+          { q: "3. 秋天天氣乾燥容易乾咳，食療常推薦以下哪種食物潤肺？", options: ["A. 雪梨川貝", "B. 麻辣火鍋", "C. 烤香腸", "D. 炸雞塊"], ans: 0 },
+          { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 汗腺毛孔", "C. 腸胃消化", "D. 氣血經絡"], ans: 3 },
+          { q: "5. 淋雨著涼引致「風寒感冒」初期，民間常用什麼食材煮湯發汗？", options: ["A. 苦瓜與綠豆", "B. 蔥白與生薑", "C. 西瓜與薄荷", "D. 菊花與金銀花"], ans: 1 }
         ],
         [
-          { q: "1. 夏日消暑解毒、清熱利尿，廣東街坊最常煲哪種豆湯？", options: ["A. 紅豆湯", "B. 綠豆湯", "C. 黑豆湯", "D. 黃豆湯"], ans: 1 },
-          { q: "2. 當感覺眼睛乾澀疲勞時，中醫常建議枸杞配搭哪種花沖泡？", options: ["A. 玫瑰花", "B. 菊花", "C. 茉莉花", "D. 荷花"], ans: 1 },
-          { q: "3. 中醫常說的「汗為心之液」，意思是指過度大汗會傷及？", options: ["A. 心氣與心血", "B. 肺氣", "C. 脾胃", "D. 腎精"], ans: 0 },
-          { q: "4. (保底題) 俗稱「吃得太飽、消化不良」在中醫稱為？", options: ["A. 食滯/積滯", "B. 風寒", "C. 血瘀", "D. 陰虛"], ans: 0 },
-          { q: "5. 常用於化痰止咳、健脾理氣的廣東三寶之一是？", options: ["A. 羅漢果", "B. 新會陳皮", "C. 燕窩", "D. 鹿茸"], ans: 1 }
+          { q: "1. 夏日消暑解毒、清熱利尿，廣東街坊最常煲哪種豆湯？", options: ["A. 紅豆湯", "B. 黑豆湯", "C. 綠豆湯", "D. 黃豆湯"], ans: 2 },
+          { q: "2. 當感覺眼睛乾澀疲勞時，中醫常建議枸杞配搭哪種花沖泡？", options: ["A. 玫瑰花", "B. 茉莉花", "C. 菊花", "D. 荷花"], ans: 2 },
+          { q: "3. 中醫常說的「汗為心之液」，意思是指過度大汗會傷及？", options: ["A. 肺氣", "B. 心氣與心血", "C. 脾胃", "D. 腎精"], ans: 1 },
+          { q: "4. (保底題) 俗稱「吃得太飽、消化不良」在中醫稱為？", options: ["A. 風寒", "B. 血瘀", "C. 陰虛", "D. 食滯/積滯"], ans: 3 },
+          { q: "5. 常用於化痰止咳、健脾理氣的廣東三寶之一是？", options: ["A. 羅漢果", "B. 燕窩", "C. 鹿茸", "D. 新會陳皮"], ans: 3 }
         ],
         [
-          { q: "1. 天氣濕熱感到身體重墜、大便黏滯，中醫常建議飲用？", options: ["A. 薏米赤小豆水", "B. 高麗蔘茶", "C. 烤鹿茸酒", "D. 薑母茶"], ans: 0 },
-          { q: "2. 中醫認為「脾開竅於口」，脾胃健康通常體現在？", options: ["A. 嘴唇紅潤與食慾良好", "B. 指甲堅硬", "C. 頭發烏黑", "D. 耳朵聰敏"], ans: 0 },
-          { q: "3. 食用冰涼食物後容易肚子痛或瀉肚子，屬於哪種體質表現？", options: ["A. 脾胃虛寒", "B. 胃火熾盛", "C. 陰虛火旺", "D. 濕熱內蘊"], ans: 0 },
-          { q: "4. (保底題) 中醫常說「發怒傷肝」，長期情緒急躁易怒最易損傷？", options: ["A. 肝臟與疏洩功能", "B. 肺臟", "C. 腎臟", "D. 大腸"], ans: 0 },
-          { q: "5. 人體頭頂正中央、百脈交會的保健要穴是？", options: ["A. 百會穴", "B. 湧泉穴", "C. 風池穴", "D. 勞宮穴"], ans: 0 }
+          { q: "1. 天氣濕熱感到身體重墜、大便黏滯，中醫常建議飲用？", options: ["A. 高麗蔘茶", "B. 薏米赤小豆水", "C. 烤鹿茸酒", "D. 薑母茶"], ans: 1 },
+          { q: "2. 中醫認為「脾開竅於口」，脾胃健康通常體現在？", options: ["A. 指甲堅硬", "B. 頭發烏黑", "C. 嘴唇紅潤與食慾良好", "D. 耳朵聰敏"], ans: 2 },
+          { q: "3. 食用冰涼食物後容易肚子痛或瀉肚子，屬於哪種體質表現？", options: ["A. 胃火熾盛", "B. 脾胃虛寒", "C. 陰虛火旺", "D. 濕熱內蘊"], ans: 1 },
+          { q: "4. (保底題) 中醫常說「發怒傷肝」，長期情緒急躁易怒最易損傷？", options: ["A. 肺臟", "B. 腎臟", "C. 大腸", "D. 肝臟與疏洩功能"], ans: 3 },
+          { q: "5. 人體頭頂正中央、百脈交會的保健要穴是？", options: ["A. 湧泉穴", "B. 風池穴", "C. 百會穴", "D. 勞宮穴"], ans: 2 }
         ]
       ]
     },
@@ -478,24 +488,24 @@ const stagesData = {
       questionSets: [
         [
           { q: "1. 保健要穴「足三里」位於身體的哪一個部位？", options: ["A. 頭頂正中央", "B. 手腕內側", "C. 小腿外側（膝眼下三寸）", "D. 腳底凹陷處"], ans: 2 },
-          { q: "2. 中醫四診「望聞問切」中，「切」診主要是指什麼？", options: ["A. 觀察面色", "B. 按脈與按診", "C. 聽聲音氣味", "D. 詢問病史"], ans: 1 },
-          { q: "3. 「五行」學說（木火土金水）中，「土」對應五臟中的哪一個？", options: ["A. 肝", "B. 心", "C. 脾", "D. 肺"], ans: 2 },
-          { q: "4. (保底題) 常見中藥「枸杞子」主要具有以下哪種功效？", options: ["A. 滋補肝腎、明目", "B. 大瀉胃火", "C. 發汗解表", "D. 破血化瘀"], ans: 0 },
-          { q: "5. 《黃帝內經》提及四季養生，其中「夏」季養生原則重點在於養什麼？", options: ["A. 養肝", "B. 養心", "C. 養肺", "D. 養腎"], ans: 1 }
+          { q: "2. 中醫四診「望聞問切」中，「切」診主要是指什麼？", options: ["A. 按脈與按診", "B. 觀察面色", "C. 聽聲音氣味", "D. 詢問病史"], ans: 0 },
+          { q: "3. 「五行」學說（木火土金水）中，「土」對應五臟中的哪一個？", options: ["A. 肝", "B. 心", "C. 肺", "D. 脾"], ans: 3 },
+          { q: "4. (保底題) 常見中藥「枸杞子」主要具有以下哪種功效？", options: ["A. 大瀉胃火", "B. 滋補肝腎、明目", "C. 發汗解表", "D. 破血化瘀"], ans: 1 },
+          { q: "5. 《黃帝內經》提及四季養生，其中「夏」季養生原則重點在於養什麼？", options: ["A. 養肝", "B. 養肺", "C. 養心", "D. 養腎"], ans: 2 }
         ],
         [
           { q: "1. 位於腳底凹陷處、被譽為腎經首穴的腎氣保健穴位是？", options: ["A. 湧泉穴", "B. 太衝穴", "C. 合谷穴", "D. 三陰交"], ans: 0 },
           { q: "2. 中醫四診中的「望診」，觀察重點不包括以下哪項？", options: ["A. 舌象與舌苔", "B. 神氣與面色", "C. 患者脈搏跳動頻率", "D. 形體動靜"], ans: 2 },
           { q: "3. 「五行」學說中，「金」對應五臟中的哪一個器官？", options: ["A. 肝", "B. 心", "C. 脾", "D. 肺"], ans: 3 },
-          { q: "4. (保底題) 常見中藥「黃耆（黃芪）」的核心功效是？", options: ["A. 補氣昇陽、固表止汗", "B. 清熱瀉火", "C. 活血化瘀", "D. 瀉下通便"], ans: 0 },
-          { q: "5. 《黃帝內經》提及「春三月，此謂發陳」，春季養生應注意養？", options: ["A. 養肝", "B. 養心", "C. 養肺", "D. 養腎"], ans: 0 }
+          { q: "4. (保底題) 常見中藥「黃耆（黃芪）」的核心功效是？", options: ["A. 清熱瀉火", "B. 活血化瘀", "C. 補氣昇陽、固表止汗", "D. 瀉下通便"], ans: 2 },
+          { q: "5. 《黃帝內經》提及「春三月，此謂發陳」，春季養生應注意養？", options: ["A. 養心", "B. 養肝", "C. 養肺", "D. 養腎"], ans: 1 }
         ],
         [
-          { q: "1. 位於小腿內側、脾經肝經腎經三條陰經交會的婦科保健穴是？", options: ["A. 三陰交", "B. 足三里", "C. 風池穴", "D. 陰陵泉"], ans: 0 },
+          { q: "1. 位於小腿內側、脾經肝經腎經三條陰經交會的婦科保健穴是？", options: ["A. 足三里", "B. 風池穴", "C. 陰陵泉", "D. 三陰交"], ans: 3 },
           { q: "2. 中醫四診中的「聞診」，主要是指？", options: ["A. 聽聲音與嗅氣味", "B. 用手觸摸脈搏", "C. 觀察舌頭顏色", "D. 詢問飲食習慣"], ans: 0 },
-          { q: "3. 「五行」學說中，「水」對應五臟中的哪一個器官？", options: ["A. 肝", "B. 心", "C. 脾", "D. 腎"], ans: 3 },
+          { q: "3. 「五行」學說中，「水」對應五臟中的哪一個器官？", options: ["A. 肝", "B. 心", "C. 腎", "D. 脾"], ans: 2 },
           { q: "4. (保底題) 被譽為補血要藥、常與川芎當歸配伍的中藥是？", options: ["A. 當歸", "B. 苦參", "C. 大黃", "D. 黃連"], ans: 0 },
-          { q: "5. 《黃帝內經》提及「秋三月，此謂容平」，秋季養生重點在於養？", options: ["A. 養肝", "B. 養心", "C. 養肺", "D. 養腎"], ans: 2 }
+          { q: "5. 《黃帝內經》提及「秋三月，此謂容平」，秋季養生重點在於養？", options: ["A. 養肝", "B. 養心", "C. 養腎", "D. 養肺"], ans: 3 }
         ]
       ]
     },
@@ -508,22 +518,22 @@ const stagesData = {
           { q: "1. 中醫「陰陽」學說中，以下哪項屬於「陰」的屬性？", options: ["A. 溫熱", "B. 明亮", "C. 靜止與滋潤", "D. 興奮與上升"], ans: 2 },
           { q: "2. 中醫認為「脾胃為後天之本」，主要負責以下哪項功能？", options: ["A. 運化水谷精微", "B. 主宰血液循環", "C. 思考與記憶", "D. 氣體交換"], ans: 0 },
           { q: "3. 熬夜傷陰容易導致「陰虛火旺」，常見徵狀不包括以下哪項？", options: ["A. 手足心熱", "B. 潮熱盜汗", "C. 口乾舌燥", "D. 大便極度稀爛流瀉"], ans: 3 },
-          { q: "4. (保底題) 五味（酸苦甘辛鹹）中，「甘」味藥物主要具有什麼作用？", options: ["A. 能瀉能燥", "B. 能補能和能緩", "C. 能收能澀", "D. 能軟堅散結"], ans: 1 },
+          { q: "4. (保底題) 五味（酸苦甘辛鹹）中，「甘」味藥物主要具有什麼作用？", options: ["A. 能瀉能燥", "B. 能收能澀", "C. 能補能和能緩", "D. 能軟堅散結"], ans: 2 },
           { q: "5. 「舌診」中，若舌苔呈現厚黃膩，通常提示體內有什麼狀況？", options: ["A. 虛寒無火", "B. 濕熱內蘊", "C. 氣血兩虛", "D. 津液大虧"], ans: 1 }
         ],
         [
-          { q: "1. 被譽為「先天之本」、藏精、主生殖與生長發育的臟腑是？", options: ["A. 腎臟", "B. 肝臟", "C. 脾臟", "D. 心臟"], ans: 0 },
-          { q: "2. 「氣」與「血」的關係中，中醫常稱為？", options: ["A. 氣為血之帥，血為氣之母", "B. 氣血互不相關", "C. 血為氣之帥", "D. 氣能克血"], ans: 0 },
-          { q: "3. 五味中「辛」味（如生薑、薄荷）藥物的主要作用是？", options: ["A. 能散能行", "B. 能補能緩", "C. 能收能澀", "D. 能軟堅"], ans: 0 },
+          { q: "1. 被譽為「先天之本」、藏精、主生殖與生長發育的臟腑是？", options: ["A. 肝臟", "B. 腎臟", "C. 脾臟", "D. 心臟"], ans: 1 },
+          { q: "2. 「氣」與「血」的關係中，中醫常稱為？", options: ["A. 氣血互不相關", "B. 氣為血之帥，血為氣之母", "C. 血為氣之帥", "D. 氣能克血"], ans: 1 },
+          { q: "3. 五味中「辛」味（如生薑、薄荷）藥物的主要作用是？", options: ["A. 能補能緩", "B. 能收能澀", "C. 能散能行", "D. 能軟堅"], ans: 2 },
           { q: "4. (保底題) 「舌診」中，若舌質淡白、舌體胖大有齒痕，提示？", options: ["A. 脾虛濕盛/陽虛", "B. 熱入營血", "C. 陰虛火旺", "D. 氣滯血瘀"], ans: 0 },
-          { q: "5. 中藥「阿膠」的主要功效是？", options: ["A. 補血滋陰、潤陸止血", "B. 大補元氣", "C. 清熱解毒", "D. 利水滲濕"], ans: 0 }
+          { q: "5. 中藥「阿膠」的主要功效是？", options: ["A. 大補元氣", "B. 清熱解毒", "C. 利水滲濕", "D. 補血滋陰、潤燥止血"], ans: 3 }
         ],
         [
           { q: "1. 主疏洩、主藏血、體陰而用陽的臟腑是？", options: ["A. 肝臟", "B. 心臟", "C. 肺臟", "D. 脾臟"], ans: 0 },
-          { q: "2. 津液代謝中，起著「主水」與蒸騰氣化作用的關鍵臟腑是？", options: ["A. 腎臟", "B. 胃", "C. 大腸", "D. 膽"], ans: 0 },
-          { q: "3. 五味中「酸」味（如山楂、烏梅）藥物的主要作用是？", options: ["A. 能收能澀", "B. 能發散", "C. 能瀉下", "D. 能軟堅"], ans: 0 },
+          { q: "2. 津液代謝中，起著「主水」與蒸騰氣化作用的關鍵臟腑是？", options: ["A. 胃", "B. 大腸", "C. 腎臟", "D. 膽"], ans: 2 },
+          { q: "3. 五味中「酸」味（如山楂、烏梅）藥物的主要作用是？", options: ["A. 能發散", "B. 能收能澀", "C. 能瀉下", "D. 能軟堅"], ans: 1 },
           { q: "4. (保底題) 「脈診」中，脈象浮而有力，多見於？", options: ["A. 表證/外感初期", "B. 裏虛寒證", "C. 氣血大虧", "D. 陽氣衰微"], ans: 0 },
-          { q: "5. 中藥「茯苓」的主要功效是？", options: ["A. 健脾利水、寧心安神", "B. 大汗固脫", "C. 溫中止嘔", "D. 活血止痛"], ans: 0 }
+          { q: "5. 中藥「茯苓」的主要功效是？", options: ["A. 大汗固脫", "B. 健脾利水、寧心安神", "C. 溫中止嘔", "D. 活血止痛"], ans: 1 }
         ]
       ]
     },
@@ -533,25 +543,25 @@ const stagesData = {
       titleSuccess: "岐黃高手",
       questionSets: [
         [
-          { q: "1. 經絡學說中，手太陰肺經的循行起於身體的哪裡？", options: ["A. 肺臟", "B. 中焦（胃部）", "C. 大拇指端", "D. 心包"], ans: 1 },
+          { q: "1. 經絡學說中，手太陰肺經的循行起於身體的哪裡？", options: ["A. 肺臟", "B. 大拇指端", "C. 中焦（胃部）", "D. 心包"], ans: 2 },
           { q: "2. 診脈時，左手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心、肝、腎", "B. 肺、脾、命門", "C. 肝、心、腎", "D. 脾、胃、肺"], ans: 0 },
           { q: "3. 著名方劑「六味地黃丸」的核心主治證型是？", options: ["A. 腎陽不足、畏寒肢冷", "B. 腎陰不足、腰膝酸軟、潮熱盜汗", "C. 脾胃虛弱、食少便溏", "D. 肝膽濕熱、黃疸"], ans: 1 },
-          { q: "4. (保底題) 在方劑學「君臣佐使」組方原則中，輔助君藥加強治療主證的藥物稱為？", options: ["A. 臣藥", "B. 佐藥", "C. 使藥", "D. 導藥"], ans: 0 },
-          { q: "5. 「氣血津液」中，具有溫煦分肉、充膚、肥腠理、司開合防禦作用的是？", options: ["A. 營氣", "B. 衛氣", "C. 宗氣", "D. 元氣"], ans: 1 }
+          { q: "4. (保底題) 在方劑學「君臣佐使」組方原則中，輔助君藥加強治療主證的藥物稱為？", options: ["A. 佐藥", "B. 臣藥", "C. 使藥", "D. 導藥"], ans: 1 },
+          { q: "5. 「氣血津液」中，具有溫煦分肉、充膚、肥腠理、司開合防禦作用的是？", options: ["A. 營氣", "B. 宗氣", "C. 元氣", "D. 衛氣"], ans: 3 }
         ],
         [
-          { q: "1. 十二經脈中，行於背部脊柱兩旁、分支最多、穴位最多的經脈是？", options: ["A. 足太陽膀胱經", "B. 足陽明胃經", "C. 手少陽三焦經", "D. 足少陰腎經"], ans: 0 },
-          { q: "2. 診脈時，右手寸、關、尺三部對應的臟腑依次是？", options: ["A. 肺、脾、命門（腎）", "B. 心、肝、腎", "C. 胃、膽、膀胱", "D. 肝、脾、心"], ans: 0 },
+          { q: "1. 十二經脈中，行於背部脊柱兩旁、分支最多、穴位最多的經脈是？", options: ["A. 足陽明胃經", "B. 足太陽膀胱經", "C. 手少陽三焦經", "D. 足少陰腎經"], ans: 1 },
+          { q: "2. 診脈時，右手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心、肝、腎", "B. 肺、脾、命門（腎）", "C. 胃、膽、膀胱", "D. 肝、脾、心"], ans: 1 },
           { q: "3. 方劑「補中益氣湯」的主治病證核心是？", options: ["A. 脾胃氣虛、中氣下陷證", "B. 肝鬱血虛", "C. 熱入心包", "D. 陰虛火旺"], ans: 0 },
-          { q: "4. (保底題) 方劑「君臣佐使」中，引藥直達病所或調和諸藥的稱為？", options: ["A. 使藥", "B. 君藥", "C. 臣藥", "D. 佐藥"], ans: 0 },
+          { q: "4. (保底題) 方劑「君臣佐使」中，引藥直達病所或調和諸藥的稱為？", options: ["A. 君藥", "B. 臣藥", "C. 佐藥", "D. 使藥"], ans: 3 },
           { q: "5. 積於胸中、貫心脈而行呼吸、走息道以司呼吸的氣是？", options: ["A. 宗氣", "B. 衛氣", "C. 營氣", "D. 元氣"], ans: 0 }
         ],
         [
-          { q: "1. 奇經八脈中，調節全身陽經經氣、被稱為「陽脈之海」的是？", options: ["A. 督脈", "B. 任脈", "C. 衝脈", "D. 帶脈"], ans: 0 },
-          { q: "2. 脈象「弦脈」（端直以長，如按琴弦），臨床多主？", options: ["A. 肝膽病、痛證、痰飲", "B. 氣血大虧", "C. 表寒證", "D. 食滯腸胃"], ans: 0 },
-          { q: "3. 名方「逍遙散」的核心功用是？", options: ["A. 疏肝解鬱、養血健脾", "B. 溫陽利水", "C. 清熱解毒", "D. 瀉下通便"], ans: 0 },
-          { q: "4. (保底題) 由人體胚胎時期原氣遺傳、藏於腎中的人體生命根本之氣是？", options: ["A. 元氣（原氣）", "B. 衛氣", "C. 營氣", "D. 水穀之氣"], ans: 0 },
-          { q: "5. 十九畏中，「丁香畏」哪味藥材？", options: ["A. 郁金", "B. 犀角", "C. 人蔘", "D. 五靈脂"], ans: 0 }
+          { q: "1. 奇經八脈中，調節全身陽經經氣、被稱為「陽脈之海」的是？", options: ["A. 任脈", "B. 督脈", "C. 衝脈", "D. 帶脈"], ans: 1 },
+          { q: "2. 脈象「弦脈」（端直以長，如按琴弦），臨床多主？", options: ["A. 氣血大虧", "B. 表寒證", "C. 肝膽病、痛證、痰飲", "D. 食滯腸胃"], ans: 2 },
+          { q: "3. 名方「逍遙散」的核心功用是？", options: ["A. 溫陽利水", "B. 疏肝解鬱、養血健脾", "C. 清熱解毒", "D. 瀉下通便"], ans: 1 },
+          { q: "4. (保底題) 由人體胚胎時期原氣遺傳、藏於腎中的人體生命根本之氣是？", options: ["A. 衛氣", "B. 元氣（原氣）", "C. 營氣", "D. 水穀之氣"], ans: 1 },
+          { q: "5. 十九畏中，「丁香畏」哪味藥材？", options: ["A. 犀角", "B. 人蔘", "C. 五靈脂", "D. 郁金"], ans: 3 }
         ]
       ]
     },
@@ -565,21 +575,21 @@ const stagesData = {
           { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、貝母", "B. 半夏、瓜蔞、貝母、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
           { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了痰飲的什麼病機？", options: ["A. 痰飲本於水濕，陰邪非溫不化", "B. 痰飲宜用大熱大燥破之", "C. 痰飲皆由肝鬱所致", "D. 痰飲只能用瀉下法"], ans: 0 },
           { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升舉清陽，升提下陷之中氣", "D. 疏肝理氣"], ans: 2 },
-          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二七 (2x7=14歲)", "C. 三七 (3x7=21歲)", "D. 四七 (4x7=28歲)"], ans: 1 }
+          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 三七 (3x7=21歲)", "C. 二七 (2x7=14歲)", "D. 四七 (4x7=28歲)"], ans: 2 }
         ],
         [
           { q: "1. 《傷寒論》中，「麻黃湯」的核心功效與主治是？", options: ["A. 發汗解表、宣肺平喘（外感風寒表實證）", "B. 解肌發表、調和營衛", "C. 溫中祛寒", "D. 清熱瀉火"], ans: 0 },
           { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 烏頭、附子", "C. 三棱、莪朮", "D. 細辛、芍藥"], ans: 0 },
-          { q: "3. 《溫病條辨》中，創立的三焦辨證綱領綱脊是指？", options: ["A. 上焦手太陰肺、中焦足陽明胃、下焦足少陰腎", "B. 衛氣營血辨證", "C. 六經辨證", "D. 臟腑辨證"], ans: 0 },
-          { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 清熱解毒、開竅透絡、鎮驚安神", "B. 溫陽固脫", "C. 疏肝理氣", "D. 活血化瘀"], ans: 0 },
-          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強，真牙生而長極」？", options: ["A. 二八 (2x8=16歲)", "B. 三八 (3x8=24歲)", "C. 四八 (4x8=32歲)", "D. 五八 (5x8=40歲)"], ans: 1 }
+          { q: "3. 《溫病條辨》中，創立的三焦辨證綱領綱脊是指？", options: ["A. 衛氣營血辨證", "B. 六經辨證", "C. 上焦手太陰肺、中焦足陽明胃、下焦足少陰腎", "D. 臟腑辨證"], ans: 2 },
+          { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 溫陽固脫", "B. 疏肝理氣", "C. 活血化瘀", "D. 清熱解毒、開竅透絡、鎮驚安神"], ans: 3 },
+          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強，真牙生而長極」？", options: ["A. 三八 (3x8=24歲)", "B. 二八 (2x8=16歲)", "C. 四八 (4x8=32歲)", "D. 五八 (5x8=40歲)"], ans: 1 }
         ],
         [
-          { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 麻黃附子細辛湯", "B. 桂枝湯", "C. 四逆湯", "D. 白虎湯"], ans: 0 },
-          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "B. 甘草、海藻", "C. 烏頭、附子", "D. 硝石、硫黃"], ans: 0 },
-          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 峻下熱結、急下存陰", "B. 溫補脾陽", "C. 和解少陽", "D. 養血潤腸"], ans: 0 },
-          { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰陽相對平衡協調是維持健康的根本", "B. 陰氣越盛越好", "C. 陽氣越高越好", "D. 陰陽互不相關"], ans: 0 },
-          { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 王清任", "B. 張景岳", "C. 葉天士", "D. 吳鞠通"], ans: 0 }
+          { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
+          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、海藻", "B. 烏頭、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃"], ans: 2 },
+          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 峻下熱結、急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
+          { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰氣越盛越好", "B. 陽氣越高越好", "C. 陰陽相對平衡協調是維持健康的根本", "D. 陰陽互不相關"], ans: 2 },
+          { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
         ]
       ]
     },
@@ -597,25 +607,25 @@ const stagesData = {
       titleSuccess: "Wellness Master",
       questionSets: [
         [
-          { q: "1. What herbal tea in TCM is best for clearing heat after eating too much spicy food?", options: ["A. Ginseng Red Tea", "B. Chrysanthemum Tea", "C. Hot Ginger Tea", "D. Red Date Tea"], ans: 1 },
-          { q: "2. Which famous acupoint located between the thumb and index finger is known as the 'Universal Point'?", options: ["A. Yongquan (KI1)", "B. Zusanli (ST36)", "C. Hegu (LI4)", "D. Taichong (LR3)"], ans: 2 },
-          { q: "3. Which food therapy is commonly recommended in dry autumn for moistening the lungs?", options: ["A. Spicy Hotpot", "B. Grilled Sausage", "C. Snow Pear with Fritillaria", "D. Fried Chicken"], ans: 2 },
-          { q: "4. (Guaranteed) The TCM saying 'Free flow brings no pain, obstruction causes pain' refers to?", options: ["A. Joints & Bones", "B. Qi, Blood & Meridians", "C. Sweat Glands", "D. Digestive Tract"], ans: 1 },
-          { q: "5. What ingredient soup is traditionally used in early stage Wind-Cold common cold to promote sweating?", options: ["A. Scallion & Ginger", "B. Bitter Gourd & Mung Bean", "C. Watermelon & Mint", "D. Chrysanthemum"], ans: 0 }
+          { q: "1. What herbal tea in TCM is best for clearing heat after eating too much spicy food?", options: ["A. Ginseng Red Tea", "B. Hot Ginger Tea", "C. Chrysanthemum Tea", "D. Red Date Tea"], ans: 2 },
+          { q: "2. Which famous acupoint located between the thumb and index finger is known as the 'Universal Point'?", options: ["A. Yongquan (KI1)", "B. Hegu (LI4)", "C. Zusanli (ST36)", "D. Taichong (LR3)"], ans: 1 },
+          { q: "3. Which food therapy is commonly recommended in dry autumn for moistening the lungs?", options: ["A. Snow Pear with Fritillaria", "B. Spicy Hotpot", "C. Grilled Sausage", "D. Fried Chicken"], ans: 0 },
+          { q: "4. (Guaranteed) The TCM saying 'Free flow brings no pain, obstruction causes pain' refers to?", options: ["A. Joints & Bones", "B. Sweat Glands", "C. Digestive Tract", "D. Qi, Blood & Meridians"], ans: 3 },
+          { q: "5. What ingredient soup is traditionally used in early stage Wind-Cold common cold to promote sweating?", options: ["A. Bitter Gourd & Mung Bean", "B. Scallion & Ginger", "C. Watermelon & Mint", "D. Chrysanthemum"], ans: 1 }
         ],
         [
-          { q: "1. Which bean soup is most popular in summer for clearing heat and draining dampness?", options: ["A. Red Bean Soup", "B. Mung Bean Soup", "C. Black Bean Soup", "D. Soy Bean Soup"], ans: 1 },
-          { q: "2. When experiencing eye dry fatigue, TCM recommends pairing Goji Berries with?", options: ["A. Rose", "B. Chrysanthemum", "C. Jasmine", "D. Lotus"], ans: 1 },
-          { q: "3. In TCM, excessive sweating is believed to injure which organ's Qi and Blood?", options: ["A. Heart", "B. Lungs", "C. Spleen", "D. Kidneys"], ans: 0 },
-          { q: "4. (Guaranteed) Indigestion caused by overeating is known in TCM as?", options: ["A. Food Stagnation", "B. Wind-Cold", "C. Blood Stasis", "D. Yin Deficiency"], ans: 0 },
-          { q: "5. Which dried fruit peel is famous in Guangdong for transforming phlegm and harmonizing stomach?", options: ["A. Aged Tangerine Peel (Chenpi)", "B. Monk Fruit", "C. Longan", "D. Lychee"], ans: 0 }
+          { q: "1. Which bean soup is most popular in summer for clearing heat and draining dampness?", options: ["A. Red Bean Soup", "B. Black Bean Soup", "C. Mung Bean Soup", "D. Soy Bean Soup"], ans: 2 },
+          { q: "2. When experiencing eye dry fatigue, TCM recommends pairing Goji Berries with?", options: ["A. Rose", "B. Jasmine", "C. Chrysanthemum", "D. Lotus"], ans: 2 },
+          { q: "3. In TCM, excessive sweating is believed to injure which organ's Qi and Blood?", options: ["A. Lungs", "B. Heart", "C. Spleen", "D. Kidneys"], ans: 1 },
+          { q: "4. (Guaranteed) Indigestion caused by overeating is known in TCM as?", options: ["A. Wind-Cold", "B. Blood Stasis", "C. Yin Deficiency", "D. Food Stagnation"], ans: 3 },
+          { q: "5. Which dried fruit peel is famous in Guangdong for transforming phlegm and harmonizing stomach?", options: ["A. Monk Fruit", "B. Longan", "C. Lychee", "D. Aged Tangerine Peel (Chenpi)"], ans: 3 }
         ],
         [
-          { q: "1. What drink is recommended for heavy body sensation and sticky stools due to damp-heat?", options: ["A. Barley & Adzuki Bean Water", "B. Ginseng Tea", "C. Deer Antler Wine", "D. Spicy Ginger Tea"], ans: 0 },
-          { q: "2. Spleen opens into the mouth. Healthy spleen function is shown in?", options: ["A. Rosy lips & good appetite", "B. Hard nails", "C. Dark hair", "D. Sharp hearing"], ans: 0 },
-          { q: "3. Stomachache or diarrhea after eating ice-cold food indicates?", options: ["A. Spleen-Stomach Deficiency Cold", "B. Stomach Fire", "C. Yin Deficiency", "D. Damp-Heat"], ans: 0 },
-          { q: "4. (Guaranteed) Frequent anger and irritability in TCM primarily injures?", options: ["A. Liver organ & its dredging function", "B. Lungs", "C. Kidneys", "D. Large Intestine"], ans: 0 },
-          { q: "5. The premier health point located at the vertex of the head is?", options: ["A. Baihui (GV20)", "B. Yongquan (KI1)", "C. Fengchi (GB20)", "D. Laogong (PC8)"], ans: 0 }
+          { q: "1. What drink is recommended for heavy body sensation and sticky stools due to damp-heat?", options: ["A. Ginseng Tea", "B. Barley & Adzuki Bean Water", "C. Deer Antler Wine", "D. Spicy Ginger Tea"], ans: 1 },
+          { q: "2. Spleen opens into the mouth. Healthy spleen function is shown in?", options: ["A. Hard nails", "B. Dark hair", "C. Rosy lips & good appetite", "D. Sharp hearing"], ans: 2 },
+          { q: "3. Stomachache or diarrhea after eating ice-cold food indicates?", options: ["A. Stomach Fire", "B. Spleen-Stomach Deficiency Cold", "C. Yin Deficiency", "D. Damp-Heat"], ans: 1 },
+          { q: "4. (Guaranteed) Frequent anger and irritability in TCM primarily injures?", options: ["A. Lungs", "B. Kidneys", "C. Large Intestine", "D. Liver organ & its dredging function"], ans: 3 },
+          { q: "5. The premier health point located at the vertex of the head is?", options: ["A. Yongquan (KI1)", "B. Fengchi (GB20)", "C. Baihui (GV20)", "D. Laogong (PC8)"], ans: 2 }
         ]
       ]
     },
@@ -626,24 +636,24 @@ const stagesData = {
       questionSets: [
         [
           { q: "1. Where is the health-promoting acupoint 'Zusanli (ST36)' located?", options: ["A. Crown of head", "B. Inner wrist", "C. Below knee (3 cun below)", "D. Sole of foot"], ans: 2 },
-          { q: "2. In TCM Four Examinations, 'Touching' refers to?", options: ["A. Facial diagnosis", "B. Pulse & Abdominal palpation", "C. Listening to breath", "D. Taking history"], ans: 1 },
-          { q: "3. In 5 Elements theory, 'Earth' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Spleen", "D. Lungs"], ans: 2 },
-          { q: "4. (Guaranteed) What is the main action of Goji Berries in TCM?", options: ["A. Tonify Liver & Kidney", "B. Clear stomach fire", "C. Release exterior", "D. Break blood stasis"], ans: 0 },
-          { q: "5. Summer health preservation focuses on nourishing?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Kidneys"], ans: 1 }
+          { q: "2. In TCM Four Examinations, 'Touching' refers to?", options: ["A. Pulse & Abdominal palpation", "B. Facial diagnosis", "C. Listening to breath", "D. Taking history"], ans: 0 },
+          { q: "3. In 5 Elements theory, 'Earth' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Spleen"], ans: 3 },
+          { q: "4. (Guaranteed) What is the main action of Goji Berries in TCM?", options: ["A. Clear stomach fire", "B. Tonify Liver & Kidney", "C. Release exterior", "D. Break blood stasis"], ans: 1 },
+          { q: "5. Summer health preservation focuses on nourishing?", options: ["A. Liver", "B. Lungs", "C. Heart", "D. Kidneys"], ans: 2 }
         ],
         [
           { q: "1. Which point located in the sole depression is the first point of Kidney Meridian?", options: ["A. Yongquan (KI1)", "B. Taichong (LR3)", "C. Hegu (LI4)", "D. Sanyinjiao (SP6)"], ans: 0 },
           { q: "2. Looking examination (Inspection) in TCM does NOT include?", options: ["A. Tongue coat & body", "B. Facial color & Spirit", "C. Pulse beat rate", "D. Body posture"], ans: 2 },
           { q: "3. In 5 Elements theory, 'Metal' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Spleen", "D. Lungs"], ans: 3 },
-          { q: "4. (Guaranteed) The primary function of Huang Qi (Astragalus) is?", options: ["A. Tonify Qi & consolidate exterior", "B. Clear heat", "C. Invigorate blood", "D. Purge stool"], ans: 0 },
-          { q: "5. Spring health preservation according to Yellow Emperor's Canon focuses on?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Kidneys"], ans: 0 }
+          { q: "4. (Guaranteed) The primary function of Huang Qi (Astragalus) is?", options: ["A. Clear heat", "B. Invigorate blood", "C. Tonify Qi & consolidate exterior", "D. Purge stool"], ans: 2 },
+          { q: "5. Spring health preservation according to Yellow Emperor's Canon focuses on?", options: ["A. Heart", "B. Liver", "C. Lungs", "D. Kidneys"], ans: 1 }
         ],
         [
           { q: "1. Sanyinjiao (SP6) point is famous for gynecology care. Where is it?", options: ["A. Inner lower leg (3 cun above ankle)", "B. Outer knee", "C. Back of neck", "D. Elbow"], ans: 0 },
           { q: "2. Listening & Smelling (Olfaction/Auscultation) refers to?", options: ["A. Listening to voice & smelling odors", "B. Feeling pulse", "C. Checking tongue", "D. Asking history"], ans: 0 },
-          { q: "3. In 5 Elements theory, 'Water' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Spleen", "D. Kidneys"], ans: 3 },
+          { q: "3. In 5 Elements theory, 'Water' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Kidneys", "D. Spleen"], ans: 2 },
           { q: "4. (Guaranteed) Dang Gui (Angelica Sinensis) is premier herb for?", options: ["A. Tonifying Blood & Invigorating Blood", "B. Clearing Heat", "C. Purging Cold", "D. Drying Dampness"], ans: 0 },
-          { q: "5. Autumn health preservation in TCM focuses on?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Kidneys"], ans: 2 }
+          { q: "5. Autumn health preservation in TCM focuses on?", options: ["A. Liver", "B. Heart", "C. Kidneys", "D. Lungs"], ans: 3 }
         ]
       ]
     },
@@ -656,22 +666,22 @@ const stagesData = {
           { q: "1. In TCM Yin-Yang theory, which property belongs to 'Yin'?", options: ["A. Warm & Hot", "B. Brightness", "C. Stillness & Moistening", "D. Rising"], ans: 2 },
           { q: "2. Spleen & Stomach are 'Foundation of Post-natal Life'. Main function?", options: ["A. Transforming food essence", "B. Governing blood", "C. Memory", "D. Gas exchange"], ans: 0 },
           { q: "3. Which is NOT a symptom of Yin Deficiency Fire?", options: ["A. Heat in palms/soles", "B. Night sweats", "C. Dry mouth", "D. Watery diarrhea"], ans: 3 },
-          { q: "4. (Guaranteed) Among 5 Flavors, 'Sweet' herbs mainly?", options: ["A. Drain & Dry", "B. Tonify, Harmonize, & Moderate", "C. Astringe", "D. Soften hardness"], ans: 1 },
+          { q: "4. (Guaranteed) Among 5 Flavors, 'Sweet' herbs mainly?", options: ["A. Drain & Dry", "B. Astringe", "C. Tonify, Harmonize, & Moderate", "D. Soften hardness"], ans: 2 },
           { q: "5. Thick yellow greasy tongue coating usually indicates?", options: ["A. Deficiency Cold", "B. Damp-Heat", "C. Qi & Blood Deficiency", "D. Fluid loss"], ans: 1 }
         ],
         [
-          { q: "1. Known as 'Foundation of Pre-natal Life', storing Essence and governing growth is?", options: ["A. Kidney", "B. Liver", "C. Spleen", "D. Heart"], ans: 0 },
-          { q: "2. Relationship between Qi and Blood in TCM is described as?", options: ["A. Qi is commander of Blood; Blood is mother of Qi", "B. Unrelated", "C. Blood commands Qi", "D. Qi destroys Blood"], ans: 0 },
-          { q: "3. 'Pungent/Acrid' taste herbs (e.g. Ginger, Mint) mainly act to?", options: ["A. Disperse and promote flow", "B. Tonify and moderate", "C. Astringe and bind", "D. Soften hardness"], ans: 0 },
+          { q: "1. Known as 'Foundation of Pre-natal Life', storing Essence and governing growth is?", options: ["A. Liver", "B. Kidney", "C. Spleen", "D. Heart"], ans: 1 },
+          { q: "2. Relationship between Qi and Blood in TCM is described as?", options: ["A. Unrelated", "B. Qi is commander of Blood; Blood is mother of Qi", "C. Blood commands Qi", "D. Qi destroys Blood"], ans: 1 },
+          { q: "3. 'Pungent/Acrid' taste herbs (e.g. Ginger, Mint) mainly act to?", options: ["A. Tonify and moderate", "B. Astringe and bind", "C. Disperse and promote flow", "D. Soften hardness"], ans: 2 },
           { q: "4. (Guaranteed) Pale teeth-marked tongue body indicates?", options: ["A. Spleen Qi Deficiency with Dampness", "B. Heat entering Blood", "C. Yin Deficiency", "D. Blood Stasis"], ans: 0 },
-          { q: "5. The main action of E Jiao (Donkey-hide Gelatin) is?", options: ["A. Tonify Blood & Nourish Yin", "B. Strongly boost Primordial Qi", "C. Clear heat & toxins", "D. Drain water"], ans: 0 }
+          { q: "5. The main action of E Jiao (Donkey-hide Gelatin) is?", options: ["A. Strongly boost Primordial Qi", "B. Clear heat & toxins", "C. Drain water", "D. Tonify Blood & Nourish Yin"], ans: 3 }
         ],
         [
           { q: "1. The organ governing free flow of Qi, storing Blood, and harmonizing emotions is?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Spleen"], ans: 0 },
-          { q: "2. In fluid metabolism, the organ governing water transformation and gasification is?", options: ["A. Kidney", "B. Stomach", "C. Large Intestine", "D. Gallbladder"], ans: 0 },
-          { q: "3. 'Sour' taste herbs (e.g. Hawthorn, Plum) mainly function to?", options: ["A. Astringe and consolidate", "B. Disperse", "C. Purge", "D. Soften"], ans: 0 },
+          { q: "2. In fluid metabolism, the organ governing water transformation and gasification is?", options: ["A. Stomach", "B. Large Intestine", "C. Kidney", "D. Gallbladder"], ans: 2 },
+          { q: "3. 'Sour' taste herbs (e.g. Hawthorn, Plum) mainly function to?", options: ["A. Disperse", "B. Astringe and consolidate", "C. Purge", "D. Soften"], ans: 1 },
           { q: "4. (Guaranteed) A floating pulse (Fu Mai) in pulse diagnosis indicates?", options: ["A. Exterior syndrome / Early cold stage", "B. Interior Deficiency Cold", "C. Blood Loss", "D. Extreme exhaustion"], ans: 0 },
-          { q: "5. The main action of Fu Ling (Poria) is?", options: ["A. Strengthen Spleen & Drain Dampness", "B. Stop sweating", "C. Warm middle Jiao", "D. Stop pain"], ans: 0 }
+          { q: "5. The main action of Fu Ling (Poria) is?", options: ["A. Stop sweating", "B. Strengthen Spleen & Drain Dampness", "C. Warm middle Jiao", "D. Stop pain"], ans: 1 }
         ]
       ]
     },
@@ -681,25 +691,25 @@ const stagesData = {
       titleSuccess: "Qi Master",
       questionSets: [
         [
-          { q: "1. Where does the Lung Meridian originate?", options: ["A. Lungs organ", "B. Middle Jiao (Stomach)", "C. Tip of thumb", "D. Pericardium"], ans: 1 },
+          { q: "1. Where does the Lung Meridian originate?", options: ["A. Lungs organ", "B. Tip of thumb", "C. Middle Jiao (Stomach)", "D. Pericardium"], ans: 2 },
           { q: "2. Left wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen", "C. Liver, Heart, Kidney", "D. Spleen, Stomach, Lung"], ans: 0 },
           { q: "3. Original indication for 'Liu Wei Di Huang Wan'?", options: ["A. Kidney Yang deficiency", "B. Kidney Yin deficiency with sore knees & night sweats", "C. Spleen weakness", "D. Damp-Heat"], ans: 1 },
           { q: "4. In 'Monarch, Minister, Assistant, Envoy' principle, the herb assisting Monarch is?", options: ["A. Minister Herb", "B. Assistant Herb", "C. Envoy Herb", "D. Guide Herb"], ans: 0 },
-          { q: "5. Which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi", "B. Wei Qi", "C. Zong Qi", "D. Yuan Qi"], ans: 1 }
+          { q: "5. Which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi", "B. Zong Qi", "C. Yuan Qi", "D. Wei Qi"], ans: 3 }
         ],
         [
-          { q: "1. Which meridian runs along both sides of spine with the most acupoints?", options: ["A. Bladder Meridian of Foot-Taiyang", "B. Stomach Meridian", "C. Sanjiao Meridian", "D. Kidney Meridian"], ans: 0 },
-          { q: "2. Right wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Lung, Spleen, Mingmen (Kidney)", "B. Heart, Liver, Kidney", "C. Stomach, Gallbladder, Bladder", "D. Liver, Spleen, Heart"], ans: 0 },
+          { q: "1. Which meridian runs along both sides of spine with the most acupoints?", options: ["A. Stomach Meridian", "B. Bladder Meridian of Foot-Taiyang", "C. Sanjiao Meridian", "D. Kidney Meridian"], ans: 1 },
+          { q: "2. Right wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen (Kidney)", "C. Stomach, Gallbladder, Bladder", "D. Liver, Spleen, Heart"], ans: 1 },
           { q: "3. Primary indication for Bu Zhong Yi Qi Tang is?", options: ["A. Spleen/Stomach Qi Deficiency with Sinking Qi", "B. Liver Qi Stagnation", "C. Heat in Pericardium", "D. Yin Deficiency Fire"], ans: 0 },
-          { q: "4. In formula architecture, the herb guiding rest to affected area or harmonizing is?", options: ["A. Envoy Herb", "B. Monarch Herb", "C. Minister Herb", "D. Assistant Herb"], ans: 0 },
+          { q: "4. In formula architecture, the herb guiding rest to affected area or harmonizing is?", options: ["A. Monarch Herb", "B. Minister Herb", "C. Assistant Herb", "D. Envoy Herb"], ans: 3 },
           { q: "5. Qi stored in chest that governs respiration and heart circulation is?", options: ["A. Zong Qi (Pectoral Qi)", "B. Wei Qi", "C. Ying Qi", "D. Yuan Qi"], ans: 0 }
         ],
         [
-          { q: "1. Among Eight Extra Meridians, which is known as 'Sea of Yang Meridians'?", options: ["A. Governor Vessel (Du Mai)", "B. Conception Vessel (Ren Mai)", "C. Thoroughfare Vessel (Chong Mai)", "D. Belt Vessel (Dai Mai)"], ans: 0 },
-          { q: "2. A Wiry pulse (Xian Mai, like pressing a violin string) clinically indicates?", options: ["A. Liver/Gallbladder disorders, Pain, Phlegm", "B. Blood loss", "C. Exterior Cold", "D. Food stagnation"], ans: 0 },
-          { q: "3. Main function of famous formula Xiao Yao San is?", options: ["A. Soothe Liver, Nourish Blood, & Strengthen Spleen", "B. Warm Yang & drain water", "C. Clear Heat & Toxin", "D. Purge stool"], ans: 0 },
-          { q: "4. Primary Qi inherited from parents stored in Kidneys is?", options: ["A. Yuan Qi (Primary Qi)", "B. Wei Qi", "C. Ying Qi", "D. Food Qi"], ans: 0 },
-          { q: "5. In Nineteen Incompatibilities, Clove (Ding Xiang) is incompatible with?", options: ["A. Yu Jin (Curcuma)", "B. Rhino Horn", "C. Ginseng", "D. Wu Ling Zhi"], ans: 0 }
+          { q: "1. Among Eight Extra Meridians, which is known as 'Sea of Yang Meridians'?", options: ["A. Conception Vessel (Ren Mai)", "B. Governor Vessel (Du Mai)", "C. Thoroughfare Vessel (Chong Mai)", "D. Belt Vessel (Dai Mai)"], ans: 1 },
+          { q: "2. A Wiry pulse (Xian Mai, like pressing a violin string) clinically indicates?", options: ["A. Blood loss", "B. Exterior Cold", "C. Liver/Gallbladder disorders, Pain, Phlegm", "D. Food stagnation"], ans: 2 },
+          { q: "3. Main function of famous formula Xiao Yao San is?", options: ["A. Warm Yang & drain water", "B. Soothe Liver, Nourish Blood, & Strengthen Spleen", "C. Clear Heat & Toxin", "D. Purge stool"], ans: 1 },
+          { q: "4. Primary Qi inherited from parents stored in Kidneys is?", options: ["A. Wei Qi", "B. Yuan Qi (Primary Qi)", "C. Ying Qi", "D. Food Qi"], ans: 1 },
+          { q: "5. In Nineteen Incompatibilities, Clove (Ding Xiang) is incompatible with?", options: ["A. Rhino Horn", "B. Ginseng", "C. Wu Ling Zhi", "D. Yu Jin (Curcuma)"], ans: 3 }
         ]
       ]
     },
@@ -713,21 +723,21 @@ const stagesData = {
           { q: "2. In Eighteen Incompatibilities, Aconite is incompatible with?", options: ["A. Hai Zao, Kun Bu", "B. Ban Xia, Gua Lou, Bei Mu, Bai Lian, Bai Ji", "C. Xi Xin, Shao Yao", "D. Ren Shen"], ans: 1 },
           { q: "3. 'Phlegm-fluid diseases should be treated with warming herbs' highlights?", options: ["A. Phlegm stems from dampness; Yin evil requires warmth to transform", "B. Use harsh dry-heat herbs", "C. Stagnation of Liver Qi", "D. Purgative method only"], ans: 0 },
           { q: "4. (Guaranteed) Why are Sheng Ma and Chai Hu paired with Huang Qi in Bu Zhong Yi Qi Tang?", options: ["A. Release exterior sweating", "B. Clear heat", "C. Raise clear Yang and elevate sunken Middle Qi", "D. Soothe Liver Qi"], ans: 2 },
-          { q: "5. At what age does a female's Chong Vessel flourish & menstruation begin?", options: ["A. Age 7", "B. Age 14 (2x7)", "C. Age 21 (3x7)", "D. Age 28 (4x7)"], ans: 1 }
+          { q: "5. At what age does a female's Chong Vessel flourish & menstruation begin?", options: ["A. Age 7", "B. Age 21 (3x7)", "C. Age 14 (2x7)", "D. Age 28 (4x7)"], ans: 2 }
         ],
         [
           { q: "1. Core efficacy and indication of Ma Huang Tang in Shang Han Lun is?", options: ["A. Promote sweating, release exterior, & calm asthma (Wind-Cold Exterior Excess)", "B. Harmonize Ying & Wei", "C. Warm Middle Jiao", "D. Clear Heat"], ans: 0 },
           { q: "2. In Eighteen Incompatibilities, Licorice (Gan Cao) is incompatible with?", options: ["A. Gan Sui, Da Ji, Hai Zao, Yuan Hua", "B. Wu Tou, Fu Zi", "C. San Leng, E Zhu", "D. Xi Xin, Shao Yao"], ans: 0 },
-          { q: "3. Triple Jiao Differentiation framework in Wen Bing Tiao Bian targets?", options: ["A. Upper Jiao Lung, Middle Jiao Stomach, Lower Jiao Kidney", "B. Wei-Qi-Ying-Blood", "C. Six Meridians", "D. Zang-Fu"], ans: 0 },
-          { q: "4. Core efficacy of famous formula An Gong Niu Huang Wan is?", options: ["A. Clear heat, detoxify, open orifices, & calm spirit", "B. Warm Yang", "C. Soothe Liver", "D. Invigorate Blood"], ans: 0 },
-          { q: "5. In Su Wen Chapter 1, male kidney Qi reaches balance & wisdom teeth grow at age?", options: ["A. 16 (2x8)", "B. 24 (3x8)", "C. 32 (4x8)", "D. 40 (5x8)"], ans: 1 }
+          { q: "3. Triple Jiao Differentiation framework in Wen Bing Tiao Bian targets?", options: ["A. Wei-Qi-Ying-Blood", "B. Six Meridians", "C. Upper Jiao Lung, Middle Jiao Stomach, Lower Jiao Kidney", "D. Zang-Fu"], ans: 2 },
+          { q: "4. Core efficacy of famous formula An Gong Niu Huang Wan is?", options: ["A. Warm Yang", "B. Soothe Liver", "C. Invigorate Blood", "D. Clear heat, detoxify, open orifices, & calm spirit"], ans: 3 },
+          { q: "5. In Su Wen Chapter 1, male kidney Qi reaches balance & wisdom teeth grow at age?", options: ["A. 24 (3x8)", "B. 16 (2x8)", "C. 32 (4x8)", "D. 40 (5x8)"], ans: 1 }
         ],
         [
-          { q: "1. Representative formula for 'Shaoyin disease with fever and deep pulse' in Shang Han Lun is?", options: ["A. Ma Huang Fu Zi Xi Xin Tang", "B. Gui Zhi Tang", "C. Si Ni Tang", "D. Bai Hu Tang"], ans: 0 },
-          { q: "2. In Eighteen Incompatibilities, Li Lu is incompatible with?", options: ["A. Ren Shen, Sha Shen, Dan Shen, Xuan Shen, Xi Xin, Shao Yao", "B. Gan Cao, Hai Zao", "C. Wu Tou, Fu Zi", "D. Sulfur"], ans: 0 },
-          { q: "3. Purgative formula Da Cheng Qi Tang demonstrates the principle of?", options: ["A. Drastic purging heat accumulation to preserve Yin", "B. Tonifying Spleen Yang", "C. Harmonizing Shaoyang", "D. Moistening Intestines"], ans: 0 },
-          { q: "4. 'Yin Peace and Yang Secretion maintains vitality' in Inner Canon explains?", options: ["A. Relative Yin-Yang balance is essential for health", "B. More Yin is better", "C. More Yang is better", "D. Independent existence"], ans: 0 },
-          { q: "5. Famous formula Xue Fu Zhu Yu Tang was invented by Qing dynasty physician?", options: ["A. Wang Qingren", "B. Zhang Jingyue", "C. Ye Tianshi", "D. Wu Jutong"], ans: 0 }
+          { q: "1. Representative formula for 'Shaoyin disease with fever and deep pulse' in Shang Han Lun is?", options: ["A. Gui Zhi Tang", "B. Si Ni Tang", "C. Bai Hu Tang", "D. Ma Huang Fu Zi Xi Xin Tang"], ans: 3 },
+          { q: "2. In Eighteen Incompatibilities, Li Lu is incompatible with?", options: ["A. Gan Cao, Hai Zao", "B. Wu Tou, Fu Zi", "C. Ren Shen, Sha Shen, Dan Shen, Xuan Shen, Xi Xin, Shao Yao", "D. Sulfur"], ans: 2 },
+          { q: "3. Purgative formula Da Cheng Qi Tang demonstrates the principle of?", options: ["A. Tonifying Spleen Yang", "B. Drastic purging heat accumulation to preserve Yin", "C. Harmonizing Shaoyang", "D. Moistening Intestines"], ans: 1 },
+          { q: "4. 'Yin Peace and Yang Secretion maintains vitality' in Inner Canon explains?", options: ["A. More Yin is better", "B. More Yang is better", "C. Relative Yin-Yang balance is essential for health", "D. Independent existence"], ans: 2 },
+          { q: "5. Famous formula Xue Fu Zhu Yu Tang was invented by Qing dynasty physician?", options: ["A. Zhang Jingyue", "B. Ye Tianshi", "C. Wang Qingren", "D. Wu Jutong"], ans: 2 }
         ]
       ]
     },
@@ -748,6 +758,7 @@ let finalScore = 0;
 let playerTitle = "";
 let bodyTestHistory = [];
 let activeQuestions = [];
+let lastSetIndices = {}; // 記憶每個關卡上一次抽中的題庫編號，確保不會連續重複
 
 function toggleLanguage() {
   playSound('click');
@@ -813,9 +824,19 @@ function startStage(stageIdx) {
     document.getElementById("l-5050").disabled = false;
     document.getElementById("l-phone").disabled = false;
     
-    // 隨機抽一套題庫 (Set 0, Set 1, 或 Set 2)
-    const setIdx = Math.floor(Math.random() * stage.questionSets.length);
-    activeQuestions = stage.questionSets[setIdx];
+    // 防連續重複抽題機制：確保下次玩不會抽到與上次相同的題庫
+    const sets = stage.questionSets;
+    const lastIdx = lastSetIndices[stageIdx] !== undefined ? lastSetIndices[stageIdx] : -1;
+    let setIdx;
+    if (sets.length <= 1) {
+      setIdx = 0;
+    } else {
+      do {
+        setIdx = Math.floor(Math.random() * sets.length);
+      } while (setIdx === lastIdx);
+    }
+    lastSetIndices[stageIdx] = setIdx;
+    activeQuestions = sets[setIdx];
   }
 
   document.getElementById("level-select-screen").style.display = "none";
