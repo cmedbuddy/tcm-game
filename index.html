@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+  <!-- 引入 Press Start 2P 及 大甘書道體 (Dela Gothic One) -->
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     html, body { 
       overscroll-behavior: none; 
@@ -129,7 +130,7 @@
     .stage-difficulty { color: #a0522d; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
     .stage-desc-text { color: #665247; font-size: 14px; line-height: 1.5; }
 
-    /* 古典朱紅通關印章 */
+    /* 古典朱紅印章 */
     .stamp-passed {
       position: absolute;
       right: 12px;
@@ -219,7 +220,7 @@
     .prev-btn { background: #f0e6d2; color: #5c4033; border: 2px solid #8b5a2b; box-shadow: 2px 2px 0px #8b5a2b; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 620px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
     .modal-title { font-size: 20px; font-weight: bold; color: #5c4033; margin-bottom: 18px; }
     .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 18px; color: #3c2f2f; text-align: left; white-space: pre-line; }
 
@@ -339,15 +340,14 @@
   </div>
 </div>
 
-<!-- 放大版的分享卡片 Canvas (600x900) -->
-<canvas id="card-canvas" width="600" height="900" style="display:none;"></canvas>
+<canvas id="card-canvas" width="600" height="850" style="display:none;"></canvas>
 
 <script>
 document.addEventListener('touchmove', function(e) {
   if (e.scale !== 1) { e.preventDefault(); }
 }, { passive: false });
 
-// Web Audio API 音效系統
+// 音效系統
 let audioCtx = null;
 
 function initAudio() {
@@ -452,7 +452,7 @@ const bodyTypeInfo = {
   },
   "血瘀質": {
     nameEn: "Blood Stasis",
-    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點、牙齦容易出血。\n【調理建議】宜活血化瘀、疏通經絡。多吃山楂、黑豆、玫瑰花、山藥，保持規律運動與心情舒暢。",
+    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點、牙齦容易出血。\n【調理建議】宜活血化瘀、疏通經絡。多吃山劃、黑豆、玫瑰花、山藥，保持規律運動與心情舒暢。",
     descEn: "[Features] Dull complexion, dark lips/tongue, easy bruising, bleeding gums.\n[Advice] Promote blood circulation. Eat Hawthorn, Black bean, Rose tea. Keep moving and stay relaxed."
   },
   "氣鬱質": {
@@ -502,7 +502,8 @@ const i18n = {
     shareAlert: "🕊️ 飛鴿已傳書！戰報與遊戲網址已複製到剪貼簿，快貼給朋友挑戰吧！",
     imgTip: "💡 長按上方圖片即可儲存分享給朋友！",
     disclaimer: "⚠️ 提示：本測試結果僅供食療保健參考，如有具體健康需求，請諮詢註冊中醫師。",
-    stampPassed: "已通關"
+    stampPassed: "已通關",
+    stampCompleted: "已完成"
   },
   en: {
     header: "📜 TCM Millionaire Quiz 📜",
@@ -533,13 +534,13 @@ const i18n = {
     shareAlert: "🕊️ Carrier pigeon dispatched! Result and URL copied to clipboard!",
     imgTip: "💡 Long-press or right-click the image above to save & share!",
     disclaimer: "⚠️ Note: For health guidance & wellness reference only. Consult a licensed TCM practitioner if needed.",
-    stampPassed: "PASSED"
+    stampPassed: "PASSED",
+    stampCompleted: "COMPLETED"
   }
 };
 
 const prizes = [1000, 5000, 20000, 100000, 1000000];
 
-// 體質自測 33 題題庫
 const bodyTestQuestionsZh = [
   { q: "1. 你平時容易疲倦乏力嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
   { q: "2. 你說話聲音低弱，容易感到氣短少言嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
@@ -745,7 +746,7 @@ const stagesData = {
         ],
         [
           { q: "1. 《傷寒論》中，「麻黃湯」的核心功效與主治是？", options: ["A. 發汗平喘", "B. 調和營衛", "C. 溫中祛寒", "D. 清熱瀉火"], ans: 0 },
-          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 川烏、草烏、附子", "C. 三棱、莪朮、水蛭", "D. 細辛、芍藥、乾薑"], ans: 0 },
+          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 川烏、草烏、附子", "C. 三棱、莪朮、水窒", "D. 細辛、芍藥、乾薑"], ans: 0 },
           { q: "3. 《溫病條辨》中，溫病初起、邪在衛分（風溫初起，發熱頭痛、咳嗽口渴）的首選代表方劑是？", options: ["A. 桑菊飲", "B. 銀翹散", "C. 清營湯", "D. 白虎湯"], ans: 1 },
           { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 溫陽固脫", "B. 疏肝理氣", "C. 活血化瘀", "D. 開竅安神"], ans: 3 },
           { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強」？", options: ["A. 二十四歲 (3x8)", "B. 十六歲 (2x8)", "C. 三十二歲 (4x8)", "D. 四十歲 (5x8)"], ans: 1 }
@@ -971,7 +972,12 @@ function renderStageList() {
     card.onclick = () => startStage(idx);
     
     const isPassed = passedStages[idx] === true;
-    const stampHtml = isPassed ? `<div class="stamp-passed">💮 ${i18n[currentLang].stampPassed}</div>` : "";
+    let stampHtml = "";
+    if (isPassed) {
+      // 體質自測關卡顯示「已完成」，一般關卡顯示「已通關」
+      const stampText = stg.isBodyTest ? i18n[currentLang].stampCompleted : i18n[currentLang].stampPassed;
+      stampHtml = `<div class="stamp-passed">💮 ${stampText}</div>`;
+    }
 
     card.innerHTML = `
       ${stampHtml}
@@ -1230,7 +1236,7 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-/* 高畫質放大版水墨書法體質卡片渲染器 (600x900) */
+// 體質結果一鍵生成（採用 大甘書道體 80px 巨幅字體 + 全新典雅朱砂古印）
 function generateResultImage() {
   playSound('click');
   const canvas = document.getElementById("card-canvas");
@@ -1240,115 +1246,115 @@ function generateResultImage() {
   const typeName = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
   const descLines = (currentLang === 'zh') ? info.desc.split('\n') : info.descEn.split('\n');
 
-  // 1. 底色
-  ctx.fillStyle = "#fcf9f2";
-  ctx.fillRect(0, 0, 600, 900);
+  // 底色
+  ctx.fillStyle = "#fffdf9";
+  ctx.fillRect(0, 0, 600, 850);
 
-  // 2. 邊框繪製
+  // 雙層日式典雅邊框
   ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 10;
-  ctx.strokeRect(18, 18, 564, 864);
-  ctx.strokeStyle = "#c8b4a2";
+  ctx.lineWidth = 8;
+  ctx.strokeRect(15, 15, 570, 820);
+  ctx.strokeStyle = "#d7c4b7";
   ctx.lineWidth = 2;
-  ctx.strokeRect(28, 28, 544, 844);
+  ctx.strokeRect(25, 25, 550, 800);
 
-  // 3. 頂部標題
+  // 頂部標題
   ctx.fillStyle = "#5c4033";
-  ctx.font = "bold 28px sans-serif";
+  ctx.font = "bold 26px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 80);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 75);
 
-  // 4. 水墨圓形宣紙背景
+  const shortName = lastEvaluatedType.replace("質", ""); // 如：氣鬱、陽虛
+
+  // 1. 水墨暈染底圈
   ctx.save();
   ctx.beginPath();
-  ctx.arc(300, 220, 100, 0, Math.PI * 2);
-  ctx.fillStyle = "#f2e8d5";
+  ctx.arc(300, 205, 82, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(240, 230, 210, 0.75)";
   ctx.fill();
-  ctx.strokeStyle = "#d7c4b7";
+  ctx.strokeStyle = "rgba(139, 90, 43, 0.35)";
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.restore();
 
-  // 5. 氣勢磅礡的黑墨書法大字（多重比劃水墨疊加 + 超大字號 110px）
-  const shortName = lastEvaluatedType.replace("質", ""); // 如：氣鬱
+  // 2. 超大字號【大甘書道體 (Dela Gothic One)】書法大字
   ctx.save();
-  ctx.fillStyle = "#0d0d0d";
-  ctx.font = "bold 110px 'Ma Shan Zheng', 'Kaiti SC', 'STKaiti', 'DFKai-SB', cursive, serif";
+  ctx.fillStyle = "#1c140d";
+  ctx.font = "80px 'Dela Gothic One', sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-
-  // 水墨筆觸多重重繪 (呈現毛筆濡墨暈染效果)
-  const offsets = [
-    {x: 0, y: 0}, {x: -1.5, y: -1}, {x: 1.5, y: 1}, 
-    {x: -1, y: 1.5}, {x: 1, y: -1.5}
-  ];
-  offsets.forEach(off => {
-    ctx.fillText(shortName, 300 + off.x, 220 + off.y);
-  });
+  ctx.shadowColor = "rgba(0, 0, 0, 0.18)";
+  ctx.shadowBlur = 8;
+  ctx.shadowOffsetX = 4;
+  ctx.shadowOffsetY = 4;
+  ctx.fillText(shortName, 300, 205);
   ctx.restore();
 
-  // 6. 古典朱紅玉印
+  // 3. 全新設計典雅朱砂古印
   ctx.save();
-  ctx.strokeStyle = "#b22222";
-  ctx.lineWidth = 3.5;
-  ctx.strokeRect(425, 175, 54, 54);
+  ctx.translate(415, 160);
+  ctx.rotate(0.08); // 輕微自然傾斜
+  // 印章朱紅背景
   ctx.fillStyle = "#b22222";
-  ctx.font = "bold 18px 'Kaiti SC', 'STKaiti', serif";
+  ctx.beginPath();
+  ctx.roundRect(0, 0, 52, 52, 8);
+  ctx.fill();
+  // 白字印文
+  ctx.fillStyle = "#ffffff";
+  ctx.font = "bold 17px serif";
   ctx.textAlign = "center";
-  ctx.fillText("體質", 452, 198);
-  ctx.fillText("鑒定", 452, 218);
+  ctx.fillText("體質", 26, 22);
+  ctx.fillText("鑑定", 26, 42);
   ctx.restore();
 
-  // 7. 體質名稱主標題條（字體放大至 32px）
+  // 體質名稱標籤條
   ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(60, 350, 480, 60);
+  ctx.fillRect(80, 315, 440, 52);
   ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 2.5;
-  ctx.strokeRect(60, 350, 480, 60);
+  ctx.lineWidth = 2;
+  ctx.strokeRect(80, 315, 440, 52);
 
-  ctx.fillStyle = "#8b5a2b";
-  ctx.font = "bold 32px sans-serif";
+  ctx.fillStyle = "#a0522d";
+  ctx.font = "bold 26px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(typeName, 300, 392);
+  ctx.fillText(typeName, 300, 351);
 
-  // 8. 內文說明段落（字體大幅擴大至 20px，行距 38px）
+  // 說明內容自動換行
   ctx.fillStyle = "#3c2f2f";
-  ctx.font = "bold 20px sans-serif";
+  ctx.font = "17px sans-serif";
   ctx.textAlign = "left";
   
-  let startY = 460;
+  let startY = 405;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
     for (let i = 0; i < words.length; i++) {
       let testLine = lineStr + words[i];
       let metrics = ctx.measureText(testLine);
-      if (metrics.width > 470 && i > 0) {
-        ctx.fillText(lineStr, 65, startY);
+      if (metrics.width > 440 && i > 0) {
+        ctx.fillText(lineStr, 80, startY);
         lineStr = words[i];
-        startY += 32;
+        startY += 26;
       } else {
         lineStr = testLine;
       }
     }
-    ctx.fillText(lineStr, 65, startY);
-    startY += 44;
+    ctx.fillText(lineStr, 80, startY);
+    startY += 34;
   });
 
-  // 9. 底部專業提醒標語
+  // 底部專業提醒
   ctx.fillStyle = "#8c7b6c";
-  ctx.font = "14px sans-serif";
+  ctx.font = "13px sans-serif";
   ctx.textAlign = "center";
   const disclaimerMsg = (currentLang === 'zh') 
     ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
     : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
-  ctx.fillText(disclaimerMsg, 300, 815);
+  ctx.fillText(disclaimerMsg, 300, 775);
 
-  ctx.font = "bold italic 16px sans-serif";
-  ctx.fillStyle = "#5c4033";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 845);
+  ctx.font = "italic 14px sans-serif";
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 800);
 
-  // 轉換生成圖片 Preview
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
   imgElem.src = dataURL;
