@@ -431,50 +431,51 @@ let lastSavedBodyType = localStorage.getItem('tcm_last_body_type') || null;
 const bodyTypeInfo = {
   "氣虛質": {
     nameEn: "Qi Deficiency",
-    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨參等補氣食物，避免劇烈運動及熬夜。",
-    descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Eat Astragalus, Yam, Codonopsis. Avoid overexertion."
+    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。可飲黃耆、山藥、黨參等補氣的湯水，避免過多劇烈運動及熬夜。",
+    descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Drink Qi-tonifying soups such as Astragalus, Yam, and Codonopsis. Avoid excessive strenuous exercise and staying up late."
   },
   "陽虛質": {
     nameEn: "Yang Deficiency",
-    desc: "【特徵】畏寒怕冷、手腳冰涼、喜熱飲食、性格較沉靜。\n【調理建議】宜溫補脾腎。多吃羊肉、生薑、韭菜、桂圓，少吃生冷寒涼食物，常曬太陽與熱水泡腳。",
-    descEn: "[Features] Aversion to cold, cold limbs, prefers warm food/drinks.\n[Advice] Warm Spleen and Kidney. Eat Lamb, Ginger, Leek, Longan. Avoid cold/raw food."
+    desc: "【特徵】畏寒怕冷、手腳冰涼、喜熱飲食、性格較沉靜。\n【調理建議】宜溫補脾腎。可吃羊肉，餸菜搭配生薑、韭菜，少吃生冷、寒涼食物。",
+    descEn: "[Features] Aversion to cold, cold limbs, prefers warm food and drinks, generally calm personality.\n[Advice] Warm and tonify Spleen and Kidney. Eat lamb, pair dishes with ginger and Chinese chives (leek), and consume less raw, cold, and cooling foods."
   },
   "陰虛質": {
     nameEn: "Yin Deficiency",
-    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀掉屑、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙參、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
-    descEn: "[Features] Warm palms/soles, dry mouth/skin, peeling skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
+    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀掉屑。\n【調理建議】宜滋陰清熱。適合食療：百合、沙參、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
+    descEn: "[Features] Warm palms and soles, dry mouth and tongue, prefers cold drinks, dry and peeling skin.\n[Advice] Nourish Yin and clear heat. Suitable dietary therapy: Lily bulb, Radix Glehniae (Shashen), Ophiopogon (maidong), black sesame; eat fewer spicy and drying foods; avoid staying up late."
   },
   "痰濕質": {
     nameEn: "Phlegm-Dampness",
-    desc: "【特徵】腹部肥滿鬆軟、面部皮膚油膩、多汗且黏、口中黏膩、頭重如裹。\n【調理建議】宜健脾利濕、化痰祛濕。多吃薏苡仁、茯苓、陳皮、冬瓜、赤小豆，少吃甜食與肥甘厚味。",
-    descEn: "[Features] Abdominal fullness, oily skin, sticky sweat, heavy sensation in body.\n[Advice] Strengthen Spleen and resolve dampness. Eat Job's tears, Poria, Tangerine peel, Winter melon."
+    desc: "【特徵】面部皮膚油膩、多汗且黏、口中黏膩、頭重如裹。\n【調理建議】宜健脾利濕、化痰祛濕。適合食療：茯苓、陳皮、冬瓜、赤小豆，少吃甜食與肥甘厚味。",
+    descEn: "[Features] Oily facial skin, excessive sticky sweat, sticky sensation in the mouth, heavy sensation in the head.\n[Advice] Strengthen Spleen, promote diuresis, resolve phlegm, and remove dampness. Suitable dietary therapy: Poria, tangerine peel, winter melon, adzuki beans (red beans); consume fewer sweets and greasy, rich foods."
   },
   "濕熱質": {
     nameEn: "Damp-Heat",
-    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、小便短赤、性格較急躁。\n【調理建議】宜分消濕熱、清熱利濕。多吃綠豆、苦瓜、黃瓜、薏米、蓮子，少吃煎炸烤辣食物及飲酒。",
-    descEn: "[Features] Acne-prone, bitter mouth/halitosis, sticky stools, dark urine.\n[Advice] Clear heat and drain dampness. Eat Mung bean, Bitter gourd, Cucumber, Lotus seed. Avoid alcohol & spicy food."
+    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、小便短赤、性格較急躁。\n【調理建議】宜清熱利濕。適合食療：綠豆、苦瓜、薏米，少吃煎炸烤辣食物及飲酒。",
+    descEn: "[Features] Acne-prone face, bitter taste and halitosis in the mouth, sticky and unrefreshing stools, short and dark urine, impatient personality.\n[Advice] Clear heat and drain dampness. Suitable dietary therapy: Mung beans, bitter gourd, adlay (job's tears); consume fewer deep-fried, grilled, and spicy foods, and avoid alcohol."
   },
   "血瘀質": {
     nameEn: "Blood Stasis",
-    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點、牙齦容易出血。\n【調理建議】宜活血化瘀、疏通經絡。多吃山楂、黑豆、玫瑰花、山藥，保持規律運動與心情舒暢。",
-    descEn: "[Features] Dull complexion, dark lips/tongue, easy bruising, bleeding gums.\n[Advice] Promote blood circulation. Eat Hawthorn, Black bean, Rose tea. Keep moving and stay relaxed."
+    desc: "【特徵】面色晦暗、膚色色素沉着、舌質紫暗或有瘀點。\n【調理建議】宜活血化瘀、疏通經絡。可喝山楂水、玫瑰花茶，保持規律運動與心情舒暢。",
+    descEn: "[Features] Dull and dark complexion, skin pigmentation, purple-dark tongue or petechiae.\n[Advice] Promote blood circulation and remove stasis, dredge meridians and collaterals. Drink hawthorn water and rose tea; maintain regular exercise and a cheerful mood."
   },
   "氣鬱質": {
     nameEn: "Qi Stagnation",
-    desc: "【特徵】神情抑鬱、情緒低沉、無緣無故嘆氣、胸脅脹滿、多愁善感。\n【調理建議】宜疏肝理氣、解鬱安神。多喝玫瑰花茶、薄荷茶、柑橘、合歡花，適度戶外運動，放鬆心境。",
-    descEn: "[Features] Depressed mood, frequent sighing, chest fullness, emotionally sensitive.\n[Advice] Soothe Liver and regulate Qi. Drink Rose tea, Mint tea. Exercise outdoors and manage stress."
+    desc: "【特徵】神情抑鬱、情緒低沉、無緣無故嘆氣、胸脅脹滿、多愁善感。\n【調理建議】宜疏肝理氣、解鬱安神。可喝玫瑰花茶，適度戶外運動，放鬆心境。",
+    descEn: "[Features] Depressed expression, low mood, unprovoked sighing, distention and fullness in the chest and flanks, sentimental and melancholy.\n[Advice] Soothe the Liver, regulate Qi, relieve depression, and calm the mind. Drink rose tea, engage in moderate outdoor exercise, and relax the mind."
   },
   "特稟質": {
     nameEn: "Special/Allergic",
-    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表、養血消風。多吃靈芝、黃耆、紅棗，飲食宜清淡，遠離已知過敏原及注意保暖。",
-    descEn: "[Features] Allergic constitution (easy sneezing, runny nose, asthma, hives).\n[Advice] Boost immunity and consolidate exterior. Eat Reishi mushroom, Astragalus. Avoid allergens."
+    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表。注意飲食，遠離已知過敏原。",
+    descEn: "[Features] Allergic constitution, prone to sneezing, runny nose, coughing, urticaria (hives), or asthma.\n[Advice] Benefit Qi and consolidate the exterior. Pay attention to diet and stay away from known allergens."
   },
   "平和質": {
     nameEn: "Balanced Neutral",
-    desc: "【特徵】體形勻稱、面色紅潤、精力充沛、睡眠良好、適應能力強。\n【調理建議】完美的健康體質！保持均衡飲食、規律作息與樂觀心態，順應四時養生即可。",
-    descEn: "[Features] Balanced constitution, vibrant complexion, good sleep, high energy.\n[Advice] Ideal health status! Maintain balanced diet, sleep schedule, and positive mindset."
+    desc: "【特徵】面色紅潤、精力充沛、睡眠良好、適應能力強。\n【調理建議】健康體質！保持均衡飲食、規律作息與樂觀心態，順應四時養生即可。",
+    descEn: "[Features] Rosy complexion, energetic, good sleep, strong adaptability.\n[Advice] Healthy constitution! Maintain a balanced diet, regular schedule, and optimistic mindset, and adapt wellness practices to the four seasons."
   }
 };
+
 
 const i18n = {
   zh: {
