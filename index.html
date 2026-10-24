@@ -1227,7 +1227,7 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果生成（使用 Promise 確保大甘書法字型 100% 載入並完美繪製）
+// 體質結果生成（使用 Promise 確保書法字型 100% 載入並完美繪製、全新設計古典朱紅印章）
 async function generateResultImage() {
   playSound('click');
   
@@ -1243,11 +1243,11 @@ async function generateResultImage() {
   const typeName = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
   const descLines = (currentLang === 'zh') ? info.desc.split('\n') : info.descEn.split('\n');
 
-  // 底色
+  // 底色：宣紙白
   ctx.fillStyle = "#fdfbf7";
   ctx.fillRect(0, 0, 600, 820);
 
-  // 外框
+  // 外框（雙重古风边框）
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 8;
   ctx.strokeRect(15, 15, 570, 790);
@@ -1261,7 +1261,7 @@ async function generateResultImage() {
   ctx.textAlign = "center";
   ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 75);
 
-  const shortName = lastEvaluatedType.replace("質", ""); // 大甘書法字展示名
+  const shortName = lastEvaluatedType.replace("質", ""); // 書法展示名
   
   // 墨跡背景圓
   ctx.save();
@@ -1274,7 +1274,7 @@ async function generateResultImage() {
   ctx.stroke();
   ctx.restore();
 
-  // 完美大甘書道體 / 狂草書法字（字體放大至 84px，粗體黑墨）
+  // 書道毛筆字（放大至 84px，黑墨與立體陰影，確保 100% 渲染）
   ctx.save();
   ctx.fillStyle = "#111111";
   ctx.font = "bold 84px 'Zhi Mang Xing', 'Ma Shan Zheng', 'KaiTi', cursive, serif";
@@ -1287,21 +1287,41 @@ async function generateResultImage() {
   ctx.fillText(shortName, 300, 202);
   ctx.restore();
 
-  // 精緻古典圓形篆刻朱紅印章
+  // 重新設計：精緻古典雙圈正方篆刻朱紅印章
   ctx.save();
-  ctx.beginPath();
-  ctx.arc(440, 160, 28, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(192, 57, 43, 0.9)";
-  ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = "#ffffff";
-  ctx.stroke();
+  const stampX = 430, stampY = 150, stampSize = 64;
   
+  // 朱砂紅印台背景
+  ctx.fillStyle = "rgba(185, 43, 39, 0.92)";
+  ctx.fillRect(stampX, stampY, stampSize, stampSize);
+  
+  // 雙層古风邊框
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = "#ffffff";
+  ctx.strokeRect(stampX + 3, stampY + 3, stampSize - 6, stampSize - 6);
+  ctx.lineWidth = 1;
+  ctx.strokeRect(stampX + 6, stampY + 6, stampSize - 12, stampSize - 12);
+
+  // 內置十字格與精緻篆刻風格文字
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
+  ctx.setLineDash([3, 3]);
+  ctx.beginPath();
+  ctx.moveTo(stampX + stampSize/2, stampY + 6);
+  ctx.lineTo(stampX + stampSize/2, stampY + stampSize - 6);
+  ctx.moveTo(stampX + 6, stampY + stampSize/2);
+  ctx.lineTo(stampX + stampSize - 6, stampY + stampSize/2);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // 印章文字（右上：中，左上：醫，右下：專，左下：印 - 傳統九疊篆排版感）
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 13px serif";
+  ctx.font = "bold 14px serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("中醫印", 440, 160);
+  ctx.fillText("中", stampX + 18, stampY + 20);
+  ctx.fillText("醫", stampX + 46, stampY + 20);
+  ctx.fillText("鑒", stampX + 18, stampY + 46);
+  ctx.fillText("印", stampX + 46, stampY + 46);
   ctx.restore();
 
   // 體質名稱標籤條
