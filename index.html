@@ -235,7 +235,6 @@
       border-radius: 6px;
       margin-bottom: 14px;
       text-align: left;
-      white-space: pre-line;
     }
 
     #image-result-preview {
@@ -331,8 +330,7 @@
     <div class="modal-text" id="modal-text">...</div>
     
     <div class="disclaimer-note" id="txt-disclaimer" style="display:none;">
-      ⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。
-如需調理或有健康問題，請先諮詢註冊中醫師。
+      ⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。
     </div>
 
     <div id="image-result-preview">
@@ -468,7 +466,7 @@ const bodyTypeInfo = {
   },
   "特稟質": {
     nameEn: "Special/Allergic",
-    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表、養血消風。多吃靈芝、黃耆、紅導，飲食宜清淡，遠離已知過敏原及注意保暖。",
+    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表、養血消風。多吃靈芝、黃耆、紅棗，飲食宜清淡，遠離已知過敏原及注意保暖。",
     descEn: "[Features] Allergic constitution (easy sneezing, runny nose, asthma, hives).\n[Advice] Boost immunity and consolidate exterior. Eat Reishi mushroom, Astragalus. Avoid allergens."
   },
   "平和質": {
@@ -495,25 +493,27 @@ const i18n = {
     unit: "點",
     progressLabel: "進度",
     npcReady: "少俠，準備好挑戰未？",
+    npcReadyBodyTest: "少俠，請靜下心來回答。",
     npcCorrect: "答得好！順利晉級，累積功德 ",
     npc5050: "老中醫掌櫃：「施展陰陽化煞，為你排除兩個錯誤干擾！」",
     npcPhone: "飛鴿問書：「徒兒，老夫掐指一算，此題極有可能是 ",
     cashoutAlert: "你目前仲未有功德，先答對一題啦！",
     cashoutTitle: "明哲保身大夫",
     winTitle: "📜 考核結算 📜",
+    winTitleBodyTest: "📜 鑑定結果 📜",
     loseTitle: "💀 考核結束 💀",
     winMsg: "🎉 恭喜完全通關 ",
     allWinMsg: "🎉 恭喜通關全部關卡！您已融會貫通中醫精髓，榮登【懸壺濟世・國醫大師】之位！",
     loseMsg: "遺憾答錯！正確答案係 ",
     titleFail: "考核未順利通過",
     imgTip: "💡 長按上方圖片即可儲存分享給朋友！",
-    disclaimer: "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。\n如需調理或有健康問題，請先諮詢註冊中醫師。",
+    disclaimer: "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。",
     stampPassed: "已完成"
   },
   en: {
     header: "📜 TCM Quiz 📜",
     bankLabel: "Total Accumulated Merit: ",
-    selectTitle: "Select Quiz Level or Body Test:",
+    selectTitle: "Select Quiz Level or Body Constitution Test:",
     phoneBtn: "📜 Pigeon Letter",
     cashoutBtn: "✨ Cash Out",
     prevBtn: "⬅️ Previous",
@@ -526,19 +526,21 @@ const i18n = {
     unit: "pts",
     progressLabel: "Progress",
     npcReady: "Greetings scholar! Ready to test your TCM knowledge?",
+    npcReadyBodyTest: "Scholar, please calm your mind and answer.",
     npcCorrect: "Splendid! Correct answer! Accumulated Merit: ",
     npc5050: "Master Herbalist: 'Using Yin-Yang elimination to remove 2 wrong choices!'",
     npcPhone: "Pigeon Letter: 'Disciple, I predict the answer is likely ",
     cashoutAlert: "You haven't earned any merit yet! Answer at least 1 question.",
     cashoutTitle: "Prudent Physician",
     winTitle: "📜 Exam Result 📜",
+    winTitleBodyTest: "📜 Assessment Result 📜",
     loseTitle: "💀 Game Over 💀",
     winMsg: "🎉 Congratulations on completing ",
     allWinMsg: "🎉 Congratulations on completing ALL levels! You have mastered TCM and earned [Grandmaster Physician]!",
     loseMsg: "Incorrect! The correct answer was ",
     titleFail: "Exam Failed",
     imgTip: "💡 Long-press or right-click the image above to save & share!",
-    disclaimer: "⚠️ Note: This result is a preliminary assessment for reference only, not a medical diagnosis.\nConsult a licensed TCM practitioner for medical advice.",
+    disclaimer: "⚠️ Note: This test result is a preliminary assessment for reference only, not a medical diagnosis or treatment advice. Consult a licensed TCM practitioner if needed.",
     stampPassed: "COMPLETED"
   }
 };
@@ -626,7 +628,7 @@ const stagesData = {
       titleSuccess: "草堂養生達人",
       questionSets: [
         [
-          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人參紅茶", "B. 熱薑茶", "C. 菊花茶", "D. 桂圓紅導茶"], ans: 2 },
+          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人參紅茶", "B. 熱薑茶", "C. 菊花茶", "D. 桂圓紅棗茶"], ans: 2 },
           { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 合谷穴", "C. 足三里", "D. 太衝穴"], ans: 1 },
           { q: "3. 秋天天氣乾燥容易乾咳，食療常推薦以下哪種食物潤肺？", options: ["A. 雪梨川貝", "B. 麻辣火鍋", "C. 烤香腸", "D. 炸雞塊"], ans: 0 },
           { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 汗腺毛孔", "C. 腸胃消化", "D. 氣血經絡"], ans: 3 },
@@ -919,7 +921,7 @@ const stagesData = {
       ]
     },
     {
-      name: "🩺 Special: [TCM Body Type Test (33 Qs)]",
+      name: "🩺 Special: [TCM Body Constitution Test (33 Qs)]",
       difficulty: "Special Quiz",
       desc: "Discover your TCM body constitution among 9 types",
       isBodyTest: true,
@@ -1030,6 +1032,7 @@ function startStage(stageIdx) {
     document.getElementById("txt-cashout").style.display = "none";
     document.getElementById("txt-prev").style.display = "none";
     activeQuestions = (currentLang === 'zh') ? bodyTestQuestionsZh : bodyTestQuestionsEn;
+    document.getElementById("npc-dialog").innerText = i18n[currentLang].npcReadyBodyTest;
   } else {
     document.getElementById("lifelines-box").style.display = "flex";
     document.getElementById("txt-cashout").style.display = "inline-block";
@@ -1049,12 +1052,12 @@ function startStage(stageIdx) {
     }
     lastSetIndices[stageIdx] = setIdx;
     activeQuestions = sets[setIdx];
+    document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcReady} (${stage.name})`;
   }
 
   document.getElementById("level-select-screen").style.display = "none";
   document.getElementById("quiz-screen").style.display = "block";
   
-  document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcReady} (${stage.name})`;
   loadQuestion();
 }
 
@@ -1192,10 +1195,10 @@ function showBodyTestResultModal(topType) {
   const descText = (currentLang === 'zh') ? info.desc : info.descEn;
 
   const resultMsg = (currentLang === 'zh')
-    ? `【中醫九種體質鑑定結果】\n\n你的主要體質傾向為：【${displayTitle}】！\n\n${descText}`
-    : `[TCM 9 Body Constitution Result]\n\nYour primary body type is: [${displayTitle}]!\n\n${descText}`;
+    ? `你的主要體質傾向為：【${displayTitle}】！\n\n${descText}`
+    : `Your primary body constitution is: [${displayTitle}]!\n\n${descText}`;
 
-  document.getElementById("modal-title").innerText = i18n[currentLang].winTitle;
+  document.getElementById("modal-title").innerText = i18n[currentLang].winTitleBodyTest;
   document.getElementById("modal-text").innerText = resultMsg;
   document.getElementById("image-result-preview").style.display = "none";
   document.getElementById("txt-disclaimer").style.display = "block";
@@ -1365,7 +1368,7 @@ function generateResultImage() {
     currentTextY += 26;
   });
 
-  // 底部免責聲明提醒（分兩行繪製，防止超出框架）
+  // 底部免責聲明提醒（證書圖片分兩行顯示）
   ctx.fillStyle = "#8c7b6c";
   ctx.font = "11px sans-serif";
   ctx.textAlign = "center";
