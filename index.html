@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     html, body { 
       overscroll-behavior: none; 
@@ -61,7 +61,6 @@
       margin-bottom: 12px;
     }
 
-    /* 精修版金黃葫蘆 Logo (自然漸層高光) */
     .game-logo {
       width: 76px;
       height: 76px;
@@ -97,7 +96,6 @@
     
     #level-select-screen { text-align: center; padding: 10px 0; }
     
-    /* 總資產金幣列 */
     .bank-bar {
       background: #f0e6d2;
       border: 2px solid #8b5a2b;
@@ -122,12 +120,32 @@
       text-align: left; 
       transition: all 0.2s ease; 
       box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
     }
     .stage-card:hover { border-color: #8b5a2b; background: #f7ede2; transform: translateY(-2px); }
-    .stage-title { color: #5c4033; font-size: 17px; font-weight: bold; margin-bottom: 8px; }
+    .stage-title { color: #5c4033; font-size: 17px; font-weight: bold; margin-bottom: 8px; padding-right: 70px; }
     
     .stage-difficulty { color: #a0522d; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
     .stage-desc-text { color: #665247; font-size: 14px; line-height: 1.5; }
+
+    /* 古典朱紅通關印章 */
+    .stamp-passed {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      border: 3px double #b22222;
+      color: #b22222;
+      font-weight: bold;
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transform: rotate(-12deg);
+      background-color: rgba(255, 240, 240, 0.85);
+      letter-spacing: 1px;
+      box-shadow: 0 0 2px rgba(178, 34, 34, 0.3);
+      user-select: none;
+    }
 
     .top-panel { display: flex; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; align-items: center; }
     .lifelines { display: flex; gap: 10px; }
@@ -203,9 +221,19 @@
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; }
     .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
     .modal-title { font-size: 20px; font-weight: bold; color: #5c4033; margin-bottom: 18px; }
-    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 22px; color: #3c2f2f; text-align: left; white-space: pre-line; }
+    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 18px; color: #3c2f2f; text-align: left; white-space: pre-line; }
 
-    /* 生成圖片預覽區域 */
+    .disclaimer-note {
+      font-size: 12px;
+      color: #a0522d;
+      background: #f0e6d2;
+      border: 1px dashed #8b5a2b;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
     #image-result-preview {
       display: none;
       margin-top: 15px;
@@ -222,12 +250,11 @@
     }
   </style>
 </head>
-<body>
+<body onclick="initAudio()">
 
 <div id="game-container">
   <div class="header-container">
     <div class="header-top-row">
-      <!-- 重構高光線條的金黃葫蘆 Logo -->
       <svg class="game-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="gourdGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -239,27 +266,16 @@
             <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
           </linearGradient>
         </defs>
-        <!-- 外背景圈 -->
         <circle cx="50" cy="50" r="45" fill="#fdfbf7" stroke="#8b5a2b" stroke-width="2.5"/>
         <circle cx="50" cy="50" r="40" fill="none" stroke="#d7c4b7" stroke-width="1.5" stroke-dasharray="4,3"/>
-        
-        <!-- 葫蘆下球體 -->
         <circle cx="50" cy="62" r="20" fill="url(#gourdGrad)" stroke="#6d421e" stroke-width="2"/>
-        <!-- 葫蘆上球體 -->
         <circle cx="50" cy="36" r="13" fill="url(#gourdGrad)" stroke="#6d421e" stroke-width="2"/>
-        
-        <!-- 自然過渡腰線 -->
         <path d="M 41 46 C 45 48.5 55 48.5 59 46" fill="none" stroke="#6d421e" stroke-width="2" stroke-linecap="round"/>
-        
-        <!-- 柔美立體弧形高光 (漸層過渡) -->
         <path d="M 41 31 A 9 9 0 0 1 48 26" fill="none" stroke="url(#glowGrad)" stroke-width="3" stroke-linecap="round"/>
         <path d="M 37 56 A 15 15 0 0 1 48 45" fill="none" stroke="url(#glowGrad)" stroke-width="3.5" stroke-linecap="round"/>
-        
-        <!-- 葫蘆塞蓋 -->
         <path d="M 46 20 L 54 20 L 52 24 L 48 24 Z" fill="#6d421e"/>
         <rect x="47" y="17" width="6" height="3" rx="1" fill="#8b5a2b"/>
       </svg>
-      <!-- 語言切換按鈕 -->
       <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
     </div>
     <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
@@ -305,7 +321,10 @@
     <div class="modal-title" id="modal-title">...</div>
     <div class="modal-text" id="modal-text">...</div>
     
-    <!-- 體質測試專用圖片預覽容器 -->
+    <div class="disclaimer-note" id="txt-disclaimer" style="display:none;">
+      ⚠️ 提示：本測試結果僅供食療保健參考，如有具體健康需求，請諮詢註冊中醫師。
+    </div>
+
     <div id="image-result-preview">
       <img id="generated-card-img" src="" alt="體質評估卡片">
       <div style="font-size:12px; color:#8c7b6c; margin-top:6px;" id="txt-img-tip">💡 長按上方圖片即可儲存分享給朋友！</div>
@@ -320,15 +339,14 @@
   </div>
 </div>
 
-<!-- 隱藏 Canvas 用於渲染生成分享卡片 -->
-<canvas id="card-canvas" width="600" height="750" style="display:none;"></canvas>
+<canvas id="card-canvas" width="600" height="820" style="display:none;"></canvas>
 
 <script>
 document.addEventListener('touchmove', function(e) {
   if (e.scale !== 1) { e.preventDefault(); }
 }, { passive: false });
 
-// 音效系統
+// Web Audio API 強效兼容音效系統
 let audioCtx = null;
 
 function initAudio() {
@@ -403,8 +421,8 @@ function playSound(type) {
 
 let currentLang = 'zh';
 let totalBankTaels = parseInt(localStorage.getItem('tcm_total_taels') || '0');
+let passedStages = JSON.parse(localStorage.getItem('tcm_passed_stages') || '{}');
 
-// 9 種體質詳細說明與英文化資料
 const bodyTypeInfo = {
   "氣虛質": {
     nameEn: "Qi Deficiency",
@@ -418,8 +436,8 @@ const bodyTypeInfo = {
   },
   "陰虛質": {
     nameEn: "Yin Deficiency",
-    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙蔘、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
-    descEn: "[Features] Warm palms/soles, dry mouth/skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
+    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀掉屑、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙蔘、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
+    descEn: "[Features] Warm palms/soles, dry mouth/skin, peeling skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
   },
   "痰濕質": {
     nameEn: "Phlegm-Dampness",
@@ -481,7 +499,9 @@ const i18n = {
     loseMsg: "遺憾答錯！正確答案係 ",
     titleFail: "考核未順利通過",
     shareAlert: "🕊️ 飛鴿已傳書！戰報與遊戲網址已複製到剪貼簿，快貼給朋友挑戰吧！",
-    imgTip: "💡 長按上方圖片即可儲存分享給朋友！"
+    imgTip: "💡 長按上方圖片即可儲存分享給朋友！",
+    disclaimer: "⚠️ 提示：本測試結果僅供食療保健參考，如有具體健康需求，請諮詢註冊中醫師。",
+    stampPassed: "已通關"
   },
   en: {
     header: "📜 TCM Millionaire Quiz 📜",
@@ -510,13 +530,15 @@ const i18n = {
     loseMsg: "Incorrect! The correct answer was ",
     titleFail: "Exam Failed",
     shareAlert: "🕊️ Carrier pigeon dispatched! Result and URL copied to clipboard!",
-    imgTip: "💡 Long-press or right-click the image above to save & share!"
+    imgTip: "💡 Long-press or right-click the image above to save & share!",
+    disclaimer: "⚠️ Note: For health guidance & wellness reference only. Consult a licensed TCM practitioner if needed.",
+    stampPassed: "PASSED"
   }
 };
 
 const prizes = [1000, 5000, 20000, 100000, 1000000];
 
-// 體質自測 33 題問題庫（全英文與中英文對應）
+// 體質自測 33 題問題庫（更正第 11 題極乾掉屑語義）
 const bodyTestQuestionsZh = [
   { q: "1. 你平時容易疲倦乏力嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
   { q: "2. 你說話聲音低弱，容易感到氣短少言嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
@@ -528,7 +550,7 @@ const bodyTestQuestionsZh = [
   { q: "8. 你受涼或吹冷氣後容易胃痛或關節酸痛嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陽虛質" },
   { q: "9. 你感到手心或腳心發熱嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
   { q: "10. 你感到口乾舌燥、總想喝冷水嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
-  { q: "11. 你皮膚經常乾燥、容易起皮嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
+  { q: "11. 你的皮膚經常乾燥、容易脫皮或掉屑嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
   { q: "12. 你容易大便乾結或經常便秘嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "陰虛質" },
   { q: "13. 你感到胸腹滿悶或腹部鬆軟肥胖嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "痰濕質" },
   { q: "14. 你面部皮膚經常油膩、油脂分泌多嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "痰濕質" },
@@ -564,7 +586,7 @@ const bodyTestQuestionsEn = [
   { q: "8. Does cold AC easily trigger stomachache or joint pain?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "陽虛質" },
   { q: "9. Do your palms and soles often feel warm/feverish?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "陰虛質" },
   { q: "10. Do you frequently feel dry mouth and crave cold drinks?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "陰虛質" },
-  { q: "11. Is your skin often dry and prone to flaking?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "陰虛質" },
+  { q: "11. Is your skin frequently dry, peeling, or flaking?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "陰虛質" },
   { q: "12. Do you often experience dry stools or constipation?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "陰虛質" },
   { q: "13. Do you feel fullness in chest/abdomen or have soft abdominal fat?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "痰濕質" },
   { q: "14. Is your facial skin frequently oily?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "痰濕質" },
@@ -589,7 +611,6 @@ const bodyTestQuestionsEn = [
   { q: "33. Do you adapt well to environmental/climate changes?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "平和質" }
 ];
 
-// 完整關卡題庫（第 5 關三焦辨證題目已重構為銀翹散考題）
 const stagesData = {
   zh: [
     {
@@ -933,6 +954,7 @@ function updateStaticUI() {
   document.getElementById("txt-btn-genimg").innerText = t.genImgBtn;
   document.getElementById("txt-btn-share").innerText = t.shareBtn;
   document.getElementById("txt-img-tip").innerText = t.imgTip;
+  document.getElementById("txt-disclaimer").innerText = t.disclaimer;
   
   document.getElementById("bank-taels-display").innerText = `${totalBankTaels} ${t.unit}`;
 }
@@ -947,7 +969,11 @@ function renderStageList() {
     card.className = "stage-card";
     card.onclick = () => startStage(idx);
     
+    const isPassed = passedStages[idx] === true;
+    const stampHtml = isPassed ? `<div class="stamp-passed">💮 ${i18n[currentLang].stampPassed}</div>` : "";
+
     card.innerHTML = `
+      ${stampHtml}
       <div class="stage-title">${stg.name}</div>
       <div class="stage-difficulty">${stg.difficulty}</div>
       <div class="stage-desc-text">${stg.desc}</div>
@@ -1035,6 +1061,11 @@ function loadQuestion() {
   });
 }
 
+function markStagePassed(stageIdx) {
+  passedStages[stageIdx] = true;
+  localStorage.setItem('tcm_passed_stages', JSON.stringify(passedStages));
+}
+
 function checkAnswer(selected) {
   const t = i18n[currentLang];
   const stage = stagesData[currentLang][currentStageIndex];
@@ -1068,6 +1099,7 @@ function checkAnswer(selected) {
     if (currentQuestionIndex >= activeQuestions.length) {
       playSound('win');
       addTaelsToBank(currentPrize);
+      markStagePassed(currentStageIndex);
       if (currentStageIndex === 4) {
         endGame(true, t.allWinMsg, stage.titleSuccess, true);
       } else {
@@ -1116,8 +1148,9 @@ function finishBodyTest() {
   }
 
   lastEvaluatedType = topType;
-  const info = bodyTypeInfo[topType] || bodyTypeInfo["平和質"];
+  markStagePassed(currentStageIndex);
   
+  const info = bodyTypeInfo[topType] || bodyTypeInfo["平和質"];
   const displayTitle = (currentLang === 'zh') ? topType : info.nameEn;
   const descText = (currentLang === 'zh') ? info.desc : info.descEn;
 
@@ -1173,9 +1206,11 @@ function endGame(isWin, msg, title, isFinalOrTest = false) {
   if (stage.isBodyTest) {
     document.getElementById("modal-text").innerText = `${msg}`;
     document.getElementById("gen-img-btn").style.display = "inline-block";
+    document.getElementById("txt-disclaimer").style.display = "block";
   } else {
     document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總資產: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
     document.getElementById("gen-img-btn").style.display = "none";
+    document.getElementById("txt-disclaimer").style.display = "none";
   }
   
   const nextBtn = document.getElementById("next-stage-btn");
@@ -1194,7 +1229,7 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果一鍵生成高畫質日式圖片分享卡
+// 體質結果一鍵生成（含水墨粗體毛筆字藝術圖案與專業提醒）
 function generateResultImage() {
   playSound('click');
   const canvas = document.getElementById("card-canvas");
@@ -1204,50 +1239,81 @@ function generateResultImage() {
   const typeName = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
   const descLines = (currentLang === 'zh') ? info.desc.split('\n') : info.descEn.split('\n');
 
-  // 背景
-  ctx.fillStyle = "#fffdf9";
-  ctx.fillRect(0, 0, 600, 750);
+  // 底色
+  ctx.fillStyle = "#fdfbf7";
+  ctx.fillRect(0, 0, 600, 820);
 
-  // 雙層日式邊框
+  // 外框
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 8;
-  ctx.strokeRect(15, 15, 570, 720);
+  ctx.strokeRect(15, 15, 570, 790);
   ctx.strokeStyle = "#d7c4b7";
   ctx.lineWidth = 2;
-  ctx.strokeRect(25, 25, 550, 700);
+  ctx.strokeRect(25, 25, 550, 770);
 
-  // 頂部頭銜標題
+  // 頂部標題
   ctx.fillStyle = "#5c4033";
   ctx.font = "bold 26px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估報告 📜" : "📜 TCM Body Constitution 📜", 300, 80);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 75);
 
-  // 金色標籤框
-  ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(80, 120, 440, 90);
-  ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(80, 120, 440, 90);
-
-  // 體質名稱
-  ctx.fillStyle = "#a0522d";
-  ctx.font = "bold 36px sans-serif";
-  ctx.fillText(typeName, 300, 178);
-
-  // 分割線
-  ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 1.5;
+  // 毛筆粗體水墨背景印章效果 (中央書法藝術字)
+  const shortName = lastEvaluatedType.replace("質", ""); // 如：氣鬱、陽虛
+  
+  // 繪製淡黑色水墨水彩背景圈
+  ctx.save();
   ctx.beginPath();
-  ctx.moveTo(80, 245);
-  ctx.lineTo(520, 245);
+  ctx.arc(300, 205, 75, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(240, 230, 210, 0.8)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(139, 90, 43, 0.3)";
+  ctx.lineWidth = 3;
   ctx.stroke();
+  ctx.restore();
 
-  // 內容說明文字自動換行與繪製
+  // 黑色粗體毛筆字（使用 Ma Shan Zheng 藝術字體，兼備退路 fallback）
+  ctx.save();
+  ctx.fillStyle = "#1a1a1a";
+  ctx.font = "bold 60px 'Ma Shan Zheng', 'KaiTi', 'STKaiti', cursive, serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
+  ctx.shadowBlur = 6;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 3;
+  ctx.fillText(shortName, 300, 202);
+  ctx.restore();
+
+  // 古典朱紅印章
+  ctx.save();
+  ctx.strokeStyle = "#b22222";
+  ctx.lineWidth = 3;
+  ctx.strokeRect(390, 160, 48, 48);
+  ctx.fillStyle = "#b22222";
+  ctx.font = "bold 16px 'KaiTi', serif";
+  ctx.textAlign = "center";
+  ctx.fillText("體質", 414, 180);
+  ctx.fillText("鑒定", 414, 198);
+  ctx.restore();
+
+  // 體質名稱標籤條
+  ctx.fillStyle = "#f0e6d2";
+  ctx.fillRect(80, 305, 440, 50);
+  ctx.strokeStyle = "#8b5a2b";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(80, 305, 440, 50);
+
+  ctx.fillStyle = "#a0522d";
+  ctx.font = "bold 26px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(typeName, 300, 340);
+
+  // 說明內容
   ctx.fillStyle = "#3c2f2f";
-  ctx.font = "18px sans-serif";
+  ctx.font = "17px sans-serif";
   ctx.textAlign = "left";
   
-  let startY = 285;
+  let startY = 390;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
@@ -1257,22 +1323,27 @@ function generateResultImage() {
       if (metrics.width > 440 && i > 0) {
         ctx.fillText(lineStr, 80, startY);
         lineStr = words[i];
-        startY += 28;
+        startY += 26;
       } else {
         lineStr = testLine;
       }
     }
     ctx.fillText(lineStr, 80, startY);
-    startY += 38;
+    startY += 34;
   });
 
-  // 底部落款水印
+  // 底部專業提醒
   ctx.fillStyle = "#8c7b6c";
-  ctx.font = "italic 16px sans-serif";
+  ctx.font = "13px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("《懸壺濟世：百萬問答》專業體質自測", 300, 680);
+  const disclaimerMsg = (currentLang === 'zh') 
+    ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
+    : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
+  ctx.fillText(disclaimerMsg, 300, 745);
 
-  // 將 Canvas 轉換為圖片 URl 並載入 Preview
+  ctx.font = "italic 14px sans-serif";
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 770);
+
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
   imgElem.src = dataURL;
