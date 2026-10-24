@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
-  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
   <style>
     html, body { 
       overscroll-behavior: none; 
@@ -219,7 +219,7 @@
     .prev-btn { background: #f0e6d2; color: #5c4033; border: 2px solid #8b5a2b; box-shadow: 2px 2px 0px #8b5a2b; }
 
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 620px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
     .modal-title { font-size: 20px; font-weight: bold; color: #5c4033; margin-bottom: 18px; }
     .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 18px; color: #3c2f2f; text-align: left; white-space: pre-line; }
 
@@ -339,14 +339,15 @@
   </div>
 </div>
 
-<canvas id="card-canvas" width="600" height="820" style="display:none;"></canvas>
+<!-- 放大版的分享卡片 Canvas (600x900) -->
+<canvas id="card-canvas" width="600" height="900" style="display:none;"></canvas>
 
 <script>
 document.addEventListener('touchmove', function(e) {
   if (e.scale !== 1) { e.preventDefault(); }
 }, { passive: false });
 
-// Web Audio API 強效兼容音效系統
+// Web Audio API 音效系統
 let audioCtx = null;
 
 function initAudio() {
@@ -538,7 +539,7 @@ const i18n = {
 
 const prizes = [1000, 5000, 20000, 100000, 1000000];
 
-// 體質自測 33 題問題庫（更正第 11 題極乾掉屑語義）
+// 體質自測 33 題題庫
 const bodyTestQuestionsZh = [
   { q: "1. 你平時容易疲倦乏力嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
   { q: "2. 你說話聲音低弱，容易感到氣短少言嗎？", options: ["A. 經常", "B. 有時", "C. 很少", "D. 完全沒有"], type: "氣虛質" },
@@ -1229,7 +1230,7 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果一鍵生成（含水墨粗體毛筆字藝術圖案與專業提醒）
+/* 高畫質放大版水墨書法體質卡片渲染器 (600x900) */
 function generateResultImage() {
   playSound('click');
   const canvas = document.getElementById("card-canvas");
@@ -1239,111 +1240,115 @@ function generateResultImage() {
   const typeName = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
   const descLines = (currentLang === 'zh') ? info.desc.split('\n') : info.descEn.split('\n');
 
-  // 底色
-  ctx.fillStyle = "#fdfbf7";
-  ctx.fillRect(0, 0, 600, 820);
+  // 1. 底色
+  ctx.fillStyle = "#fcf9f2";
+  ctx.fillRect(0, 0, 600, 900);
 
-  // 外框
+  // 2. 邊框繪製
   ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 8;
-  ctx.strokeRect(15, 15, 570, 790);
-  ctx.strokeStyle = "#d7c4b7";
+  ctx.lineWidth = 10;
+  ctx.strokeRect(18, 18, 564, 864);
+  ctx.strokeStyle = "#c8b4a2";
   ctx.lineWidth = 2;
-  ctx.strokeRect(25, 25, 550, 770);
+  ctx.strokeRect(28, 28, 544, 844);
 
-  // 頂部標題
+  // 3. 頂部標題
   ctx.fillStyle = "#5c4033";
-  ctx.font = "bold 26px sans-serif";
+  ctx.font = "bold 28px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 75);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 80);
 
-  // 毛筆粗體水墨背景印章效果 (中央書法藝術字)
-  const shortName = lastEvaluatedType.replace("質", ""); // 如：氣鬱、陽虛
-  
-  // 繪製淡黑色水墨水彩背景圈
+  // 4. 水墨圓形宣紙背景
   ctx.save();
   ctx.beginPath();
-  ctx.arc(300, 205, 75, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(240, 230, 210, 0.8)";
+  ctx.arc(300, 220, 100, 0, Math.PI * 2);
+  ctx.fillStyle = "#f2e8d5";
   ctx.fill();
-  ctx.strokeStyle = "rgba(139, 90, 43, 0.3)";
+  ctx.strokeStyle = "#d7c4b7";
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.restore();
 
-  // 黑色粗體毛筆字（使用 Ma Shan Zheng 藝術字體，兼備退路 fallback）
+  // 5. 氣勢磅礡的黑墨書法大字（多重比劃水墨疊加 + 超大字號 110px）
+  const shortName = lastEvaluatedType.replace("質", ""); // 如：氣鬱
   ctx.save();
-  ctx.fillStyle = "#1a1a1a";
-  ctx.font = "bold 60px 'Ma Shan Zheng', 'KaiTi', 'STKaiti', cursive, serif";
+  ctx.fillStyle = "#0d0d0d";
+  ctx.font = "bold 110px 'Ma Shan Zheng', 'Kaiti SC', 'STKaiti', 'DFKai-SB', cursive, serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.shadowColor = "rgba(0, 0, 0, 0.15)";
-  ctx.shadowBlur = 6;
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 3;
-  ctx.fillText(shortName, 300, 202);
+
+  // 水墨筆觸多重重繪 (呈現毛筆濡墨暈染效果)
+  const offsets = [
+    {x: 0, y: 0}, {x: -1.5, y: -1}, {x: 1.5, y: 1}, 
+    {x: -1, y: 1.5}, {x: 1, y: -1.5}
+  ];
+  offsets.forEach(off => {
+    ctx.fillText(shortName, 300 + off.x, 220 + off.y);
+  });
   ctx.restore();
 
-  // 古典朱紅印章
+  // 6. 古典朱紅玉印
   ctx.save();
   ctx.strokeStyle = "#b22222";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(390, 160, 48, 48);
+  ctx.lineWidth = 3.5;
+  ctx.strokeRect(425, 175, 54, 54);
   ctx.fillStyle = "#b22222";
-  ctx.font = "bold 16px 'KaiTi', serif";
+  ctx.font = "bold 18px 'Kaiti SC', 'STKaiti', serif";
   ctx.textAlign = "center";
-  ctx.fillText("體質", 414, 180);
-  ctx.fillText("鑒定", 414, 198);
+  ctx.fillText("體質", 452, 198);
+  ctx.fillText("鑒定", 452, 218);
   ctx.restore();
 
-  // 體質名稱標籤條
+  // 7. 體質名稱主標題條（字體放大至 32px）
   ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(80, 305, 440, 50);
+  ctx.fillRect(60, 350, 480, 60);
   ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(80, 305, 440, 50);
+  ctx.lineWidth = 2.5;
+  ctx.strokeRect(60, 350, 480, 60);
 
-  ctx.fillStyle = "#a0522d";
-  ctx.font = "bold 26px sans-serif";
+  ctx.fillStyle = "#8b5a2b";
+  ctx.font = "bold 32px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(typeName, 300, 340);
+  ctx.fillText(typeName, 300, 392);
 
-  // 說明內容
+  // 8. 內文說明段落（字體大幅擴大至 20px，行距 38px）
   ctx.fillStyle = "#3c2f2f";
-  ctx.font = "17px sans-serif";
+  ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "left";
   
-  let startY = 390;
+  let startY = 460;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
     for (let i = 0; i < words.length; i++) {
       let testLine = lineStr + words[i];
       let metrics = ctx.measureText(testLine);
-      if (metrics.width > 440 && i > 0) {
-        ctx.fillText(lineStr, 80, startY);
+      if (metrics.width > 470 && i > 0) {
+        ctx.fillText(lineStr, 65, startY);
         lineStr = words[i];
-        startY += 26;
+        startY += 32;
       } else {
         lineStr = testLine;
       }
     }
-    ctx.fillText(lineStr, 80, startY);
-    startY += 34;
+    ctx.fillText(lineStr, 65, startY);
+    startY += 44;
   });
 
-  // 底部專業提醒
+  // 9. 底部專業提醒標語
   ctx.fillStyle = "#8c7b6c";
-  ctx.font = "13px sans-serif";
+  ctx.font = "14px sans-serif";
   ctx.textAlign = "center";
   const disclaimerMsg = (currentLang === 'zh') 
     ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
     : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
-  ctx.fillText(disclaimerMsg, 300, 745);
+  ctx.fillText(disclaimerMsg, 300, 815);
 
-  ctx.font = "italic 14px sans-serif";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 770);
+  ctx.font = "bold italic 16px sans-serif";
+  ctx.fillStyle = "#5c4033";
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 845);
 
+  // 轉換生成圖片 Preview
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
   imgElem.src = dataURL;
