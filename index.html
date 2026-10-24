@@ -36,18 +36,15 @@
       padding: 20px; 
       box-shadow: 0 10px 30px rgba(92, 64, 51, 0.15); 
       position: relative; 
-      margin-bottom: 10px;
     }
 
-    .footer-credit {
+    .footer-signature {
+      margin-top: 12px;
       font-size: 12px;
+      color: #8c7b6c;
       text-align: center;
-      color: #7a6555;
       line-height: 1.5;
-      margin-top: 4px;
-      margin-bottom: 6px;
       white-space: pre-line;
-      letter-spacing: 0.5px;
     }
 
     .header-container {
@@ -322,8 +319,8 @@
   </div>
 </div>
 
-<!-- 全頁面下方置中固定標語 -->
-<div class="footer-credit">願諸君盡興。
+<!-- 全頁下方固定署名 -->
+<div class="footer-signature">願諸君盡興。
 倘見錯漏，或有建言，可於IG相告。
 @cmedbuddy</div>
 
@@ -351,7 +348,7 @@
   </div>
 </div>
 
-<canvas id="card-canvas" width="560" height="490" style="display:none;"></canvas>
+<canvas id="card-canvas" width="560" height="420" style="display:none;"></canvas>
 
 <script>
 let audioCtx = null;
@@ -434,8 +431,8 @@ let lastSavedBodyType = localStorage.getItem('tcm_last_body_type') || null;
 const bodyTypeInfo = {
   "氣虛質": {
     nameEn: "Qi Deficiency",
-    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨蔘、大棗等補氣食物，避免過勞及熬夜。",
-    descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Eat Astragalus, Yam, Codonopsis, and Red Dates. Avoid overexertion."
+    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨蔘等補氣食物，避免劇烈運動及熬夜。",
+    descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Eat Astragalus, Yam, Codonopsis. Avoid overexertion."
   },
   "陽虛質": {
     nameEn: "Yang Deficiency",
@@ -444,8 +441,8 @@ const bodyTypeInfo = {
   },
   "陰虛質": {
     nameEn: "Yin Deficiency",
-    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙蔘、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
-    descEn: "[Features] Warm palms/soles, dry mouth/skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
+    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀掉屑、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙蔘、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
+    descEn: "[Features] Warm palms/soles, dry mouth/skin, peeling skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
   },
   "痰濕質": {
     nameEn: "Phlegm-Dampness",
@@ -454,7 +451,7 @@ const bodyTypeInfo = {
   },
   "濕熱質": {
     nameEn: "Damp-Heat",
-    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、小便短赤、性格較急躁。\n【調理建議】宜清熱利濕。多吃綠豆、苦瓜、黃瓜、薏米、蓮子，少吃煎炸烤辣食物及飲酒。",
+    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、小便短赤、性格較急躁。\n【調理建議】宜分消濕熱、清熱利濕。多吃綠豆、苦瓜、黃瓜、薏米、蓮子，少吃煎炸烤辣食物及飲酒。",
     descEn: "[Features] Acne-prone, bitter mouth/halitosis, sticky stools, dark urine.\n[Advice] Clear heat and drain dampness. Eat Mung bean, Bitter gourd, Cucumber, Lotus seed. Avoid alcohol & spicy food."
   },
   "血瘀質": {
@@ -675,7 +672,7 @@ const stagesData = {
           { q: "1. 位於小腿內側、脾經肝經腎經三條陰經交會的婦科保健穴是？", options: ["A. 足三里", "B. 風池穴", "C. 陰陵泉", "D. 三陰交"], ans: 3 },
           { q: "2. 中醫四診中的「聞診」，主要是指？", options: ["A. 聽聲嗅味", "B. 觸摸脈搏", "C. 觀察舌色", "D. 詢問飲食"], ans: 0 },
           { q: "3. 「五行」學說中，「水」對應五臟中的哪一個器官？", options: ["A. 肝臟", "B. 心臟", "C. 腎臟", "D. 脾臟"], ans: 2 },
-          { q: "4. (保底題) 被譽為補血要藥、常與川芎當歸配伍的中藥是？", options: ["A. 當歸", "B. 苦參", "C. 大黃", "D. 黃連"], ans: 0 },
+          { q: "4. (保底題) 被譽為補血要藥、常與川芎配伍的中藥是？", options: ["A. 當歸", "B. 苦參", "C. 大黃", "D. 黃連"], ans: 0 },
           { q: "5. 《黃帝內經》提及「秋三月，此謂容平」，秋季養生重點在於養？", options: ["A. 養肝", "B. 養心", "C. 養腎", "D. 養肺"], ans: 3 }
         ]
       ]
@@ -829,7 +826,7 @@ const stagesData = {
           { q: "1. Sanyinjiao (SP6) point is famous for gynecology care. Where is it?", options: ["A. Inner lower leg", "B. Outer knee", "C. Back of neck", "D. Inner elbow"], ans: 0 },
           { q: "2. Listening & Smelling (Olfaction/Auscultation) refers to?", options: ["A. Voice & Odor", "B. Feeling pulse", "C. Checking tongue", "D. Asking history"], ans: 0 },
           { q: "3. In 5 Elements theory, 'Water' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Kidneys", "D. Spleen"], ans: 2 },
-          { q: "4. (Guaranteed) Dang Gui (Angelica Sinensis) is premier herb for?", options: ["A. Tonifying Blood", "B. Clearing Heat", "C. Purging Cold", "D. Drying Dampness"], ans: 0 },
+          { q: "4. (Guaranteed) Dang Gui is premier herb for?", options: ["A. Tonifying Blood", "B. Clearing Heat", "C. Purging Cold", "D. Drying Dampness"], ans: 0 },
           { q: "5. Autumn health preservation in TCM focuses on?", options: ["A. Liver", "B. Heart", "C. Kidneys", "D. Lungs"], ans: 3 }
         ]
       ]
@@ -915,7 +912,7 @@ const stagesData = {
         [
           { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
           { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
-          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸", "E. 瀉下通便"], ans: 1 },
+          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
           { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰盛則吉", "B. 陽高則吉", "C. 平衡協調", "D. 陰陽分離"], ans: 2 },
           { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
         ]
@@ -1264,7 +1261,7 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果生成圖片（高度縮減約一半，版面精簡緊湊）
+// 體質結果圖片生成：緊湊高度、內容完美置中
 function generateResultImage() {
   playSound('click');
   
@@ -1277,71 +1274,71 @@ function generateResultImage() {
 
   // 底色
   ctx.fillStyle = "#fdfbf7";
-  ctx.fillRect(0, 0, 560, 490);
+  ctx.fillRect(0, 0, 560, 420);
 
   // 簡潔雙線外框
   ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 5;
-  ctx.strokeRect(10, 10, 540, 470);
+  ctx.lineWidth = 6;
+  ctx.strokeRect(12, 12, 536, 396);
   ctx.strokeStyle = "#d7c4b7";
   ctx.lineWidth = 1.5;
-  ctx.strokeRect(16, 16, 528, 458);
+  ctx.strokeRect(20, 20, 520, 380);
 
   // 頂部標題
   ctx.fillStyle = "#5c4033";
   ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 48);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 50);
 
-  // 體質名稱精緻標籤區塊
+  // 體質名稱大標籤（置中）
   ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(40, 68, 480, 40);
+  ctx.fillRect(60, 75, 440, 42);
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 2;
-  ctx.strokeRect(40, 68, 480, 40);
+  ctx.strokeRect(60, 75, 440, 42);
 
   ctx.fillStyle = "#a0522d";
   ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(`鑑定體質：${typeName}`, 280, 88);
+  ctx.fillText(`鑑定體質：${typeName}`, 280, 96);
 
-  // 說明內容（字距行高緊湊優化）
+  // 說明內容（置中顯示區塊）
   ctx.fillStyle = "#3c2f2f";
   ctx.font = "14px sans-serif";
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
   
-  let startY = 135;
+  let startY = 145;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
     for (let i = 0; i < words.length; i++) {
       let testLine = lineStr + words[i];
       let metrics = ctx.measureText(testLine);
-      if (metrics.width > 470 && i > 0) {
-        ctx.fillText(lineStr, 45, startY);
+      if (metrics.width > 440 && i > 0) {
+        ctx.fillText(lineStr, 60, startY);
         lineStr = words[i];
-        startY += 21;
+        startY += 22;
       } else {
         lineStr = testLine;
       }
     }
-    ctx.fillText(lineStr, 45, startY);
-    startY += 27;
+    ctx.fillText(lineStr, 60, startY);
+    startY += 26;
   });
 
-  // 底部專業提示與署名
+  // 底部專業提醒
   ctx.fillStyle = "#8c7b6c";
   ctx.font = "11px sans-serif";
   ctx.textAlign = "center";
   const disclaimerMsg = (currentLang === 'zh') 
     ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
     : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
-  ctx.fillText(disclaimerMsg, 280, 435);
+  ctx.fillText(disclaimerMsg, 280, 365);
 
   ctx.font = "italic 12px sans-serif";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 280, 460);
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 280, 388);
 
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
