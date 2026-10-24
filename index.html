@@ -48,7 +48,7 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 20px;
-      padding-top: 25px; /* 頂部留出適當空位 */
+      padding-top: 25px; /* 頂部留出空位 */
       position: relative;
     }
 
@@ -61,7 +61,7 @@
       margin-bottom: 12px;
     }
 
-    /* 金黃葫蘆 Logo */
+    /* 精修版金黃葫蘆 Logo */
     .game-logo {
       width: 72px;
       height: 72px;
@@ -111,7 +111,7 @@
     .stage-card:hover { border-color: #8b5a2b; background: #f7ede2; transform: translateY(-2px); }
     .stage-title { color: #5c4033; font-size: 17px; font-weight: bold; margin-bottom: 8px; }
     
-    /* 關卡內容分為難度與內容兩行 */
+    /* 關卡介紹分行顯示 */
     .stage-difficulty { color: #a0522d; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
     .stage-desc-text { color: #665247; font-size: 14px; line-height: 1.5; }
 
@@ -197,21 +197,26 @@
 <div id="game-container">
   <div class="header-container">
     <div class="header-top-row">
-      <!-- 金黃葫蘆 Logo (無絲帶，典雅圓潤) -->
+      <!-- 典雅精修版金黃葫蘆 Logo (修復內部線條，溫潤自然) -->
       <svg class="game-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="45" fill="#fdfbf7" stroke="#8b5a2b" stroke-width="2.5"/>
         <circle cx="50" cy="50" r="40" fill="none" stroke="#d7c4b7" stroke-width="1.5" stroke-dasharray="4,3"/>
-        <!-- 葫蘆上球 -->
-        <circle cx="50" cy="35" r="13" fill="#e5a93c" stroke="#8b5a2b" stroke-width="2"/>
+        
         <!-- 葫蘆下球 -->
-        <circle cx="50" cy="62" r="21" fill="#e5a93c" stroke="#8b5a2b" stroke-width="2"/>
-        <!-- 葫蘆腰部過渡與裝飾圈 -->
-        <path d="M 40 47 Q 50 51 60 47" fill="none" stroke="#8b5a2b" stroke-width="2.5"/>
-        <!-- 高光亮點 -->
-        <path d="M 43 30 A 8 8 0 0 1 50 25" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
-        <path d="M 39 54 A 14 14 0 0 1 50 44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-        <!-- 葫蘆蓋蓋子 -->
-        <rect x="47" y="18" width="6" height="5" rx="1" fill="#8b5a2b"/>
+        <circle cx="50" cy="61" r="20" fill="#e5a93c" stroke="#8b5a2b" stroke-width="2"/>
+        <!-- 葫蘆上球 -->
+        <circle cx="50" cy="36" r="13" fill="#e5a93c" stroke="#8b5a2b" stroke-width="2"/>
+        <!-- 葫蘆塞蓋 -->
+        <path d="M 46 20 L 54 20 L 52 24 L 48 24 Z" fill="#8b5a2b"/>
+        <rect x="47" y="17" width="6" height="3" rx="1" fill="#a0522d"/>
+        
+        <!-- 自然腰線過渡圈 -->
+        <ellipse cx="50" cy="46.5" rx="10.5" ry="3" fill="#e5a93c"/>
+        <line x1="40" y1="46.5" x2="60" y2="46.5" stroke="#8b5a2b" stroke-width="2" stroke-linecap="round"/>
+        
+        <!-- 自然立體高光 -->
+        <path d="M 42 31 A 8 8 0 0 1 48 26" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
+        <path d="M 38 55 A 13 13 0 0 1 48 45" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/>
       </svg>
       <!-- 語言切換按鈕 -->
       <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
@@ -511,7 +516,7 @@ const bodyTestQuestionsEn = [
   { q: "33. Do you adapt well to environmental/climate changes?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "平和質" }
 ];
 
-// 完整關卡題庫（已替換為選項 D：百合）
+// 完整關卡題庫（第一關已補齊為 3 組獨立 Set，百合題答案長度已修正）
 const stagesData = {
   zh: [
     {
@@ -520,6 +525,7 @@ const stagesData = {
       desc: "大眾普及：生活養生、涼茶食療與日常保健常識。",
       titleSuccess: "草堂養生達人",
       questionSets: [
+        /* Set 1 */
         [
           { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 熱薑茶", "C. 菊花茶", "D. 桂圓紅棗茶"], ans: 2 },
           { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 合谷穴", "C. 足三里", "D. 太衝穴"], ans: 1 },
@@ -527,13 +533,15 @@ const stagesData = {
           { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 汗腺毛孔", "C. 腸胃消化", "D. 氣血經絡"], ans: 3 },
           { q: "5. 淋雨著涼引致「風寒感冒」初期，民間常用什麼食材煮湯發汗？", options: ["A. 苦瓜與綠豆", "B. 蔥白與生薑", "C. 西瓜與薄荷", "D. 菊花與金銀花"], ans: 1 }
         ],
+        /* Set 2 (百合選項長度已平衡為 8 字) */
         [
           { q: "1. 夏日消暑解毒、清熱利尿，廣東街坊最常煲哪種豆湯？", options: ["A. 紅豆湯", "B. 黑豆湯", "C. 綠豆湯", "D. 黃豆湯"], ans: 2 },
           { q: "2. 當感覺眼睛乾澀疲勞時，中醫常建議枸杞配搭哪種花沖泡？", options: ["A. 玫瑰花", "B. 茉莉花", "C. 菊花", "D. 荷花"], ans: 2 },
           { q: "3. 中醫認為經常晚睡熬夜最容易傷及體內的什麼，從而出現口乾、手足心熱？", options: ["A. 陰液", "B. 陽氣", "C. 骨骼", "D. 肌肉"], ans: 0 },
-          { q: "4. (保底題) 廣東民間煲湯常用的「百合」，在中醫食療中主要用於？", options: ["A. 養陰潤肺、清心安神", "B. 大汗固脫", "C. 活血化瘀", "D. 溫陽補腎"], ans: 0 },
+          { q: "4. (保底題) 廣東民間煲湯常用的「百合」，在中醫食療中主要用於？", options: ["A. 養陰潤肺，清心安神", "B. 大補元氣，溫陽固脫", "C. 活血化瘀，通經止痛", "D. 瀉下通便，清熱瀉火"], ans: 0 },
           { q: "5. 常用於化痰止咳、健脾理氣的廣東三寶之一是？", options: ["A. 羅漢果", "B. 燕窩", "C. 鹿茸", "D. 陳皮"], ans: 3 }
         ],
+        /* Set 3 (全新補齊 Set C) */
         [
           { q: "1. 天氣濕熱感到身體重墜、大便黏滯，中醫常建議飲用？", options: ["A. 高麗蔘茶", "B. 薏米赤小豆水", "C. 烤鹿茸酒", "D. 薑母茶"], ans: 1 },
           { q: "2. 中醫認為「脾開竅於口」，脾胃健康通常體現在？", options: ["A. 指甲堅硬", "B. 頭發烏黑", "C. 唇色紅潤", "D. 耳朵聰敏"], ans: 2 },
@@ -685,7 +693,7 @@ const stagesData = {
           { q: "1. Which bean soup is most popular in summer for clearing heat and draining dampness?", options: ["A. Red Bean", "B. Black Bean", "C. Mung Bean", "D. Soy Bean"], ans: 2 },
           { q: "2. When experiencing eye dry fatigue, TCM recommends pairing Goji Berries with?", options: ["A. Rose", "B. Jasmine", "C. Chrysanthemum", "D. Lotus"], ans: 2 },
           { q: "3. Staying up late habitually in TCM easily damages which aspect of the body?", options: ["A. Yin Fluid", "B. Yang Qi", "C. Bones", "D. Muscles"], ans: 0 },
-          { q: "4. (Guaranteed) What is the main action of Lily bulb (Bai He) in TCM food therapy?", options: ["A. Nourish Yin, moisten lungs & calm mind", "B. Stop sweating", "C. Invigorate blood", "D. Tonify Kidney Yang"], ans: 0 },
+          { q: "4. (Guaranteed) What is the main action of Lily bulb (Bai He) in TCM food therapy?", options: ["A. Nourish Yin & lungs, calm mind", "B. Tonify vital Qi & warm Yang", "C. Promote blood circulation", "D. Clear heat & drain stool"], ans: 0 },
           { q: "5. Which dried fruit peel is famous in Guangdong for transforming phlegm and harmonizing stomach?", options: ["A. Monk Fruit", "B. Longan", "C. Lychee", "D. Tangerine Peel"], ans: 3 }
         ],
         [
@@ -814,11 +822,11 @@ const stagesData = {
       ]
     },
     {
-      name: "🩺 Special: [TCM Body Constitution Test (33 Qs)]",
-      difficulty: "Special Test",
-      desc: "Discover your unique body constitution beyond cold and heat.",
+      name: "🩺 號外：【中醫體質測試 (33條)】",
+      difficulty: "專題測試",
+      desc: "體質不止寒熱，自測九種體質",
       isBodyTest: true,
-      titleSuccess: "Test Completed"
+      titleSuccess: "體質鑑定完成"
     }
   ]
 };
