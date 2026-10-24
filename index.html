@@ -235,6 +235,7 @@
       border-radius: 6px;
       margin-bottom: 14px;
       text-align: left;
+      white-space: pre-line;
     }
 
     #image-result-preview {
@@ -330,7 +331,8 @@
     <div class="modal-text" id="modal-text">...</div>
     
     <div class="disclaimer-note" id="txt-disclaimer" style="display:none;">
-      ⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。
+      ⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。
+如需調理或有健康問題，請先諮詢註冊中醫師。
     </div>
 
     <div id="image-result-preview">
@@ -431,7 +433,7 @@ let lastSavedBodyType = localStorage.getItem('tcm_last_body_type') || null;
 const bodyTypeInfo = {
   "氣虛質": {
     nameEn: "Qi Deficiency",
-    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨蔘等補氣食物，避免劇烈運動及熬夜。",
+    desc: "【特徵】說話聲音低弱、容易疲倦乏力、精神不振、易出汗。\n【調理建議】宜補氣健脾。平時多吃黃耆、山藥、黨參等補氣食物，避免劇烈運動及熬夜。",
     descEn: "[Features] Weak voice, easily fatigued, lack of energy, prone to sweating.\n[Advice] Tonify Qi and Spleen. Eat Astragalus, Yam, Codonopsis. Avoid overexertion."
   },
   "陽虛質": {
@@ -441,7 +443,7 @@ const bodyTypeInfo = {
   },
   "陰虛質": {
     nameEn: "Yin Deficiency",
-    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀掉屑、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙蔘、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
+    desc: "【特徵】手足心發熱、口乾舌燥、喜冷飲、皮膚乾澀掉屑、耐受不了暑熱。\n【調理建議】宜滋陰清熱。多吃百合、銀耳、沙參、麥冬、黑芝麻，少吃辛辣燥熱食物，避免熬夜。",
     descEn: "[Features] Warm palms/soles, dry mouth/skin, peeling skin, prefers cold drinks.\n[Advice] Nourish Yin and clear heat. Eat Lily bulb, Tremella, Black Sesame. Avoid spicy food and late nights."
   },
   "痰濕質": {
@@ -466,7 +468,7 @@ const bodyTypeInfo = {
   },
   "特稟質": {
     nameEn: "Special/Allergic",
-    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表、養血消風。多吃靈芝、黃耆、紅棗，飲食宜清淡，遠離已知過敏原及注意保暖。",
+    desc: "【特徵】過敏體質，容易打噴嚏、流鼻水、咳嗽、蕁麻疹或哮喘。\n【調理建議】宜益氣固表、養血消風。多吃靈芝、黃耆、紅導，飲食宜清淡，遠離已知過敏原及注意保暖。",
     descEn: "[Features] Allergic constitution (easy sneezing, runny nose, asthma, hives).\n[Advice] Boost immunity and consolidate exterior. Eat Reishi mushroom, Astragalus. Avoid allergens."
   },
   "平和質": {
@@ -505,7 +507,7 @@ const i18n = {
     loseMsg: "遺憾答錯！正確答案係 ",
     titleFail: "考核未順利通過",
     imgTip: "💡 長按上方圖片即可儲存分享給朋友！",
-    disclaimer: "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。",
+    disclaimer: "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。\n如需調理或有健康問題，請先諮詢註冊中醫師。",
     stampPassed: "已完成"
   },
   en: {
@@ -536,7 +538,7 @@ const i18n = {
     loseMsg: "Incorrect! The correct answer was ",
     titleFail: "Exam Failed",
     imgTip: "💡 Long-press or right-click the image above to save & share!",
-    disclaimer: "⚠️ Note: This test result is a preliminary assessment for reference only, not a medical diagnosis or treatment advice. Consult a licensed TCM practitioner if needed.",
+    disclaimer: "⚠️ Note: This result is a preliminary assessment for reference only, not a medical diagnosis.\nConsult a licensed TCM practitioner for medical advice.",
     stampPassed: "COMPLETED"
   }
 };
@@ -624,7 +626,7 @@ const stagesData = {
       titleSuccess: "草堂養生達人",
       questionSets: [
         [
-          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人蔘紅茶", "B. 熱薑茶", "C. 菊花茶", "D. 桂圓紅棗茶"], ans: 2 },
+          { q: "1. 食得太多辣嘢「熱氣」，按中醫說法宜飲邊種茶清熱？", options: ["A. 人參紅茶", "B. 熱薑茶", "C. 菊花茶", "D. 桂圓紅導茶"], ans: 2 },
           { q: "2. 俗稱「萬能穴」、位於手背大拇指與食指之間的穴位是？", options: ["A. 湧泉穴", "B. 合谷穴", "C. 足三里", "D. 太衝穴"], ans: 1 },
           { q: "3. 秋天天氣乾燥容易乾咳，食療常推薦以下哪種食物潤肺？", options: ["A. 雪梨川貝", "B. 麻辣火鍋", "C. 烤香腸", "D. 炸雞塊"], ans: 0 },
           { q: "4. (保底題) 俗語「通則不痛，痛則不通」主要指身體什麼不通暢？", options: ["A. 骨骼關節", "B. 汗腺毛孔", "C. 腸胃消化", "D. 氣血經絡"], ans: 3 },
@@ -638,7 +640,7 @@ const stagesData = {
           { q: "5. 常用於化痰止咳、健脾理氣的廣東三寶之一是？", options: ["A. 羅漢果", "B. 燕窩", "C. 鹿茸", "D. 陳皮"], ans: 3 }
         ],
         [
-          { q: "1. 天氣濕熱感到身體重墜、大便黏滯，中醫常建議飲用？", options: ["A. 高麗蔘茶", "B. 薏米赤小豆水", "C. 烤鹿茸酒", "D. 薑母茶"], ans: 1 },
+          { q: "1. 天氣濕熱感到身體重墜、大便黏滯，中醫常建議飲用？", options: ["A. 高麗參茶", "B. 薏米赤小豆水", "C. 烤鹿茸酒", "D. 薑母茶"], ans: 1 },
           { q: "2. 中醫認為「脾開竅於口」，脾胃健康通常體現在？", options: ["A. 指甲堅硬", "B. 頭發烏黑", "C. 唇色紅潤", "D. 耳朵聰敏"], ans: 2 },
           { q: "3. 食用冰涼食物後容易肚子痛或瀉肚子，屬於哪種體質表現？", options: ["A. 胃火熾盛", "B. 脾胃虛寒", "C. 陰虛火旺", "D. 濕熱內蘊"], ans: 1 },
           { q: "4. (保底題) 中醫常說「發怒傷肝」，長期情緒急躁易怒最易損傷？", options: ["A. 肺臟", "B. 腎臟", "C. 大腸", "D. 肝臟"], ans: 3 },
@@ -729,7 +731,7 @@ const stagesData = {
           { q: "2. 脈象「弦脈」（端直以長，如按琴弦），臨床多主？", options: ["A. 氣血大虧", "B. 表寒證候", "C. 肝膽病痛", "D. 食滯腸胃"], ans: 2 },
           { q: "3. 名方「逍遙散」的核心功用是？", options: ["A. 溫陽利水", "B. 疏肝健脾", "C. 清熱解毒", "D. 瀉下通便"], ans: 1 },
           { q: "4. (保底題) 由人體胚胎時期原氣遺傳、藏於腎中的人體生命根本之氣是？", options: ["A. 衛氣", "B. 元氣", "C. 營氣", "D. 穀氣"], ans: 1 },
-          { q: "5. 十九畏中，「丁香畏」哪味藥材？", options: ["A. 犀角", "B. 人蔘", "C. 五靈脂", "D. 郁金"], ans: 3 }
+          { q: "5. 十九畏中，「丁香畏」哪味藥材？", options: ["A. 犀角", "B. 人參", "C. 五靈脂", "D. 郁金"], ans: 3 }
         ]
       ]
     },
@@ -741,7 +743,7 @@ const stagesData = {
       questionSets: [
         [
           { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰水", "B. 服後啜熱稀粥，溫覆微汗", "C. 服後大汗流瀉", "D. 服後禁食熱食"], ans: 1 },
-          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、黃芩", "B. 瓜蔞、貝母、半夏、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
+          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、黃芩", "B. 瓜蔞、貝母、半夏、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人參、沙參、丹參"], ans: 1 },
           { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了什麼病機？", options: ["A. 陰邪非溫不化", "B. 大熱破除痰飲", "C. 肝鬱致痰病機", "D. 瀉下法去痰飲"], ans: 0 },
           { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升提中氣", "D. 疏肝理氣"], ans: 2 },
           { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二十一歲 (3x7)", "C. 十四歲 (2x7)", "D. 二十八歲 (4x7)"], ans: 2 }
@@ -755,7 +757,7 @@ const stagesData = {
         ],
         [
           { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
-          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
+          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人參、沙參、丹參、玄參、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
           { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
           { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰盛則吉", "B. 陽高則吉", "C. 平衡協調", "D. 陰陽分離"], ans: 2 },
           { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
@@ -894,34 +896,34 @@ const stagesData = {
       titleSuccess: "Grandmaster Physician",
       questionSets: [
         [
-          { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰水", "B. 服後啜熱稀粥，溫覆微汗", "C. 服後大汗流瀉", "D. 服後禁食熱食"], ans: 1 },
-          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、黃芩", "B. 瓜蔞、貝母、半夏、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
-          { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了什麼病機？", options: ["A. 陰邪非溫不化", "B. 大熱破除痰飲", "C. 肝鬱致痰病機", "D. 瀉下法去痰飲"], ans: 0 },
-          { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升提中氣", "D. 疏肝理氣"], ans: 2 },
-          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二十一歲 (3x7)", "C. 十四歲 (2x7)", "D. 二十八歲 (4x7)"], ans: 2 }
+          { q: "1. In Shanghan Lun, what is the proper care after taking Gui Zhi Tang?", options: ["A. Drink ice water", "B. Sip warm thin porridge, keep warm to induce mild sweat", "C. Induce heavy sweating", "D. Fast from hot food"], ans: 1 },
+          { q: "2. In Eighteen Incompatibilities, Aconite (Wu Tou) is incompatible with which herbs?", options: ["A. Seaweed, Kelp, Scutellaria", "B. Gua Lou, Bei Mu, Ban Xia, Bai Lian, Bai Ji", "C. Xi Xin, Shao Yao, Gan Jiang", "D. Ginseng, Sha Shen, Dan Shen"], ans: 1 },
+          { q: "3. 'Phlegm-fluid disorders should be treated with warm herbs' from Jingui Yaolue highlights which pathogenesis?", options: ["A. Yin cold pathogenic factors require warmth to transform", "B. Extreme heat breaks phlegm-fluid", "C. Liver stagnation causes phlegm", "D. Purgative method removes phlegm"], ans: 0 },
+          { q: "4. (Guaranteed) Why does Bu Zhong Yi Qi Tang heavily feature Astragalus with Sheng Ma and Chai Hu?", options: ["A. Promote sweating to release exterior", "B. Clear heat and remove toxins", "C. Raise and lift central Qi", "D. Soothe Liver and regulate Qi"], ans: 2 },
+          { q: "5. In Suwen, at what age does a female's Chong Vessel flourish and menses occur regularly?", options: ["A. Age 7", "B. Age 21", "C. Age 14", "D. Age 28"], ans: 2 }
         ],
         [
-          { q: "1. 《傷寒論》中，「麻黃湯」的核心功效與主治是？", options: ["A. 發汗平喘", "B. 調和營衛", "C. 溫中祛寒", "D. 清熱瀉火"], ans: 0 },
-          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 川烏、草烏、附子", "C. 三棱、莪朮、水蛭", "D. 細辛、芍藥、乾薑"], ans: 0 },
-          { q: "3. 《溫病條辨》中，溫病初起、邪在衛分（風溫初起，發熱頭痛、咳嗽口渴）的首選代表方劑是？", options: ["A. 桑菊飲", "B. 銀翹散", "C. 清營湯", "D. 白虎湯"], ans: 1 },
-          { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 溫陽固脫", "B. 疏肝理氣", "C. 活血化瘀", "D. 開竅安神"], ans: 3 },
-          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強」？", options: ["A. 二十四歲 (3x8)", "B. 十六歲 (2x8)", "C. 三十二歲 (4x8)", "D. 四十歲 (5x8)"], ans: 1 }
+          { q: "1. What is the core function and primary indication of Ma Huang Tang in Shanghan Lun?", options: ["A. Induce sweating and relieve asthma", "B. Harmonize Ying and Wei", "C. Warm middle Jiao and dispel cold", "D. Clear heat and drain fire"], ans: 0 },
+          { q: "2. In Eighteen Incompatibilities, Licorice (Gan Cao) is incompatible with which herbs?", options: ["A. Gan Sui, Da Ji, Hai Zao, Yuan Hua", "B. Chuan Wu, Cao Wu, Fu Zi", "C. San Leng, E Zhu, Shui Zhi", "D. Xi Xin, Shao Yao, Gan Jiang"], ans: 0 },
+          { q: "3. What is the premier representative formula for early-stage Warm Disease in Wei level?", options: ["A. Sang Ju Yin", "B. Yin Qiao San", "C. Qing Ying Tang", "D. Bai Hu Tang"], ans: 1 },
+          { q: "4. (Guaranteed) What is the core action of An Gong Niu Huang Wan?", options: ["A. Warm Yang and consolidate collapse", "B. Soothe Liver and regulate Qi", "C. Invigorate blood and remove stasis", "D. Open orifices and calm spirit"], ans: 3 },
+          { q: "5. In Suwen, at what age does a male's Kidney Qi become balanced and bones/tendons become strong?", options: ["A. Age 24", "B. Age 16", "C. Age 32", "D. Age 40"], ans: 1 }
         ],
         [
-          { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
-          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
-          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
-          { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰盛則吉", "B. 陽高則吉", "C. 平衡協調", "D. 陰陽分離"], ans: 2 },
-          { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
+          { q: "1. In Shanghan Lun Shaoyin chapter: 'Shaoyin disease initially presents with fever and deep pulse', which formula represents this?", options: ["A. Gui Zhi Tang", "B. Si Ni Tang", "C. Bai Hu Tang", "D. Ma Huang Fu Zi Xi Xin Tang"], ans: 3 },
+          { q: "2. In Eighteen Incompatibilities, Veratrum (Li Lu) is incompatible with which herbs?", options: ["A. Gan Cao, Da Ji, Hai Zao", "B. Chuan Wu, Cao Wu, Fu Zi", "C. Ren Shen, Sha Shen, Dan Shen, Xuan Shen, Xi Xin, Shao Yao", "D. Xiao Shi, Liu Huang, Mang Xiao"], ans: 2 },
+          { q: "3. What core strategy does the potent purgative action of Da Cheng Qi Tang reflect?", options: ["A. Warm and tonify Spleen Yang", "B. Urgent purgation to preserve Yin", "C. Harmonize Shaoyang", "D. Nourish Blood and moisten intestines"], ans: 1 },
+          { q: "4. (Guaranteed) 'When Yin is tranquil and Yang is compact, spirit is well preserved' in Huangdi Neijing indicates?", options: ["A. Excessive Yin is optimal", "B. High Yang is optimal", "C. Balance and harmony", "D. Separation of Yin and Yang"], ans: 2 },
+          { q: "5. The classic formula Xue Fu Zhu Yu Tang was created by which Qing Dynasty physician in 'Yilin Gaicuo'?", options: ["A. Zhang Jingyue", "B. Ye Tianshi", "C. Wang Qingren", "D. Wu Jutong"], ans: 2 }
         ]
       ]
     },
     {
-      name: "🩺 號外：【中醫體質測試 (33條)】",
-      difficulty: "專題測試",
-      desc: "體質不止寒熱，自測九種體質",
+      name: "🩺 Special: [TCM Body Type Test (33 Qs)]",
+      difficulty: "Special Quiz",
+      desc: "Discover your TCM body constitution among 9 types",
       isBodyTest: true,
-      titleSuccess: "體質鑑定完成"
+      titleSuccess: "Assessment Complete"
     }
   ]
 };
@@ -1234,7 +1236,10 @@ function cashOut() {
     return;
   }
   addTaelsToBank(currentPrize);
-  endGame(true, `見好就收！安全帶走 ${currentPrize} ${t.unit}！`, t.cashoutTitle, false);
+  const msgText = (currentLang === 'zh') 
+    ? `見好就收！安全帶走 ${currentPrize} ${t.unit}！`
+    : `Cashed out safely with ${currentPrize} ${t.unit}!`;
+  endGame(true, msgText, t.cashoutTitle, false);
 }
 
 function endGame(isWin, msg, title, isFinalOrTest = false) {
@@ -1249,7 +1254,10 @@ function endGame(isWin, msg, title, isFinalOrTest = false) {
   document.getElementById("retake-test-btn").style.display = "none";
   document.getElementById("txt-disclaimer").style.display = "none";
   
-  document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總功德: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
+  const totalLabel = (currentLang === 'zh') ? "累積總功德" : "Total Merit";
+  const honorLabel = (currentLang === 'zh') ? "獲得榮譽" : "Honor Earned";
+
+  document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n${totalLabel}: ${totalBankTaels} ${t.unit}\n${honorLabel}: 【${playerTitle}】`;
   
   const nextBtn = document.getElementById("next-stage-btn");
   if (isWin && currentStageIndex < 4 && !isFinalOrTest) {
@@ -1294,7 +1302,7 @@ function generateResultImage() {
   ctx.fillStyle = "#5c4033";
   ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 48);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Constitution Certificate 📜", 280, 48);
 
   // 計算中間核心區塊的垂直居中位置 (總高度 420，中心點為 210)
   let lineHeights = [];
@@ -1329,7 +1337,8 @@ function generateResultImage() {
   ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(`鑑定體質：${typeName}`, 280, startBoxY + 21);
+  const labelPrefix = (currentLang === 'zh') ? "鑑定體質：" : "Body Constitution: ";
+  ctx.fillText(`${labelPrefix}${typeName}`, 280, startBoxY + 21);
 
   // 說明內容
   ctx.fillStyle = "#3c2f2f";
@@ -1356,17 +1365,21 @@ function generateResultImage() {
     currentTextY += 26;
   });
 
-  // 底部提醒
+  // 底部免責聲明提醒（分兩行繪製，防止超出框架）
   ctx.fillStyle = "#8c7b6c";
   ctx.font = "11px sans-serif";
   ctx.textAlign = "center";
-  const disclaimerMsg = (currentLang === 'zh') 
-    ? "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。" 
-    : "⚠️ Note: This test result is a preliminary assessment for reference only, not a medical diagnosis or treatment advice. Consult a licensed TCM practitioner if needed.";
-  ctx.fillText(disclaimerMsg, 280, 368);
+  if (currentLang === 'zh') {
+    ctx.fillText("⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。", 280, 356);
+    ctx.fillText("如需調理或有健康問題，請先諮詢註冊中醫師。", 280, 372);
+  } else {
+    ctx.fillText("⚠️ Note: This result is a preliminary assessment for reference only, not a medical diagnosis.", 280, 356);
+    ctx.fillText("Consult a licensed TCM practitioner for medical advice.", 280, 372);
+  }
 
   ctx.font = "italic 12px sans-serif";
-  ctx.fillText("《懸壺問答》出品", 280, 390);
+  const certFooter = (currentLang === 'zh') ? "《懸壺問答》出品" : "Issued by TCM Quiz";
+  ctx.fillText(certFooter, 280, 394);
 
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
@@ -1385,7 +1398,8 @@ function copyResult() {
       text = `我在《懸壺問答》完成了 33 題中醫體質測驗，鑑定結果為【${lastSavedBodyType}】！\n快來測試你的中醫體質：${currentUrl}`;
       successAlert = "體質結果及網址已抄寫，快點飛鴿傳書給朋友吧！";
     } else {
-      text = `I completed the TCM Body Constitution Test in TCM Quiz and my result is [${lastSavedBodyType}]!\nTest yours here: ${currentUrl}`;
+      const savedInfo = bodyTypeInfo[lastSavedBodyType] || bodyTypeInfo["平和質"];
+      text = `I completed the TCM Body Constitution Test in TCM Quiz and my result is [${savedInfo.nameEn}]!\nTest yours here: ${currentUrl}`;
       successAlert = "Body test result and link copied! Send via pigeon to your friends!";
     }
   } else {
@@ -1401,7 +1415,7 @@ function copyResult() {
   navigator.clipboard.writeText(text).then(() => {
     alert(successAlert);
   }).catch(() => {
-    alert("複製失敗，請手動複製網址分享！");
+    alert((currentLang === 'zh') ? "複製失敗，請手動複製網址分享！" : "Failed to copy, please copy manually!");
   });
 }
 
