@@ -342,7 +342,7 @@
       <button class="btn-pixel" onclick="showSelectScreen()" id="txt-btn-back">返回關卡選擇</button>
       <button id="next-stage-btn" class="btn-pixel" style="background:#4a6b53; border-color:#2d4533; display:none;" onclick="nextStage()"><span id="txt-btn-next">挑戰下一關 ➔</span></button>
       <button id="gen-img-btn" class="btn-pixel" style="background:#e5a93c; color:#3c2f2f; border-color:#8b5a2b; display:none;" onclick="generateResultImage()"><span id="txt-btn-genimg">📷 生成體質卡片圖片</span></button>
-      <button id="retake-test-btn" class="btn-pixel" style="background:#8b5a2b; color:#fffdf9; border-color:#5c4033; display:none;" onclick="startStage(5)"><span id="txt-btn-retake">🔄 重新測驗</span></button>
+      <button id="retake-test-btn" class="btn-pixel" style="background:#8b5a2b; color:#fffdf9; border-color:#5c4033; display:none;" onclick="retakeBodyTest()"><span id="txt-btn-retake">🔄 重新測驗</span></button>
     </div>
     <button class="btn-pixel" style="background:#f0e6d2; color:#5c4033; border-color:#8b5a2b; margin-top:12px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
   </div>
@@ -504,7 +504,6 @@ const i18n = {
     allWinMsg: "🎉 恭喜通關全部關卡！您已融會貫通中醫精髓，榮登【懸壺濟世・國醫大師】之位！",
     loseMsg: "遺憾答錯！正確答案係 ",
     titleFail: "考核未順利通過",
-    shareAlert: "🕊️ 飛鴿已傳書！戰報與遊戲網址已複製到剪貼簿，快貼給朋友挑戰吧！",
     imgTip: "💡 長按上方圖片即可儲存分享給朋友！",
     disclaimer: "⚠️ 提示：本測試結果僅供食療保健參考，如有具體健康需求，請諮詢註冊中醫師。",
     stampPassed: "已完成"
@@ -536,7 +535,6 @@ const i18n = {
     allWinMsg: "🎉 Congratulations on completing ALL levels! You have mastered TCM and earned [Grandmaster Physician]!",
     loseMsg: "Incorrect! The correct answer was ",
     titleFail: "Exam Failed",
-    shareAlert: "🕊️ Carrier pigeon dispatched! Result and URL copied to clipboard!",
     imgTip: "💡 Long-press or right-click the image above to save & share!",
     disclaimer: "⚠️ Note: For health guidance & wellness reference only. Consult a licensed TCM practitioner if needed.",
     stampPassed: "COMPLETED"
@@ -938,6 +936,7 @@ let bodyTestHistory = [];
 let activeQuestions = [];
 let lastSetIndices = {}; 
 let lastEvaluatedType = "";
+let isCurrentBodyTest = false; // 標記目前結算是否為體質測試
 
 function toggleLanguage() {
   playSound('click');
@@ -1055,6 +1054,11 @@ function startStage(stageIdx) {
   
   document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcReady} (${stage.name})`;
   loadQuestion();
+}
+
+function retakeBodyTest() {
+  document.getElementById("modal").style.display = "none";
+  startStage(5);
 }
 
 function loadQuestion() {
@@ -1179,6 +1183,7 @@ function finishBodyTest() {
 }
 
 function showBodyTestResultModal(topType) {
+  isCurrentBodyTest = true;
   lastEvaluatedType = topType;
   const info = bodyTypeInfo[topType] || bodyTypeInfo["平和質"];
   const displayTitle = (currentLang === 'zh') ? topType : info.nameEn;
@@ -1233,6 +1238,7 @@ function cashOut() {
 }
 
 function endGame(isWin, msg, title, isFinalOrTest = false) {
+  isCurrentBodyTest = false;
   const t = i18n[currentLang];
   finalScore = isWin ? currentPrize : lastCheckpointPrize;
   playerTitle = title;
@@ -1261,7 +1267,7 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果圖片生成：緊湊高度、內容完美置中
+// 體質結果圖片生成：垂直方向整體置中於證書 Central (50%) 區域
 function generateResultImage() {
   playSound('click');
   
@@ -1276,7 +1282,7 @@ function generateResultImage() {
   ctx.fillStyle = "#fdfbf7";
   ctx.fillRect(0, 0, 560, 420);
 
-  // 簡潔雙線外框
+  // 雙線外框
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 6;
   ctx.strokeRect(12, 12, 536, 396);
@@ -1288,28 +1294,12 @@ function generateResultImage() {
   ctx.fillStyle = "#5c4033";
   ctx.font = "bold 20px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 50);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 48);
 
-  // 體質名稱大標籤（置中）
-  ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(60, 75, 440, 42);
-  ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(60, 75, 440, 42);
-
-  ctx.fillStyle = "#a0522d";
-  ctx.font = "bold 20px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(`鑑定體質：${typeName}`, 280, 96);
-
-  // 說明內容（置中顯示區塊）
-  ctx.fillStyle = "#3c2f2f";
+  // 計算中間核心區塊的垂直居中位置 (總高度 420，中心點為 210)
+  // 核心內容：體質標籤(高42px) + 間距(16px) + 文字多行內容
+  let lineHeights = [];
   ctx.font = "14px sans-serif";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "alphabetic";
-  
-  let startY = 145;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
@@ -1317,28 +1307,67 @@ function generateResultImage() {
       let testLine = lineStr + words[i];
       let metrics = ctx.measureText(testLine);
       if (metrics.width > 440 && i > 0) {
-        ctx.fillText(lineStr, 60, startY);
+        lineHeights.push(lineStr);
         lineStr = words[i];
-        startY += 22;
       } else {
         lineStr = testLine;
       }
     }
-    ctx.fillText(lineStr, 60, startY);
-    startY += 26;
+    lineHeights.push(lineStr);
   });
 
-  // 底部專業提醒
+  const totalContentHeight = 42 + 16 + (lineHeights.length * 24);
+  const startBoxY = 210 - (totalContentHeight / 2) - 10; // 核心內容精準集中於 50% 高度
+
+  // 體質名稱大標籤
+  ctx.fillStyle = "#f0e6d2";
+  ctx.fillRect(60, startBoxY, 440, 42);
+  ctx.strokeStyle = "#8b5a2b";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(60, startBoxY, 440, 42);
+
+  ctx.fillStyle = "#a0522d";
+  ctx.font = "bold 20px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`鑑定體質：${typeName}`, 280, startBoxY + 21);
+
+  // 說明內容
+  ctx.fillStyle = "#3c2f2f";
+  ctx.font = "14px sans-serif";
+  ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
+  
+  let currentTextY = startBoxY + 42 + 24;
+  descLines.forEach(line => {
+    let words = line;
+    let lineStr = "";
+    for (let i = 0; i < words.length; i++) {
+      let testLine = lineStr + words[i];
+      let metrics = ctx.measureText(testLine);
+      if (metrics.width > 440 && i > 0) {
+        ctx.fillText(lineStr, 60, currentTextY);
+        lineStr = words[i];
+        currentTextY += 22;
+      } else {
+        lineStr = testLine;
+      }
+    }
+    ctx.fillText(lineStr, 60, currentTextY);
+    currentTextY += 26;
+  });
+
+  // 底部提醒
   ctx.fillStyle = "#8c7b6c";
   ctx.font = "11px sans-serif";
   ctx.textAlign = "center";
   const disclaimerMsg = (currentLang === 'zh') 
     ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
     : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
-  ctx.fillText(disclaimerMsg, 280, 365);
+  ctx.fillText(disclaimerMsg, 280, 368);
 
   ctx.font = "italic 12px sans-serif";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 280, 388);
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 280, 390);
 
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
@@ -1348,18 +1377,32 @@ function generateResultImage() {
 
 function copyResult() {
   playSound('click');
-  const t = i18n[currentLang];
   const currentUrl = window.location.href;
-  
   let text = "";
-  if (currentLang === 'zh') {
-    text = `我在《懸壺濟世：百萬問答》完成了 33 題中醫體質測驗，鑑定結果為【${lastSavedBodyType}】！\n快來測試你的中醫體質：${currentUrl}`;
+  let successAlert = "";
+
+  if (isCurrentBodyTest) {
+    // 體質測試畫面：複製體質結果與網址
+    if (currentLang === 'zh') {
+      text = `我在《懸壺濟世：百萬問答》完成了 33 題中醫體質測驗，鑑定結果為【${lastSavedBodyType}】！\n快來測試你的中醫體質：${currentUrl}`;
+      successAlert = "體質結果及網址已抄寫，快點飛鴿傳書給朋友吧！";
+    } else {
+      text = `I completed the TCM Body Constitution Test and my result is [${lastSavedBodyType}]!\nTest yours here: ${currentUrl}`;
+      successAlert = "Body test result and link copied! Send via pigeon to your friends!";
+    }
   } else {
-    text = `I completed the TCM Body Constitution Test and my result is [${lastSavedBodyType}]!\nChallenge here: ${currentUrl}`;
+    // 挑戰問答關卡畫面：複製榮譽與網址
+    if (currentLang === 'zh') {
+      text = `我在《懸壺濟世：百萬問答》挑戰中獲得了【${playerTitle}】榮譽！\n快來挑戰你的中醫知識：${currentUrl}`;
+      successAlert = "閣下的榮譽及網址已抄寫，快點飛鴿傳書給朋友吧！";
+    } else {
+      text = `I earned the title [${playerTitle}] in TCM Millionaire Quiz!\nChallenge your TCM knowledge here: ${currentUrl}`;
+      successAlert = "Your honor and link copied! Send via pigeon to your friends!";
+    }
   }
   
   navigator.clipboard.writeText(text).then(() => {
-    alert(t.shareAlert);
+    alert(successAlert);
   }).catch(() => {
     alert("複製失敗，請手動複製網址分享！");
   });
