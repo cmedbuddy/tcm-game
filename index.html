@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
+  <title>懸壺問答 | TCM Quiz</title>
   <!-- 引入像素字型 -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
@@ -281,13 +281,13 @@
       </svg>
       <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
     </div>
-    <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
+    <div class="header" id="txt-header">📜 懸壺問答 📜</div>
   </div>
 
   <div id="level-select-screen">
     <div class="bank-bar">
-      <span>💰 <span id="txt-bank-label">生涯累積總銀兩：</span></span>
-      <span id="bank-taels-display" style="color:#a0522d; font-size:16px;">0 兩</span>
+      <span>✨ <span id="txt-bank-label">生涯累積總功德：</span></span>
+      <span id="bank-taels-display" style="color:#a0522d; font-size:16px;">0 點</span>
     </div>
     <div style="font-size: 14px; color: #8b5a2b; margin-bottom: 14px; font-weight: bold;" id="txt-select-title">請選擇考核關卡或體質自測：</div>
     <div id="stages-list"></div>
@@ -299,7 +299,7 @@
         <button id="l-5050" class="btn-pixel" onclick="use5050()">☯️ 50:50</button>
         <button id="l-phone" class="btn-pixel" onclick="usePhone()"><span id="txt-l-phone">📜 飛鴿問書</span></button>
       </div>
-      <div class="prize-info" id="prize-display">目前銀兩: 0 兩</div>
+      <div class="prize-info" id="prize-display">目前功德: 0</div>
     </div>
 
     <div class="npc-box">
@@ -312,7 +312,7 @@
     <div class="options-grid" id="options-container"></div>
 
     <div class="action-panel">
-      <button class="btn-pixel cashout-btn" onclick="cashOut()" id="txt-cashout">💰 見好就收</button>
+      <button class="btn-pixel cashout-btn" onclick="cashOut()" id="txt-cashout">✨ 見好就收</button>
       <button class="btn-pixel prev-btn" onclick="prevQuestion()" id="txt-prev" style="display: none;">⬅️ 回上一題</button>
       <div style="font-size: 13px; color: #8c7b6c; font-weight: bold;" id="level-display">關卡: 1 / 5</div>
     </div>
@@ -330,7 +330,7 @@
     <div class="modal-text" id="modal-text">...</div>
     
     <div class="disclaimer-note" id="txt-disclaimer" style="display:none;">
-      ⚠️ 提示：本測試結果僅供食療保健參考，如有具體健康需求，請諮詢註冊中醫師。
+      ⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。
     </div>
 
     <div id="image-result-preview">
@@ -478,25 +478,25 @@ const bodyTypeInfo = {
 
 const i18n = {
   zh: {
-    header: "📜 懸壺濟世：百萬問答 📜",
-    bankLabel: "生涯累積總銀兩：",
+    header: "📜 懸壺問答 📜",
+    bankLabel: "生涯累積總功德：",
     selectTitle: "請選擇考核關卡或體質自測：",
     phoneBtn: "📜 飛鴿問書",
-    cashoutBtn: "💰 見好就收",
+    cashoutBtn: "✨ 見好就收",
     prevBtn: "⬅️ 回上一題",
     backBtn: "返回關卡選擇",
     nextBtn: "挑戰下一關 ➔",
     genImgBtn: "📷 生成體質卡片圖片",
     retakeBtn: "🔄 重新測驗",
     shareBtn: "🕊️ 複製網址飛鴿傳書給朋友",
-    prizeLabel: "目前銀兩",
-    unit: "兩",
+    prizeLabel: "目前功德",
+    unit: "點",
     progressLabel: "進度",
     npcReady: "少俠，準備好挑戰未？",
-    npcCorrect: "答得好！順利晉級，累積銀兩 ",
+    npcCorrect: "答得好！順利晉級，累積功德 ",
     npc5050: "老中醫掌櫃：「施展陰陽化煞，為你排除兩個錯誤干擾！」",
     npcPhone: "飛鴿問書：「徒兒，老夫掐指一算，此題極有可能是 ",
-    cashoutAlert: "你目前仲未有銀兩，先答對一題啦！",
+    cashoutAlert: "你目前仲未有功德，先答對一題啦！",
     cashoutTitle: "明哲保身大夫",
     winTitle: "📜 考核結算 📜",
     loseTitle: "💀 考核結束 💀",
@@ -505,29 +505,29 @@ const i18n = {
     loseMsg: "遺憾答錯！正確答案係 ",
     titleFail: "考核未順利通過",
     imgTip: "💡 長按上方圖片即可儲存分享給朋友！",
-    disclaimer: "⚠️ 提示：本測試結果僅供食療保健參考，如有具體健康需求，請諮詢註冊中醫師。",
+    disclaimer: "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。",
     stampPassed: "已完成"
   },
   en: {
-    header: "📜 TCM Millionaire Quiz 📜",
-    bankLabel: "Total Earned Taels: ",
+    header: "📜 TCM Quiz 📜",
+    bankLabel: "Total Accumulated Merit: ",
     selectTitle: "Select Quiz Level or Body Test:",
     phoneBtn: "📜 Pigeon Letter",
-    cashoutBtn: "💰 Cash Out",
+    cashoutBtn: "✨ Cash Out",
     prevBtn: "⬅️ Previous",
     backBtn: "Level Select",
     nextBtn: "Next Level ➔",
     genImgBtn: "📷 Generate Body Card Image",
     retakeBtn: "🔄 Retake Test",
     shareBtn: "🕊️ Copy Link & Share via Pigeon",
-    prizeLabel: "Taels",
-    unit: "Taels",
+    prizeLabel: "Merit",
+    unit: "pts",
     progressLabel: "Progress",
     npcReady: "Greetings scholar! Ready to test your TCM knowledge?",
-    npcCorrect: "Splendid! Correct answer! Accumulated Taels: ",
+    npcCorrect: "Splendid! Correct answer! Accumulated Merit: ",
     npc5050: "Master Herbalist: 'Using Yin-Yang elimination to remove 2 wrong choices!'",
     npcPhone: "Pigeon Letter: 'Disciple, I predict the answer is likely ",
-    cashoutAlert: "You haven't earned any taels yet! Answer at least 1 question.",
+    cashoutAlert: "You haven't earned any merit yet! Answer at least 1 question.",
     cashoutTitle: "Prudent Physician",
     winTitle: "📜 Exam Result 📜",
     loseTitle: "💀 Game Over 💀",
@@ -536,7 +536,7 @@ const i18n = {
     loseMsg: "Incorrect! The correct answer was ",
     titleFail: "Exam Failed",
     imgTip: "💡 Long-press or right-click the image above to save & share!",
-    disclaimer: "⚠️ Note: For health guidance & wellness reference only. Consult a licensed TCM practitioner if needed.",
+    disclaimer: "⚠️ Note: This test result is a preliminary assessment for reference only, not a medical diagnosis or treatment advice. Consult a licensed TCM practitioner if needed.",
     stampPassed: "COMPLETED"
   }
 };
@@ -737,7 +737,7 @@ const stagesData = {
       name: "☯️ 第五關：【國醫大師】",
       difficulty: "難度：★★★★★",
       desc: "執業醫師/專業學生：經典條文、十八反與經典方劑。",
-      titleSuccess: "懸壺濟世・國醫大師",
+      titleSuccess: "懸壺問答・國醫大師",
       questionSets: [
         [
           { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰水", "B. 服後啜熱稀粥，溫覆微汗", "C. 服後大汗流瀉", "D. 服後禁食熱食"], ans: 1 },
@@ -936,7 +936,7 @@ let bodyTestHistory = [];
 let activeQuestions = [];
 let lastSetIndices = {}; 
 let lastEvaluatedType = "";
-let isCurrentBodyTest = false; // 標記目前結算是否為體質測試
+let isCurrentBodyTest = false;
 
 function toggleLanguage() {
   playSound('click');
@@ -1249,7 +1249,7 @@ function endGame(isWin, msg, title, isFinalOrTest = false) {
   document.getElementById("retake-test-btn").style.display = "none";
   document.getElementById("txt-disclaimer").style.display = "none";
   
-  document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總資產: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
+  document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總功德: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
   
   const nextBtn = document.getElementById("next-stage-btn");
   if (isWin && currentStageIndex < 4 && !isFinalOrTest) {
@@ -1297,7 +1297,6 @@ function generateResultImage() {
   ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 48);
 
   // 計算中間核心區塊的垂直居中位置 (總高度 420，中心點為 210)
-  // 核心內容：體質標籤(高42px) + 間距(16px) + 文字多行內容
   let lineHeights = [];
   ctx.font = "14px sans-serif";
   descLines.forEach(line => {
@@ -1317,7 +1316,7 @@ function generateResultImage() {
   });
 
   const totalContentHeight = 42 + 16 + (lineHeights.length * 24);
-  const startBoxY = 210 - (totalContentHeight / 2) - 10; // 核心內容精準集中於 50% 高度
+  const startBoxY = 210 - (totalContentHeight / 2) - 10;
 
   // 體質名稱大標籤
   ctx.fillStyle = "#f0e6d2";
@@ -1362,12 +1361,12 @@ function generateResultImage() {
   ctx.font = "11px sans-serif";
   ctx.textAlign = "center";
   const disclaimerMsg = (currentLang === 'zh') 
-    ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
-    : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
+    ? "⚠️ 提示：本測試結果僅為初步評估，僅供參考，並非醫療診斷或治療建議。如需調理或有健康問題，請先諮詢註冊中醫師。" 
+    : "⚠️ Note: This test result is a preliminary assessment for reference only, not a medical diagnosis or treatment advice. Consult a licensed TCM practitioner if needed.";
   ctx.fillText(disclaimerMsg, 280, 368);
 
   ctx.font = "italic 12px sans-serif";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 280, 390);
+  ctx.fillText("《懸壺問答》出品", 280, 390);
 
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
@@ -1382,21 +1381,19 @@ function copyResult() {
   let successAlert = "";
 
   if (isCurrentBodyTest) {
-    // 體質測試畫面：複製體質結果與網址
     if (currentLang === 'zh') {
-      text = `我在《懸壺濟世：百萬問答》完成了 33 題中醫體質測驗，鑑定結果為【${lastSavedBodyType}】！\n快來測試你的中醫體質：${currentUrl}`;
+      text = `我在《懸壺問答》完成了 33 題中醫體質測驗，鑑定結果為【${lastSavedBodyType}】！\n快來測試你的中醫體質：${currentUrl}`;
       successAlert = "體質結果及網址已抄寫，快點飛鴿傳書給朋友吧！";
     } else {
-      text = `I completed the TCM Body Constitution Test and my result is [${lastSavedBodyType}]!\nTest yours here: ${currentUrl}`;
+      text = `I completed the TCM Body Constitution Test in TCM Quiz and my result is [${lastSavedBodyType}]!\nTest yours here: ${currentUrl}`;
       successAlert = "Body test result and link copied! Send via pigeon to your friends!";
     }
   } else {
-    // 挑戰問答關卡畫面：複製榮譽與網址
     if (currentLang === 'zh') {
-      text = `我在《懸壺濟世：百萬問答》挑戰中獲得了【${playerTitle}】榮譽！\n快來挑戰你的中醫知識：${currentUrl}`;
+      text = `我在《懸壺問答》挑戰中獲得了【${playerTitle}】榮譽！\n快來挑戰你的中醫知識：${currentUrl}`;
       successAlert = "閣下的榮譽及網址已抄寫，快點飛鴿傳書給朋友吧！";
     } else {
-      text = `I earned the title [${playerTitle}] in TCM Millionaire Quiz!\nChallenge your TCM knowledge here: ${currentUrl}`;
+      text = `I earned the title [${playerTitle}] in TCM Quiz!\nChallenge your TCM knowledge here: ${currentUrl}`;
       successAlert = "Your honor and link copied! Send via pigeon to your friends!";
     }
   }
