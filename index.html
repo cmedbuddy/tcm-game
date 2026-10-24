@@ -4,26 +4,24 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>懸壺濟世：百萬問答 | TCM Millionaire</title>
-  <!-- 引入多重頂級書法與像素字型 -->
-  <link href="https://fonts.googleapis.com/css2?family=Zhi+Mang+Xing&family=Ma+Shan+Zheng&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <!-- 引入像素字型 -->
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
+    /* 修正手機端滾動問題，支援 iOS 與 Samsung/Android 順暢滑動 */
     html, body { 
-      overscroll-behavior: none; 
-      touch-action: pan-x pan-y;
-      overflow: hidden;
+      overscroll-behavior-y: none; 
       width: 100%;
-      height: 100%;
-      position: fixed;
+      min-height: 100%;
+      background-color: #f7f4ed; 
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
     body { 
-      background-color: #f7f4ed; 
       color: #3c2f2f; 
       display: flex; 
       justify-content: center; 
-      align-items: center; 
+      align-items: flex-start; 
       padding: 12px; 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans HK", "Hiragino Sans GB", sans-serif;
     }
@@ -31,15 +29,13 @@
     #game-container { 
       width: 100%; 
       max-width: 850px; 
-      max-height: 95vh;
-      overflow-y: auto;
       background: #fffdf9; 
       border: 4px solid #8b5a2b; 
       border-radius: 12px; 
       padding: 24px; 
       box-shadow: 0 10px 30px rgba(92, 64, 51, 0.15); 
       position: relative; 
-      overscroll-behavior-y: contain;
+      margin-bottom: 30px;
     }
 
     .header-container {
@@ -129,7 +125,6 @@
     .stage-difficulty { color: #a0522d; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
     .stage-desc-text { color: #665247; font-size: 14px; line-height: 1.5; }
 
-    /* 精準定位在右側正中間的古典朱紅印章 */
     .stamp-passed {
       position: absolute;
       right: 18px;
@@ -218,8 +213,8 @@
     .cashout-btn:hover:not(:disabled) { background: #37523e; }
     .prev-btn { background: #f0e6d2; color: #5c4033; border: 2px solid #8b5a2b; box-shadow: 2px 2px 0px #8b5a2b; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; overflow-y: auto; padding: 20px; }
+    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
     .modal-title { font-size: 20px; font-weight: bold; color: #5c4033; margin-bottom: 18px; }
     .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 18px; color: #3c2f2f; text-align: left; white-space: pre-line; }
 
@@ -334,6 +329,7 @@
       <button class="btn-pixel" onclick="showSelectScreen()" id="txt-btn-back">返回關卡選擇</button>
       <button id="next-stage-btn" class="btn-pixel" style="background:#4a6b53; border-color:#2d4533; display:none;" onclick="nextStage()"><span id="txt-btn-next">挑戰下一關 ➔</span></button>
       <button id="gen-img-btn" class="btn-pixel" style="background:#e5a93c; color:#3c2f2f; border-color:#8b5a2b; display:none;" onclick="generateResultImage()"><span id="txt-btn-genimg">📷 生成體質卡片圖片</span></button>
+      <button id="restart-test-btn" class="btn-pixel" style="background:#a0522d; color:#fffdf9; border-color:#5c4033; display:none;" onclick="restartBodyTest()"><span id="txt-btn-restart">🔄 重新測驗</span></button>
     </div>
     <button class="btn-pixel" style="background:#f0e6d2; color:#5c4033; border-color:#8b5a2b; margin-top:14px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
   </div>
@@ -342,10 +338,6 @@
 <canvas id="card-canvas" width="600" height="820" style="display:none;"></canvas>
 
 <script>
-document.addEventListener('touchmove', function(e) {
-  if (e.scale !== 1) { e.preventDefault(); }
-}, { passive: false });
-
 let audioCtx = null;
 
 function initAudio() {
@@ -421,6 +413,7 @@ function playSound(type) {
 let currentLang = 'zh';
 let totalBankTaels = parseInt(localStorage.getItem('tcm_total_taels') || '0');
 let passedStages = JSON.parse(localStorage.getItem('tcm_passed_stages') || '{}');
+let savedBodyResult = JSON.parse(localStorage.getItem('tcm_saved_body_result') || 'null');
 
 const bodyTypeInfo = {
   "氣虛質": {
@@ -481,6 +474,7 @@ const i18n = {
     backBtn: "返回關卡選擇",
     nextBtn: "挑戰下一關 ➔",
     genImgBtn: "📷 生成體質卡片圖片",
+    restartBtn: "🔄 重新測驗",
     shareBtn: "🕊️ 複製網址飛鴿傳書給朋友",
     prizeLabel: "目前銀兩",
     unit: "兩",
@@ -512,6 +506,7 @@ const i18n = {
     backBtn: "Level Select",
     nextBtn: "Next Level ➔",
     genImgBtn: "📷 Generate Body Card Image",
+    restartBtn: "🔄 Retake Test",
     shareBtn: "🕊️ Copy Link & Share via Pigeon",
     prizeLabel: "Taels",
     unit: "Taels",
@@ -888,34 +883,188 @@ const stagesData = {
       titleSuccess: "Grandmaster Physician",
       questionSets: [
         [
-          { q: "1. In Shang Han Lun, what is required when taking Gui Zhi Tang?", options: ["A. Drink cold water", "B. Sip warm porridge", "C. Induce sweating", "D. Avoid warm food"], ans: 1 },
-          { q: "2. In Eighteen Incompatibilities, Aconite (Wu Tou) is incompatible with?", options: ["A. Hai Zao, Kun Bu", "B. Gua Lou, Bei Mu, Ban Xia, Bai Lian, Bai Ji", "C. Xi Xin, Shao Yao", "D. Ren Shen, Sha Shen"], ans: 1 },
-          { q: "3. 'Phlegm-fluid diseases should be treated with warming herbs' highlights?", options: ["A. Yin evil needs warmth", "B. Use dry-heat herbs", "C. Stagnation of Liver", "D. Purgative method"], ans: 0 },
-          { q: "4. (Guaranteed) Why are Sheng Ma and Chai Hu paired with Huang Qi in Bu Zhong Yi Qi Tang?", options: ["A. Release sweating", "B. Clear heat", "C. Raise sunken Qi", "D. Soothe Liver"], ans: 2 },
-          { q: "5. At what age does a female's Chong Vessel flourish & menstruation begin?", options: ["A. Age 7 (1x7)", "B. Age 21 (3x7)", "C. Age 14 (2x7)", "D. Age 28 (4x7)"], ans: 2 }
+          { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰水", "B. 服後啜熱稀粥，溫覆微汗", "C. 服後大汗流瀉", "D. 服後禁食熱食"], ans: 1 },
+          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、黃芩", "B. 瓜蔞、貝母、半夏、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
+          { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了什麼病機？", options: ["A. 陰邪非溫不化", "B. 大熱破除痰飲", "C. 肝鬱致痰病機", "D. 瀉下法去痰飲"], ans: 0 },
+          { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升提中氣", "D. 疏肝理氣"], ans: 2 },
+          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二十一歲 (3x7)", "C. 十四歲 (2x7)", "D. 二十八歲 (4x7)"], ans: 2 }
         ],
         [
-          { q: "1. Core efficacy and indication of Ma Huang Tang in Shang Han Lun is?", options: ["A. Promote sweating", "B. Harmonize Ying", "C. Warm Middle Jiao", "D. Clear Heat"], ans: 0 },
-          { q: "2. In Eighteen Incompatibilities, Licorice (Gan Cao) is incompatible with?", options: ["A. Gan Sui, Da Ji, Hai Zao, Yuan Hua", "B. Chuan Wu, Cao Wu, Fu Zi", "C. San Leng, E Zhu, Shui Zhi", "D. Xi Xin, Shao Yao, Gan Jiang"], ans: 0 },
-          { q: "3. In Wen Bing Tiao Bian, which formula is preferred for early-stage Wind-Warmth in Wei stage with fever & cough?", options: ["A. Sang Ju Yin", "B. Yin Qiao San", "C. Qing Ying Tang", "D. Bai Hu Tang"], ans: 1 },
-          { q: "4. (Guaranteed) Core efficacy of famous formula An Gong Niu Huang Wan is?", options: ["A. Warm Yang", "B. Soothe Liver", "C. Invigorate Blood", "D. Clear heat & open orifices"], ans: 3 },
-          { q: "5. In Su Wen Chapter 1, male kidney Qi reaches balance at age?", options: ["A. Age 24 (3x8)", "B. Age 16 (2x8)", "C. Age 32 (4x8)", "D. Age 40 (5x8)"], ans: 1 }
+          { q: "1. 《傷寒論》中，「麻黃湯」的核心功效與主治是？", options: ["A. 發汗平喘", "B. 調和營衛", "C. 溫中祛寒", "D. 清熱瀉火"], ans: 0 },
+          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 川烏、草烏、附子", "C. 三棱、莪朮、水蛭", "D. 細辛、芍藥、乾薑"], ans: 0 },
+          { q: "3. 《溫病條辨》中，溫病初起、邪在衛分（風溫初起，發熱頭痛、咳嗽口渴）的首選代表方劑是？", options: ["A. 桑菊飲", "B. 銀翹散", "C. 清營湯", "D. 白虎湯"], ans: 1 },
+          { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 溫陽固脫", "B. 疏肝理氣", "C. 活血化瘀", "D. 開竅安神"], ans: 3 },
+          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強」？", options: ["A. 二十四歲 (3x8)", "B. 十六歲 (2x8)", "C. 三十二歲 (4x8)", "D. 四十歲 (5x8)"], ans: 1 }
         ],
         [
-          { q: "1. Representative formula for 'Shaoyin disease with fever and deep pulse' in Shang Han Lun is?", options: ["A. Gui Zhi Tang", "B. Si Ni Tang", "C. Bai Hu Tang", "D. Ma Huang Fu Zi Xi Xin Tang"], ans: 3 },
-          { q: "2. In Eighteen Incompatibilities, Li Lu is incompatible with?", options: ["A. Gan Cao, Da Ji", "B. Wu Tou, Fu Zi", "C. Ren Shen, Sha Shen, Dan Shen, Xuan Shen, Xi Xin, Shao Yao", "D. Sulfur, Mang Xiao"], ans: 2 },
-          { q: "3. Purgative formula Da Cheng Qi Tang demonstrates the principle of?", options: ["A. Tonifying Yang", "B. Purging heat", "C. Harmonizing", "D. Moistening"], ans: 1 },
-          { q: "4. (Guaranteed) 'Yin Peace and Yang Secretion maintains vitality' in Inner Canon explains?", options: ["A. More Yin is better", "B. More Yang is better", "C. Relative balance", "D. Separation"], ans: 2 },
-          { q: "5. Famous formula Xue Fu Zhu Yu Tang was invented by Qing dynasty physician?", options: ["A. Zhang Jingyue", "B. Ye Tianshi", "C. Wang Qingren", "D. Wu Jutong"], ans: 2 }
+          { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
+          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
+          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
+          { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰盛則吉", "B. 陽高則吉", "C. 平衡協調", "D. 陰陽分離"], ans: 2 },
+          { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
         ]
       ]
     },
     {
-      name: "🩺 Special: [TCM Body Constitution Test (33 Qs)]",
-      difficulty: "Special Test",
-      desc: "Discover your unique body constitution beyond cold and heat.",
+      name: "🩺 號外：【中醫體質測試 (33條)】",
+      difficulty: "專題測試",
+      desc: "體質不止寒熱，自測九種體質",
       isBodyTest: true,
-      titleSuccess: "Test Completed"
+      titleSuccess: "體質鑑定完成"
+    }
+  ],
+  en: [
+    {
+      name: "🌱 Level 1: [Herbal Apprentice]",
+      difficulty: "Difficulty: ★☆☆☆☆",
+      desc: "General Knowledge: Wellness, herbal tea, & daily health tips.",
+      titleSuccess: "Wellness Master",
+      questionSets: [
+        [
+          { q: "1. What herbal tea in TCM is best for clearing heat after eating too much spicy food?", options: ["A. Red Ginseng Tea", "B. Hot Ginger Tea", "C. Chrysanthemum Tea", "D. Red Date Tea"], ans: 2 },
+          { q: "2. Which famous acupoint located between the thumb and index finger is known as the 'Universal Point'?", options: ["A. Yongquan (KI1)", "B. Hegu (LI4)", "C. Zusanli (ST36)", "D. Taichong (LR3)"], ans: 1 },
+          { q: "3. Which food therapy is commonly recommended in dry autumn for moistening the lungs?", options: ["A. Snow Pear", "B. Spicy Hotpot", "C. Sausage", "D. Fried Chicken"], ans: 0 },
+          { q: "4. (Guaranteed) The TCM saying 'Free flow brings no pain, obstruction causes pain' refers to?", options: ["A. Joints", "B. Sweat Glands", "C. Digestion", "D. Qi & Blood"], ans: 3 },
+          { q: "5. What ingredient soup is traditionally used in early stage Wind-Cold common cold to promote sweating?", options: ["A. Bitter Gourd", "B. Scallion & Ginger", "C. Watermelon", "D. Chrysanthemum"], ans: 1 }
+        ],
+        [
+          { q: "1. Which bean soup is most popular in summer for clearing heat and draining dampness?", options: ["A. Red Bean", "B. Black Bean", "C. Mung Bean", "D. Soy Bean"], ans: 2 },
+          { q: "2. When experiencing eye dry fatigue, TCM recommends pairing Goji Berries with?", options: ["A. Rose", "B. Jasmine", "C. Chrysanthemum", "D. Lotus"], ans: 2 },
+          { q: "3. Staying up late habitually in TCM easily damages which aspect of the body?", options: ["A. Yin Fluid", "B. Yang Qi", "C. Bones", "D. Muscles"], ans: 0 },
+          { q: "4. (Guaranteed) What is the main action of Lily bulb (Bai He) in TCM food therapy?", options: ["A. Nourish Yin & lungs, calm mind", "B. Tonify vital Qi & warm Yang", "C. Promote blood circulation", "D. Clear heat & drain stool"], ans: 0 },
+          { q: "5. Which dried fruit peel is famous in Guangdong for transforming phlegm and harmonizing stomach?", options: ["A. Monk Fruit", "B. Longan", "C. Lychee", "D. Tangerine Peel"], ans: 3 }
+        ],
+        [
+          { q: "1. What drink is recommended for heavy body sensation and sticky stools due to damp-heat?", options: ["A. Ginseng Tea", "B. Barley & Bean Water", "C. Antler Wine", "D. Ginger Tea"], ans: 1 },
+          { q: "2. Spleen opens into the mouth. Healthy spleen function is shown in?", options: ["A. Hard nails", "B. Dark hair", "C. Rosy lips", "D. Sharp hearing"], ans: 2 },
+          { q: "3. Stomachache or diarrhea after eating ice-cold food indicates?", options: ["A. Stomach Fire", "B. Spleen Cold", "C. Yin Deficiency", "D. Damp-Heat"], ans: 1 },
+          { q: "4. (Guaranteed) Frequent anger and irritability in TCM primarily injures?", options: ["A. Lungs", "B. Kidneys", "C. Intestine", "D. Liver"], ans: 3 },
+          { q: "5. The premier health point located at the vertex of the head is?", options: ["A. Yongquan (KI1)", "B. Fengchi (GB20)", "C. Baihui (GV20)", "D. Laogong (PC8)"], ans: 2 }
+        ]
+      ]
+    },
+    {
+      name: "🌿 Level 2: [Hall Scholar]",
+      difficulty: "Difficulty: ★★☆☆☆",
+      desc: "Health Enthusiasts: Acupoints, 4 Examinations, & 5 Elements.",
+      titleSuccess: "Resident Physician",
+      questionSets: [
+        [
+          { q: "1. Where is the health-promoting acupoint 'Zusanli (ST36)' located?", options: ["A. Crown of head", "B. Inner wrist", "C. Outer lower leg", "D. Sole of foot"], ans: 2 },
+          { q: "2. In TCM Four Examinations, 'Touching' refers to?", options: ["A. Pulse diagnosis", "B. Facial colors", "C. Listening breath", "D. Taking history"], ans: 0 },
+          { q: "3. In 5 Elements theory, 'Earth' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Spleen"], ans: 3 },
+          { q: "4. (Guaranteed) What is the main action of Goji Berries in TCM?", options: ["A. Clear heat", "B. Tonify Liver", "C. Release exterior", "D. Break stasis"], ans: 1 },
+          { q: "5. Summer health preservation focuses on nourishing?", options: ["A. Liver", "B. Lungs", "C. Heart", "D. Kidneys"], ans: 2 }
+        ],
+        [
+          { q: "1. Which point located in the sole depression is the first point of Kidney Meridian?", options: ["A. Yongquan (KI1)", "B. Taichong (LR3)", "C. Hegu (LI4)", "D. Sanyinjiao (SP6)"], ans: 0 },
+          { q: "2. Looking examination (Inspection) in TCM does NOT include?", options: ["A. Tongue coat", "B. Facial color", "C. Pulse speed", "D. Body posture"], ans: 2 },
+          { q: "3. In 5 Elements theory, 'Metal' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Spleen", "D. Lungs"], ans: 3 },
+          { q: "4. (Guaranteed) The primary function of Huang Qi (Astragalus) is?", options: ["A. Clear heat", "B. Invigorate blood", "C. Tonify Qi", "D. Purge stool"], ans: 2 },
+          { q: "5. Spring health preservation according to Yellow Emperor's Canon focuses on?", options: ["A. Heart", "B. Liver", "C. Lungs", "D. Kidneys"], ans: 1 }
+        ],
+        [
+          { q: "1. Sanyinjiao (SP6) point is famous for gynecology care. Where is it?", options: ["A. Inner lower leg", "B. Outer knee", "C. Back of neck", "D. Inner elbow"], ans: 0 },
+          { q: "2. Listening & Smelling (Olfaction/Auscultation) refers to?", options: ["A. Voice & Odor", "B. Feeling pulse", "C. Checking tongue", "D. Asking history"], ans: 0 },
+          { q: "3. In 5 Elements theory, 'Water' corresponds to which organ?", options: ["A. Liver", "B. Heart", "C. Kidneys", "D. Spleen"], ans: 2 },
+          { q: "4. (Guaranteed) Dang Gui (Angelica Sinensis) is premier herb for?", options: ["A. Tonifying Blood", "B. Clearing Heat", "C. Purging Cold", "D. Drying Dampness"], ans: 0 },
+          { q: "5. Autumn health preservation in TCM focuses on?", options: ["A. Liver", "B. Heart", "C. Kidneys", "D. Lungs"], ans: 3 }
+        ]
+      ]
+    },
+    {
+      name: "🪵 Level 3: [Apothecary Master]",
+      difficulty: "Difficulty: ★★★☆☆",
+      desc: "TCM Students: Yin-Yang, Organs, Qi-Blood, & Herbs.",
+      titleSuccess: "Renowned Physician",
+      questionSets: [
+        [
+          { q: "1. In TCM Yin-Yang theory, which property belongs to 'Yin'?", options: ["A. Warmth", "B. Brightness", "C. Stillness", "D. Rising"], ans: 2 },
+          { q: "2. Spleen & Stomach are 'Foundation of Post-natal Life'. Main function?", options: ["A. Transforming food", "B. Governing blood", "C. Memory", "D. Gas exchange"], ans: 0 },
+          { q: "3. Which is NOT a symptom of Yin Deficiency Fire?", options: ["A. Heat in palms", "B. Night sweats", "C. Dry mouth", "D. Diarrhea"], ans: 3 },
+          { q: "4. (Guaranteed) Among 5 Flavors, 'Sweet' herbs mainly?", options: ["A. Drain & Dry", "B. Astringe", "C. Tonify & Harmonize", "D. Soften hardness"], ans: 2 },
+          { q: "5. Thick yellow greasy tongue coating usually indicates?", options: ["A. Cold", "B. Damp-Heat", "C. Qi Deficiency", "D. Fluid loss"], ans: 1 }
+        ],
+        [
+          { q: "1. Known as 'Foundation of Pre-natal Life', storing Essence and governing growth is?", options: ["A. Liver", "B. Kidney", "C. Spleen", "D. Heart"], ans: 1 },
+          { q: "2. Relationship between Qi and Blood in TCM is described as?", options: ["A. Unrelated", "B. Qi commands Blood", "C. Blood commands Qi", "D. Qi destroys Blood"], ans: 1 },
+          { q: "3. 'Pungent/Acrid' taste herbs (e.g. Ginger, Mint) mainly act to?", options: ["A. Tonify", "B. Astringe", "C. Disperse & Flow", "D. Soften"], ans: 2 },
+          { q: "4. (Guaranteed) Pale teeth-marked tongue body indicates?", options: ["A. Spleen Qi Deficiency", "B. Heat in Blood", "C. Yin Deficiency", "D. Blood Stasis"], ans: 0 },
+          { q: "5. The main action of E Jiao (Donkey-hide Gelatin) is?", options: ["A. Boost Primordial Qi", "B. Clear toxins", "C. Drain water", "D. Tonify Blood"], ans: 3 }
+        ],
+        [
+          { q: "1. The organ governing free flow of Qi, storing Blood, and harmonizing emotions is?", options: ["A. Liver", "B. Heart", "C. Lungs", "D. Spleen"], ans: 0 },
+          { q: "2. In fluid metabolism, the organ governing water transformation and gasification is?", options: ["A. Stomach", "B. Intestine", "C. Kidney", "D. Gallbladder"], ans: 2 },
+          { q: "3. 'Sour' taste herbs (e.g. Hawthorn, Plum) mainly function to?", options: ["A. Disperse", "B. Astringe & Bind", "C. Purge", "D. Soften"], ans: 1 },
+          { q: "4. (Guaranteed) A floating pulse (Fu Mai) in pulse diagnosis indicates?", options: ["A. Exterior syndrome", "B. Interior Cold", "C. Blood Loss", "D. Exhaustion"], ans: 0 },
+          { q: "5. The main action of Fu Ling (Poria) is?", options: ["A. Stop sweating", "B. Drain Dampness", "C. Warm middle", "D. Stop pain"], ans: 1 }
+        ]
+      ]
+    },
+    {
+      name: "🪨 Level 4: [Qi & Meridian Expert]",
+      difficulty: "Difficulty: ★★★★☆",
+      desc: "Advanced Students: Pulse/Tongue differentiation, Meridians.",
+      titleSuccess: "Qi Master",
+      questionSets: [
+        [
+          { q: "1. Where does the Lung Meridian originate?", options: ["A. Lungs organ", "B. Tip of thumb", "C. Middle Jiao", "D. Pericardium"], ans: 2 },
+          { q: "2. Left wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen", "C. Liver, Heart, Kidney", "D. Spleen, Stomach, Lung"], ans: 0 },
+          { q: "3. Original indication for 'Liu Wei Di Huang Wan'?", options: ["A. Kidney Yang deficiency", "B. Kidney Yin deficiency", "C. Spleen weakness", "D. Damp-Heat"], ans: 1 },
+          { q: "4. In 'Monarch, Minister, Assistant, Envoy' principle, the herb assisting Monarch is?", options: ["A. Minister Herb", "B. Assistant Herb", "C. Envoy Herb", "D. Guide Herb"], ans: 0 },
+          { q: "5. Which Qi primarily warms, defends, and consolidates?", options: ["A. Ying Qi", "B. Zong Qi", "C. Yuan Qi", "D. Wei Qi"], ans: 3 }
+        ],
+        [
+          { q: "1. Which meridian runs along both sides of spine with the most acupoints?", options: ["A. Stomach Meridian", "B. Bladder Meridian", "C. Sanjiao Meridian", "D. Kidney Meridian"], ans: 1 },
+          { q: "2. Right wrist pulse positions (Cun, Guan, Chi) correspond to?", options: ["A. Heart, Liver, Kidney", "B. Lung, Spleen, Mingmen", "C. Stomach, Gallbladder", "D. Liver, Spleen, Heart"], ans: 1 },
+          { q: "3. Primary indication for Bu Zhong Yi Qi Tang is?", options: ["A. Sinking Middle Qi", "B. Liver Qi Stagnation", "C. Heat in Pericardium", "D. Yin Deficiency"], ans: 0 },
+          { q: "4. In formula architecture, the herb guiding rest to affected area or harmonizing is?", options: ["A. Monarch Herb", "B. Minister Herb", "C. Assistant Herb", "D. Envoy Herb"], ans: 3 },
+          { q: "5. Qi stored in chest that governs respiration and heart circulation is?", options: ["A. Zong Qi", "B. Wei Qi", "C. Ying Qi", "D. Yuan Qi"], ans: 0 }
+        ],
+        [
+          { q: "1. Among Eight Extra Meridians, which is known as 'Sea of Yang Meridians'?", options: ["A. Conception Vessel", "B. Governor Vessel", "C. Thoroughfare Vessel", "D. Belt Vessel"], ans: 1 },
+          { q: "2. A Wiry pulse (Xian Mai, like pressing a violin string) clinically indicates?", options: ["A. Blood loss", "B. Exterior Cold", "C. Liver disorders", "D. Food stagnation"], ans: 2 },
+          { q: "3. Main function of famous formula Xiao Yao San is?", options: ["A. Warm Yang", "B. Soothe Liver", "C. Clear Heat", "D. Purge stool"], ans: 1 },
+          { q: "4. Primary Qi inherited from parents stored in Kidneys is?", options: ["A. Wei Qi", "B. Yuan Qi", "C. Ying Qi", "D. Food Qi"], ans: 1 },
+          { q: "5. In Nineteen Incompatibilities, Clove (Ding Xiang) is incompatible with?", options: ["A. Rhino Horn", "B. Ginseng", "C. Wu Ling Zhi", "D. Yu Jin"], ans: 3 }
+        ]
+      ]
+    },
+    {
+      name: "☯️ Level 5: [National TCM Master]",
+      difficulty: "Difficulty: ★★★★★",
+      desc: "Licensed Practitioners: Classics, Incompatibilities, Formulas.",
+      titleSuccess: "Grandmaster Physician",
+      questionSets: [
+        [
+          { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰水", "B. 服後啜熱稀粥，溫覆微汗", "C. 服後大汗流瀉", "D. 服後禁食熱食"], ans: 1 },
+          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、黃芩", "B. 瓜蔞、貝母、半夏、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
+          { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了什麼病機？", options: ["A. 陰邪非溫不化", "B. 大熱破除痰飲", "C. 肝鬱致痰病機", "D. 瀉下法去痰飲"], ans: 0 },
+          { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升提中氣", "D. 疏肝理氣"], ans: 2 },
+          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二十一歲 (3x7)", "C. 十四歲 (2x7)", "D. 二十八歲 (4x7)"], ans: 2 }
+        ],
+        [
+          { q: "1. 《傷寒論》中，「麻黃湯」的核心功效與主治是？", options: ["A. 發汗平喘", "B. 調和營衛", "C. 溫中祛寒", "D. 清熱瀉火"], ans: 0 },
+          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 川烏、草烏、附子", "C. 三棱、莪朮、水蛭", "D. 細辛、芍藥、乾薑"], ans: 0 },
+          { q: "3. 《溫病條辨》中，溫病初起、邪在衛分（風溫初起，發熱頭痛、咳嗽口渴）的首選代表方劑是？", options: ["A. 桑菊飲", "B. 銀翹散", "C. 清營湯", "D. 白虎湯"], ans: 1 },
+          { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 溫陽固脫", "B. 疏肝理氣", "C. 活血化瘀", "D. 開竅安神"], ans: 3 },
+          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強」？", options: ["A. 二十四歲 (3x8)", "B. 十六歲 (2x8)", "C. 三十二歲 (4x8)", "D. 四十歲 (5x8)"], ans: 1 }
+        ],
+        [
+          { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
+          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
+          { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
+          { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰盛則吉", "B. 陽高則吉", "C. 平衡協調", "D. 陰陽分離"], ans: 2 },
+          { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
+        ]
+      ]
+    },
+    {
+      name: "🩺 號外：【中醫體質測試 (33條)】",
+      difficulty: "專題測試",
+      desc: "體質不止寒熱，自測九種體質",
+      isBodyTest: true,
+      titleSuccess: "體質鑑定完成"
     }
   ]
 };
@@ -950,6 +1099,7 @@ function updateStaticUI() {
   document.getElementById("txt-btn-back").innerText = t.backBtn;
   document.getElementById("txt-btn-next").innerText = t.nextBtn;
   document.getElementById("txt-btn-genimg").innerText = t.genImgBtn;
+  document.getElementById("txt-btn-restart").innerText = t.restartBtn;
   document.getElementById("txt-btn-share").innerText = t.shareBtn;
   document.getElementById("txt-img-tip").innerText = t.imgTip;
   document.getElementById("txt-disclaimer").innerText = t.disclaimer;
@@ -965,7 +1115,13 @@ function renderStageList() {
   list.forEach((stg, idx) => {
     const card = document.createElement("div");
     card.className = "stage-card";
-    card.onclick = () => startStage(idx);
+    card.onclick = () => {
+      if (stg.isBodyTest && savedBodyResult) {
+        showSavedBodyResult();
+      } else {
+        startStage(idx);
+      }
+    };
     
     const isPassed = passedStages[idx] === true;
     const stampHtml = isPassed ? `<div class="stamp-passed">💮 ${i18n[currentLang].stampPassed}</div>` : "";
@@ -980,6 +1136,28 @@ function renderStageList() {
   });
 }
 
+function showSavedBodyResult() {
+  playSound('click');
+  currentStageIndex = 5; // 體質測試關卡索引
+  lastEvaluatedType = savedBodyResult.topType;
+  
+  const info = bodyTypeInfo[lastEvaluatedType] || bodyTypeInfo["平和質"];
+  const displayTitle = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
+  const descText = (currentLang === 'zh') ? info.desc : info.descEn;
+
+  const resultMsg = (currentLang === 'zh')
+    ? `【中醫九種體質鑑定結果（已存檔）】\n\n您上次測算的主要體質傾向為：【${displayTitle}】！\n\n${descText}`
+    : `[Saved TCM Body Constitution Result]\n\nYour previous primary body type: [${displayTitle}]!\n\n${descText}`;
+    
+  endGame(true, resultMsg, displayTitle, true);
+}
+
+function restartBodyTest() {
+  localStorage.removeItem('tcm_saved_body_result');
+  savedBodyResult = null;
+  startStage(5);
+}
+
 function showSelectScreen() {
   playSound('click');
   document.getElementById("modal").style.display = "none";
@@ -987,6 +1165,7 @@ function showSelectScreen() {
   document.getElementById("level-select-screen").style.display = "block";
   document.getElementById("image-result-preview").style.display = "none";
   renderStageList();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startStage(stageIdx) {
@@ -1030,6 +1209,7 @@ function startStage(stageIdx) {
   
   document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcReady} (${stage.name})`;
   loadQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function loadQuestion() {
@@ -1057,6 +1237,7 @@ function loadQuestion() {
     btn.onclick = () => checkAnswer(idx);
     container.appendChild(btn);
   });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function markStagePassed(stageIdx) {
@@ -1148,6 +1329,10 @@ function finishBodyTest() {
   lastEvaluatedType = topType;
   markStagePassed(currentStageIndex);
   
+  // 記錄並儲存最新體質結果
+  savedBodyResult = { topType: topType, date: new Date().toLocaleDateString() };
+  localStorage.setItem('tcm_saved_body_result', JSON.stringify(savedBodyResult));
+
   const info = bodyTypeInfo[topType] || bodyTypeInfo["平和質"];
   const displayTitle = (currentLang === 'zh') ? topType : info.nameEn;
   const descText = (currentLang === 'zh') ? info.desc : info.descEn;
@@ -1201,13 +1386,15 @@ function endGame(isWin, msg, title, isFinalOrTest = false) {
   document.getElementById("modal-title").innerText = isWin ? t.winTitle : t.loseTitle;
   document.getElementById("image-result-preview").style.display = "none";
   
-  if (stage.isBodyTest) {
+  if (stage.isBodyTest || savedBodyResult) {
     document.getElementById("modal-text").innerText = `${msg}`;
     document.getElementById("gen-img-btn").style.display = "inline-block";
+    document.getElementById("restart-test-btn").style.display = "inline-block";
     document.getElementById("txt-disclaimer").style.display = "block";
   } else {
     document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總資產: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
     document.getElementById("gen-img-btn").style.display = "none";
+    document.getElementById("restart-test-btn").style.display = "none";
     document.getElementById("txt-disclaimer").style.display = "none";
   }
   
@@ -1227,14 +1414,9 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果生成（使用 Promise 確保書法字型 100% 載入並完美繪製、全新設計古典朱紅印章）
-async function generateResultImage() {
+// 體質結果生成（已移除毛筆字與印章，改為現代高質感簡潔證書）
+function generateResultImage() {
   playSound('click');
-  
-  // 強制等待瀏覽器字型完全載入，解決字型抓取失敗的問題
-  if (document.fonts && document.fonts.ready) {
-    await document.fonts.ready;
-  }
 
   const canvas = document.getElementById("card-canvas");
   const ctx = canvas.getContext("2d");
@@ -1247,102 +1429,42 @@ async function generateResultImage() {
   ctx.fillStyle = "#fdfbf7";
   ctx.fillRect(0, 0, 600, 820);
 
-  // 外框（雙重古风边框）
+  // 外框
   ctx.strokeStyle = "#8b5a2b";
-  ctx.lineWidth = 8;
-  ctx.strokeRect(15, 15, 570, 790);
+  ctx.lineWidth = 6;
+  ctx.strokeRect(20, 20, 560, 780);
   ctx.strokeStyle = "#d7c4b7";
   ctx.lineWidth = 2;
-  ctx.strokeRect(25, 25, 550, 770);
+  ctx.strokeRect(30, 30, 540, 760);
 
   // 頂部標題
   ctx.fillStyle = "#5c4033";
-  ctx.font = "bold 26px sans-serif";
+  ctx.font = "bold 24px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 75);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 80);
 
-  const shortName = lastEvaluatedType.replace("質", ""); // 書法展示名
-  
-  // 墨跡背景圓
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(300, 205, 80, 0, Math.PI * 2);
-  ctx.fillStyle = "rgba(235, 222, 200, 0.75)";
-  ctx.fill();
-  ctx.strokeStyle = "rgba(139, 90, 43, 0.35)";
-  ctx.lineWidth = 3;
-  ctx.stroke();
-  ctx.restore();
-
-  // 書道毛筆字（放大至 84px，黑墨與立體陰影，確保 100% 渲染）
-  ctx.save();
-  ctx.fillStyle = "#111111";
-  ctx.font = "bold 84px 'Zhi Mang Xing', 'Ma Shan Zheng', 'KaiTi', cursive, serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.shadowColor = "rgba(0, 0, 0, 0.25)";
-  ctx.shadowBlur = 8;
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 3;
-  ctx.fillText(shortName, 300, 202);
-  ctx.restore();
-
-  // 重新設計：精緻古典雙圈正方篆刻朱紅印章
-  ctx.save();
-  const stampX = 430, stampY = 150, stampSize = 64;
-  
-  // 朱砂紅印台背景
-  ctx.fillStyle = "rgba(185, 43, 39, 0.92)";
-  ctx.fillRect(stampX, stampY, stampSize, stampSize);
-  
-  // 雙層古风邊框
-  ctx.lineWidth = 2.5;
-  ctx.strokeStyle = "#ffffff";
-  ctx.strokeRect(stampX + 3, stampY + 3, stampSize - 6, stampSize - 6);
-  ctx.lineWidth = 1;
-  ctx.strokeRect(stampX + 6, stampY + 6, stampSize - 12, stampSize - 12);
-
-  // 內置十字格與精緻篆刻風格文字
-  ctx.strokeStyle = "rgba(255, 255, 255, 0.4)";
-  ctx.setLineDash([3, 3]);
-  ctx.beginPath();
-  ctx.moveTo(stampX + stampSize/2, stampY + 6);
-  ctx.lineTo(stampX + stampSize/2, stampY + stampSize - 6);
-  ctx.moveTo(stampX + 6, stampY + stampSize/2);
-  ctx.lineTo(stampX + stampSize - 6, stampY + stampSize/2);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  // 印章文字（右上：中，左上：醫，右下：專，左下：印 - 傳統九疊篆排版感）
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 14px serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("中", stampX + 18, stampY + 20);
-  ctx.fillText("醫", stampX + 46, stampY + 20);
-  ctx.fillText("鑒", stampX + 18, stampY + 46);
-  ctx.fillText("印", stampX + 46, stampY + 46);
-  ctx.restore();
-
-  // 體質名稱標籤條
+  // 體質名稱大標題區（直接以精緻現代標籤呈現，無毛筆字與印章）
   ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(80, 305, 440, 50);
+  ctx.fillRect(80, 130, 440, 70);
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 2;
-  ctx.strokeRect(80, 305, 440, 50);
+  ctx.strokeRect(80, 130, 440, 70);
+
+  ctx.fillStyle = "#8b5a2b";
+  ctx.font = "bold 15px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText((currentLang === 'zh') ? "您的主要體質傾向" : "Primary Constitution", 300, 155);
 
   ctx.fillStyle = "#a0522d";
   ctx.font = "bold 26px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "alphabetic";
-  ctx.fillText(typeName, 300, 340);
+  ctx.fillText(typeName, 300, 185);
 
   // 說明內容
   ctx.fillStyle = "#3c2f2f";
-  ctx.font = "17px sans-serif";
+  ctx.font = "16px sans-serif";
   ctx.textAlign = "left";
   
-  let startY = 390;
+  let startY = 245;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
@@ -1371,7 +1493,7 @@ async function generateResultImage() {
   ctx.fillText(disclaimerMsg, 300, 745);
 
   ctx.font = "italic 14px sans-serif";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 770);
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 775);
 
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
