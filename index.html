@@ -17,14 +17,15 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
+    /* 日式明亮木系風格背景 */
     body { 
-      background-color: #1a0f1d; 
-      color: #fff; 
+      background-color: #f7f4ed; 
+      color: #3c2f2f; 
       display: flex; 
       justify-content: center; 
       align-items: center; 
       padding: 12px; 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans HK", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans HK", "Hiragino Sans GB", sans-serif;
     }
     
     #game-container { 
@@ -32,11 +33,11 @@
       max-width: 850px; 
       max-height: 95vh;
       overflow-y: auto;
-      background: #2d1832; 
-      border: 5px solid #e0a96d; 
-      border-radius: 10px; 
-      padding: 20px; 
-      box-shadow: 0 0 25px rgba(0,0,0,0.9); 
+      background: #fffdf9; 
+      border: 4px solid #8b5a2b; 
+      border-radius: 12px; 
+      padding: 24px; 
+      box-shadow: 0 10px 30px rgba(92, 64, 51, 0.15); 
       position: relative; 
       overscroll-behavior-y: contain;
     }
@@ -47,6 +48,7 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 20px;
+      padding-top: 25px; /* 頂部留出適當空位 */
       position: relative;
     }
 
@@ -56,13 +58,14 @@
       justify-content: center;
       position: relative;
       width: 100%;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
+    /* 金黃葫蘆 Logo */
     .game-logo {
-      width: 68px;
-      height: 68px;
-      filter: drop-shadow(0px 0px 8px rgba(129, 199, 132, 0.6));
+      width: 72px;
+      height: 72px;
+      filter: drop-shadow(0px 4px 6px rgba(139, 90, 43, 0.2));
     }
 
     .btn-lang { 
@@ -70,63 +73,70 @@
       right: 0;
       top: 50%;
       transform: translateY(-50%);
-      background: #3a1c40; 
-      color: #f3c623; 
-      border: 2px solid #e0a96d; 
+      background: #f0e6d2; 
+      color: #5c4033; 
+      border: 2px solid #8b5a2b; 
       padding: 6px 14px; 
       cursor: pointer; 
       font-size: 13px; 
       font-weight: bold; 
       border-radius: 6px; 
       transition: all 0.2s ease;
-      box-shadow: 2px 2px 0px #000;
+      box-shadow: 2px 2px 0px #8b5a2b;
     }
-    .btn-lang:hover { background: #e0a96d; color: #1a0f1d; border-color: #f3c623; }
+    .btn-lang:hover { background: #8b5a2b; color: #fffdf9; }
 
     .header { 
       text-align: center; 
-      color: #f3c623; 
+      color: #5c4033; 
       font-size: 22px; 
       font-weight: bold; 
-      text-shadow: 2px 2px #000; 
       line-height: 1.4; 
+      letter-spacing: 1px;
     }
     
     #level-select-screen { text-align: center; padding: 10px 0; }
+    
     .stage-card { 
-      background: #120914; 
-      border: 3px solid #e0a96d; 
+      background: #fdfbf7; 
+      border: 2px solid #d7c4b7; 
       border-radius: 8px; 
       padding: 16px; 
       margin-bottom: 14px; 
       cursor: pointer; 
       text-align: left; 
-      transition: 0.2s; 
+      transition: all 0.2s ease; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.03);
     }
-    .stage-card:hover { border-color: #f3c623; background: #200f24; transform: scale(1.01); }
-    .stage-title { color: #f3c623; font-size: 17px; font-weight: bold; margin-bottom: 8px; }
-    .stage-desc { color: #ddd; font-size: 14px; line-height: 1.5; }
+    .stage-card:hover { border-color: #8b5a2b; background: #f7ede2; transform: translateY(-2px); }
+    .stage-title { color: #5c4033; font-size: 17px; font-weight: bold; margin-bottom: 8px; }
+    
+    /* 關卡內容分為難度與內容兩行 */
+    .stage-difficulty { color: #a0522d; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
+    .stage-desc-text { color: #665247; font-size: 14px; line-height: 1.5; }
 
     .top-panel { display: flex; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; align-items: center; }
     .lifelines { display: flex; gap: 10px; }
+    
     .btn-pixel { 
-      background: #8c2520; 
-      color: #f3c623; 
-      border: 3px solid #e0a96d; 
+      background: #8b5a2b; 
+      color: #fffdf9; 
+      border: 2px solid #5c4033; 
       padding: 10px 14px; 
       cursor: pointer; 
       font-size: 14px; 
       font-weight: bold; 
       border-radius: 6px; 
-      box-shadow: 3px 3px 0px #000; 
+      box-shadow: 2px 2px 0px #5c4033; 
+      transition: all 0.15s ease;
     }
-    .btn-pixel:disabled { background: #4a4a4a; color: #888; border-color: #666; cursor: not-allowed; box-shadow: none; }
-    .btn-pixel:hover:not(:disabled) { background: #a8322a; }
-    .prize-info { color: #f3c623; font-size: 16px; font-weight: bold; }
+    .btn-pixel:disabled { background: #d3c5b7; color: #8c7b6c; border-color: #a8988a; cursor: not-allowed; box-shadow: none; }
+    .btn-pixel:hover:not(:disabled) { background: #6f421b; }
+    .prize-info { color: #8b5a2b; font-size: 16px; font-weight: bold; }
     
     .npc-box { 
-      background: #120914; 
-      border: 3px solid #e0a96d; 
+      background: #f4efe6; 
+      border: 2px solid #c8b4a2; 
       padding: 12px 16px; 
       border-radius: 8px; 
       margin-bottom: 18px; 
@@ -135,46 +145,51 @@
       gap: 14px; 
       min-height: 70px; 
     }
-    .npc-avatar { font-size: 32px; border: 2px solid #f3c623; padding: 6px; background: #3a1c40; border-radius: 6px; }
-    .npc-text { font-size: 15px; line-height: 1.6; color: #e0a96d; font-weight: bold; }
+    .npc-avatar { font-size: 32px; border: 2px solid #8b5a2b; padding: 6px; background: #fffdf9; border-radius: 6px; }
+    .npc-text { font-size: 15px; line-height: 1.6; color: #5c4033; font-weight: bold; }
 
     .question-box { 
-      background: #120914; 
-      border: 3px solid #f3c623; 
+      background: #fdfbf7; 
+      border: 2px solid #8b5a2b; 
       padding: 20px; 
       border-radius: 8px; 
       font-size: 18px; 
       font-weight: bold; 
       line-height: 1.6; 
       margin-bottom: 20px; 
-      color: #ffffff; 
+      color: #3c2f2f; 
       text-align: center; 
+      box-shadow: inset 0 0 8px rgba(139, 90, 43, 0.05);
     }
+    
     .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
     @media (max-width: 650px) { .options-grid { grid-template-columns: 1fr; } }
+    
     .option-btn { 
-      background: #1f2833; 
-      color: #fff; 
-      border: 3px solid #e0a96d; 
+      background: #fffdf9; 
+      color: #3c2f2f; 
+      border: 2px solid #c8b4a2; 
       padding: 16px; 
       cursor: pointer; 
-      font-size: 16px; 
+      font-size: 15px; 
       font-weight: bold; 
       border-radius: 6px; 
       text-align: left; 
       line-height: 1.5; 
       transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
-    .option-btn:hover { background: #3a1c40; border-color: #f3c623; color: #f3c623; }
+    .option-btn:hover { background: #f7ede2; border-color: #8b5a2b; color: #5c4033; }
 
     .action-panel { display: flex; justify-content: space-between; align-items: center; }
-    .cashout-btn { background: #2e7d32; color: #fff; border: 3px solid #81c784; }
-    .prev-btn { background: #3a1c40; color: #f3c623; border: 3px solid #e0a96d; }
+    .cashout-btn { background: #4a6b53; color: #fffdf9; border: 2px solid #2d4533; box-shadow: 2px 2px 0px #2d4533; }
+    .cashout-btn:hover:not(:disabled) { background: #37523e; }
+    .prev-btn { background: #f0e6d2; color: #5c4033; border: 2px solid #8b5a2b; box-shadow: 2px 2px 0px #8b5a2b; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); justify-content: center; align-items: center; z-index: 100; }
-    .modal-content { background: #2d1832; border: 4px solid #f3c623; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 10px; max-height: 90vh; overflow-y: auto; }
-    .modal-title { font-size: 20px; font-weight: bold; color: #f3c623; margin-bottom: 18px; }
-    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 22px; color: #fff; text-align: left; white-space: pre-line; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .modal-title { font-size: 20px; font-weight: bold; color: #5c4033; margin-bottom: 18px; }
+    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 22px; color: #3c2f2f; text-align: left; white-space: pre-line; }
   </style>
 </head>
 <body>
@@ -182,31 +197,30 @@
 <div id="game-container">
   <div class="header-container">
     <div class="header-top-row">
-      <!-- 全新設計：清新草本翡翠綠葉 Logo -->
+      <!-- 金黃葫蘆 Logo (無絲帶，典雅圓潤) -->
       <svg class="game-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="46" fill="#120914" stroke="#e0a96d" stroke-width="3"/>
-        <circle cx="50" cy="50" r="41" fill="none" stroke="#81c784" stroke-width="1.5" stroke-dasharray="5,3"/>
-        <!-- 綠葉主體 -->
-        <path d="M 25 75 C 25 35 45 18 78 22 C 80 55 65 78 25 75 Z" fill="#2e7d32" stroke="#81c784" stroke-width="2.5"/>
-        <!-- 葉片內側漸層襯葉 -->
-        <path d="M 32 72 C 32 42 48 26 73 26 C 74 50 62 70 32 72 Z" fill="#4caf50" opacity="0.6"/>
-        <!-- 葉脈 -->
-        <path d="M 25 75 Q 50 50 78 22" fill="none" stroke="#f3c623" stroke-width="2.5" stroke-linecap="round"/>
-        <path d="M 40 60 Q 48 52 55 50" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 50 48 Q 60 40 68 38" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M 35 68 Q 38 58 45 58" fill="none" stroke="#f3c623" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- 金黃露珠 -->
-        <circle cx="62" cy="38" r="3.5" fill="#f3c623"/>
-        <circle cx="63" cy="37" r="1" fill="#ffffff"/>
+        <circle cx="50" cy="50" r="45" fill="#fdfbf7" stroke="#8b5a2b" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#d7c4b7" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <!-- 葫蘆上球 -->
+        <circle cx="50" cy="35" r="13" fill="#e5a93c" stroke="#8b5a2b" stroke-width="2"/>
+        <!-- 葫蘆下球 -->
+        <circle cx="50" cy="62" r="21" fill="#e5a93c" stroke="#8b5a2b" stroke-width="2"/>
+        <!-- 葫蘆腰部過渡與裝飾圈 -->
+        <path d="M 40 47 Q 50 51 60 47" fill="none" stroke="#8b5a2b" stroke-width="2.5"/>
+        <!-- 高光亮點 -->
+        <path d="M 43 30 A 8 8 0 0 1 50 25" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+        <path d="M 39 54 A 14 14 0 0 1 50 44" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+        <!-- 葫蘆蓋蓋子 -->
+        <rect x="47" y="18" width="6" height="5" rx="1" fill="#8b5a2b"/>
       </svg>
-      <!-- 與 Logo 水平平行的語言切換按鈕 -->
+      <!-- 語言切換按鈕 -->
       <button class="btn-lang" onclick="toggleLanguage()" id="lang-btn">English</button>
     </div>
     <div class="header" id="txt-header">📜 懸壺濟世：百萬問答 📜</div>
   </div>
 
   <div id="level-select-screen">
-    <div style="font-size: 15px; color: #e0a96d; margin-bottom: 16px; font-weight: bold;" id="txt-select-title">請選擇考核關卡或體質自測：</div>
+    <div style="font-size: 15px; color: #8b5a2b; margin-bottom: 16px; font-weight: bold;" id="txt-select-title">請選擇考核關卡或體質自測：</div>
     <div id="stages-list"></div>
   </div>
 
@@ -231,7 +245,7 @@
     <div class="action-panel">
       <button class="btn-pixel cashout-btn" onclick="cashOut()" id="txt-cashout">💰 見好就收</button>
       <button class="btn-pixel prev-btn" onclick="prevQuestion()" id="txt-prev" style="display: none;">⬅️ 回上一題</button>
-      <div style="font-size: 14px; color: #aaa; font-weight: bold;" id="level-display">關卡: 1 / 5</div>
+      <div style="font-size: 14px; color: #8c7b6c; font-weight: bold;" id="level-display">關卡: 1 / 5</div>
     </div>
   </div>
 </div>
@@ -242,9 +256,9 @@
     <div class="modal-text" id="modal-text">...</div>
     <div id="modal-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
       <button class="btn-pixel" onclick="showSelectScreen()" id="txt-btn-back">返回關卡選擇</button>
-      <button id="next-stage-btn" class="btn-pixel" style="background:#2b580c; border-color:#81c784; display:none;" onclick="nextStage()"><span id="txt-btn-next">挑戰下一關 ➔</span></button>
+      <button id="next-stage-btn" class="btn-pixel" style="background:#4a6b53; border-color:#2d4533; display:none;" onclick="nextStage()"><span id="txt-btn-next">挑戰下一關 ➔</span></button>
     </div>
-    <button class="btn-pixel" style="background:#1f2833; border-color:#e0a96d; margin-top:14px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
+    <button class="btn-pixel" style="background:#f0e6d2; color:#5c4033; border-color:#8b5a2b; margin-top:14px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
   </div>
 </div>
 
@@ -253,7 +267,7 @@ document.addEventListener('touchmove', function(e) {
   if (e.scale !== 1) { e.preventDefault(); }
 }, { passive: false });
 
-// 強健的音效系統 (Web Audio API)
+// Web Audio API 音效系統
 let audioCtx = null;
 
 function initAudio() {
@@ -283,7 +297,7 @@ function playSound(type) {
     if (type === 'click') {
       osc.type = 'square';
       osc.frequency.setValueAtTime(400, now);
-      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.setValueAtTime(0.08, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
       osc.start(now);
       osc.stop(now + 0.05);
@@ -292,7 +306,7 @@ function playSound(type) {
       osc.frequency.setValueAtTime(523.25, now);
       osc.frequency.setValueAtTime(659.25, now + 0.1);
       osc.frequency.setValueAtTime(783.99, now + 0.2);
-      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.setValueAtTime(0.12, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
       osc.start(now);
       osc.stop(now + 0.35);
@@ -300,7 +314,7 @@ function playSound(type) {
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(220, now);
       osc.frequency.setValueAtTime(164.81, now + 0.15);
-      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.setValueAtTime(0.15, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
       osc.start(now);
       osc.stop(now + 0.4);
@@ -308,7 +322,7 @@ function playSound(type) {
       osc.type = 'sine';
       osc.frequency.setValueAtTime(600, now);
       osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.setValueAtTime(0.1, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
       osc.start(now);
       osc.stop(now + 0.2);
@@ -318,7 +332,7 @@ function playSound(type) {
       osc.frequency.setValueAtTime(659.25, now + 0.12);
       osc.frequency.setValueAtTime(783.99, now + 0.24);
       osc.frequency.setValueAtTime(1046.50, now + 0.36);
-      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.setValueAtTime(0.15, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
       osc.start(now);
       osc.stop(now + 0.6);
@@ -497,12 +511,13 @@ const bodyTestQuestionsEn = [
   { q: "33. Do you adapt well to environmental/climate changes?", options: ["A. Always", "B. Often", "C. Seldom", "D. Never"], type: "平和質" }
 ];
 
-// 完整關卡題庫
+// 完整關卡題庫（已替換為選項 D：百合）
 const stagesData = {
   zh: [
     {
       name: "🌱 第一關：【草堂初試】",
-      desc: "難度：★☆☆☆☆ | 大眾普及：生活養生、涼茶食療與日常保健常識。",
+      difficulty: "難度：★☆☆☆☆",
+      desc: "大眾普及：生活養生、涼茶食療與日常保健常識。",
       titleSuccess: "草堂養生達人",
       questionSets: [
         [
@@ -516,7 +531,7 @@ const stagesData = {
           { q: "1. 夏日消暑解毒、清熱利尿，廣東街坊最常煲哪種豆湯？", options: ["A. 紅豆湯", "B. 黑豆湯", "C. 綠豆湯", "D. 黃豆湯"], ans: 2 },
           { q: "2. 當感覺眼睛乾澀疲勞時，中醫常建議枸杞配搭哪種花沖泡？", options: ["A. 玫瑰花", "B. 茉莉花", "C. 菊花", "D. 荷花"], ans: 2 },
           { q: "3. 中醫認為經常晚睡熬夜最容易傷及體內的什麼，從而出現口乾、手足心熱？", options: ["A. 陰液", "B. 陽氣", "C. 骨骼", "D. 肌肉"], ans: 0 },
-          { q: "4. (保底題) 俗稱「吃得太飽、消化不良」在中醫稱為？", options: ["A. 風寒", "B. 血瘀", "C. 陰虛", "D. 食滯"], ans: 3 },
+          { q: "4. (保底題) 廣東民間煲湯常用的「百合」，在中醫食療中主要用於？", options: ["A. 養陰潤肺、清心安神", "B. 大汗固脫", "C. 活血化瘀", "D. 溫陽補腎"], ans: 0 },
           { q: "5. 常用於化痰止咳、健脾理氣的廣東三寶之一是？", options: ["A. 羅漢果", "B. 燕窩", "C. 鹿茸", "D. 陳皮"], ans: 3 }
         ],
         [
@@ -530,7 +545,8 @@ const stagesData = {
     },
     {
       name: "🌿 第二關：【懸壺登堂】",
-      desc: "難度：★★☆☆☆ | 養生愛好者：基礎穴位、四診觀念與五行初探。",
+      difficulty: "難度：★★☆☆☆",
+      desc: "養生愛好者：基礎穴位、四診觀念與五行初探。",
       titleSuccess: "坐堂大夫",
       questionSets: [
         [
@@ -558,7 +574,8 @@ const stagesData = {
     },
     {
       name: "🪵 第三關：【杏林論道】",
-      desc: "難度：★★★☆☆ | 中醫入門學者：陰陽學說、臟腑氣血與常用藥性。",
+      difficulty: "難度：★★★☆☆",
+      desc: "中醫入門學者：陰陽學說、臟腑氣血與常用藥性。",
       titleSuccess: "杏林名醫",
       questionSets: [
         [
@@ -586,7 +603,8 @@ const stagesData = {
     },
     {
       name: "🪨 第四關：【岐黃妙理】",
-      desc: "難度：★★★★☆ | 深造學生：舌脈辨證、經絡循行與組方原則。",
+      difficulty: "難度：★★★★☆",
+      desc: "深造學生：舌脈辨證、經絡循行與組方原則。",
       titleSuccess: "岐黃高手",
       questionSets: [
         [
@@ -614,26 +632,27 @@ const stagesData = {
     },
     {
       name: "☯️ 第五關：【國醫大師】",
-      desc: "難度：★★★★★ | 執業醫師/專業學生：經典條文、十八反與經典方劑。",
+      difficulty: "難度：★★★★★",
+      desc: "執業醫師/專業學生：經典條文、十八反與經典方劑。",
       titleSuccess: "懸壺濟世・國醫大師",
       questionSets: [
         [
-          { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰", "B. 啜粥溫覆", "C. 大汗流瀉", "D. 禁食熱食"], ans: 1 },
-          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻昆布", "B. 瓜蔞貝母", "C. 細辛芍藥", "D. 人蔘沙蔘"], ans: 1 },
+          { q: "1. 《傷寒論》太陽病中，「桂枝湯」服法要求的正確護理是？", options: ["A. 服後飲冰水", "B. 服後啜熱稀粥，溫覆微汗", "C. 服後大汗流瀉", "D. 服後禁食熱食"], ans: 1 },
+          { q: "2. 中藥「十八反」中，烏頭（川烏、草烏、附子）反以下哪組藥材？", options: ["A. 海藻、昆布、黃芩", "B. 瓜蔞、貝母、半夏、白薟、白及", "C. 細辛、芍藥、乾薑", "D. 人蔘、沙蔘、丹蔘"], ans: 1 },
           { q: "3. 《金匱要略》中「病痰飲者，當以溫藥和之」這句名言體現了什麼病機？", options: ["A. 陰邪非溫不化", "B. 大熱破除痰飲", "C. 肝鬱致痰病機", "D. 瀉下法去痰飲"], ans: 0 },
           { q: "4. (保底題) 「補中益氣湯」重用黃耆，配伍升麻、柴胡的精妙之處在於？", options: ["A. 解表發汗", "B. 清熱解毒", "C. 升提中氣", "D. 疏肝理氣"], ans: 2 },
-          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二一 (3x7)", "C. 十四 (2x7)", "D. 二八 (4x7)"], ans: 2 }
+          { q: "5. 《素問・上古天真論》中描述女子生命週期，幾歲時「太衝脈盛，月事以時下」？", options: ["A. 七歲 (1x7)", "B. 二十一歲 (3x7)", "C. 十四歲 (2x7)", "D. 二十八歲 (4x7)"], ans: 2 }
         ],
         [
           { q: "1. 《傷寒論》中，「麻黃湯」的核心功效與主治是？", options: ["A. 發汗平喘", "B. 調和營衛", "C. 溫中祛寒", "D. 清熱瀉火"], ans: 0 },
-          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 藻戟遂芫", "B. 烏頭附子", "C. 三棱莪朮", "D. 細辛芍藥"], ans: 0 },
-          { q: "3. 《溫病條辨》中，創立的三焦辨證綱領是指？", options: ["A. 衛氣營血", "B. 六經辨證", "C. 上中下焦", "D. 臟腑辨證"], ans: 2 },
+          { q: "2. 中藥「十八反」中，甘草反以下哪組藥材？", options: ["A. 甘遂、大戟、海藻、芫花", "B. 川烏、草烏、附子", "C. 三棱、莪朮、水蛭", "D. 細辛、芍藥、乾薑"], ans: 0 },
+          { q: "3. 《溫病條辨》中，創立的三焦辨證綱領是指？", options: ["A. 衛氣營血", "B. 六經辨證", "C. 上焦、中焦、下焦", "D. 臟腑辨證"], ans: 2 },
           { q: "4. (保底題) 溫病學派著名方劑「安宮牛黃丸」的核心功用是？", options: ["A. 溫陽固脫", "B. 疏肝理氣", "C. 活血化瘀", "D. 開竅安神"], ans: 3 },
-          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強」？", options: ["A. 二四 (3x8)", "B. 十六 (2x8)", "C. 三二 (4x8)", "D. 四十 (5x8)"], ans: 1 }
+          { q: "5. 《素問・上古天真論》中描述男子生命週期，幾歲時「腎氣平均，筋骨勁強」？", options: ["A. 二十四歲 (3x8)", "B. 十六歲 (2x8)", "C. 三十二歲 (4x8)", "D. 四十歲 (5x8)"], ans: 1 }
         ],
         [
           { q: "1. 《傷寒論》少陰病篇「少陰病，始得之，反發熱，脈沉者」，代表方劑是？", options: ["A. 桂枝湯", "B. 四逆湯", "C. 白虎湯", "D. 麻黃附子細辛湯"], ans: 3 },
-          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草海藻", "B. 烏頭附子", "C. 諸蔘細芍", "D. 硝石硫黃"], ans: 2 },
+          { q: "2. 中藥「十八反」中，藜蘆反以下哪組藥材？", options: ["A. 甘草、大戟、海藻", "B. 川烏、草烏、附子", "C. 人蔘、沙蔘、丹蔘、玄蔘、細辛、芍藥", "D. 硝石、硫黃、芒硝"], ans: 2 },
           { q: "3. 名方「大承氣湯」（大黃、芒硝、枳實、厚樸）的峻下作用體現了？", options: ["A. 溫補脾陽", "B. 急下存陰", "C. 和解少陽", "D. 養血潤腸"], ans: 1 },
           { q: "4. (保底題) 《黃帝內經》中「陰平陽秘，精神乃治」說明了體內？", options: ["A. 陰盛則吉", "B. 陽高則吉", "C. 平衡協調", "D. 陰陽分離"], ans: 2 },
           { q: "5. 經典方劑「血府逐瘀湯」創製自哪位清代名醫的《醫林改錯》？", options: ["A. 張景岳", "B. 葉天士", "C. 王清任", "D. 吳鞠通"], ans: 2 }
@@ -642,6 +661,7 @@ const stagesData = {
     },
     {
       name: "🩺 號外：【中醫體質測試 (33條)】",
+      difficulty: "專題測試",
       desc: "體質不止寒熱，自測九種體質",
       isBodyTest: true,
       titleSuccess: "體質鑑定完成"
@@ -650,7 +670,8 @@ const stagesData = {
   en: [
     {
       name: "🌱 Level 1: [Herbal Apprentice]",
-      desc: "Difficulty: ★☆☆☆☆ | General Knowledge: Wellness, herbal tea, & daily health tips.",
+      difficulty: "Difficulty: ★☆☆☆☆",
+      desc: "General Knowledge: Wellness, herbal tea, & daily health tips.",
       titleSuccess: "Wellness Master",
       questionSets: [
         [
@@ -664,7 +685,7 @@ const stagesData = {
           { q: "1. Which bean soup is most popular in summer for clearing heat and draining dampness?", options: ["A. Red Bean", "B. Black Bean", "C. Mung Bean", "D. Soy Bean"], ans: 2 },
           { q: "2. When experiencing eye dry fatigue, TCM recommends pairing Goji Berries with?", options: ["A. Rose", "B. Jasmine", "C. Chrysanthemum", "D. Lotus"], ans: 2 },
           { q: "3. Staying up late habitually in TCM easily damages which aspect of the body?", options: ["A. Yin Fluid", "B. Yang Qi", "C. Bones", "D. Muscles"], ans: 0 },
-          { q: "4. (Guaranteed) Indigestion caused by overeating is known in TCM as?", options: ["A. Wind-Cold", "B. Blood Stasis", "C. Yin Deficiency", "D. Food Stagnation"], ans: 3 },
+          { q: "4. (Guaranteed) What is the main action of Lily bulb (Bai He) in TCM food therapy?", options: ["A. Nourish Yin, moisten lungs & calm mind", "B. Stop sweating", "C. Invigorate blood", "D. Tonify Kidney Yang"], ans: 0 },
           { q: "5. Which dried fruit peel is famous in Guangdong for transforming phlegm and harmonizing stomach?", options: ["A. Monk Fruit", "B. Longan", "C. Lychee", "D. Tangerine Peel"], ans: 3 }
         ],
         [
@@ -678,7 +699,8 @@ const stagesData = {
     },
     {
       name: "🌿 Level 2: [Hall Scholar]",
-      desc: "Difficulty: ★★☆☆☆ | Health Enthusiasts: Acupoints, 4 Examinations, & 5 Elements.",
+      difficulty: "Difficulty: ★★☆☆☆",
+      desc: "Health Enthusiasts: Acupoints, 4 Examinations, & 5 Elements.",
       titleSuccess: "Resident Physician",
       questionSets: [
         [
@@ -706,7 +728,8 @@ const stagesData = {
     },
     {
       name: "🪵 Level 3: [Apothecary Master]",
-      desc: "Difficulty: ★★★☆☆ | TCM Students: Yin-Yang, Organs, Qi-Blood, & Herbs.",
+      difficulty: "Difficulty: ★★★☆☆",
+      desc: "TCM Students: Yin-Yang, Organs, Qi-Blood, & Herbs.",
       titleSuccess: "Renowned Physician",
       questionSets: [
         [
@@ -734,7 +757,8 @@ const stagesData = {
     },
     {
       name: "🪨 Level 4: [Qi & Meridian Expert]",
-      desc: "Difficulty: ★★★★☆ | Advanced Students: Pulse/Tongue differentiation, Meridians.",
+      difficulty: "Difficulty: ★★★★☆",
+      desc: "Advanced Students: Pulse/Tongue differentiation, Meridians.",
       titleSuccess: "Qi Master",
       questionSets: [
         [
@@ -762,26 +786,27 @@ const stagesData = {
     },
     {
       name: "☯️ Level 5: [National TCM Master]",
-      desc: "Difficulty: ★★★★★ | Licensed Practitioners: Classics, Incompatibilities, Formulas.",
+      difficulty: "Difficulty: ★★★★★",
+      desc: "Licensed Practitioners: Classics, Incompatibilities, Formulas.",
       titleSuccess: "Grandmaster Physician",
       questionSets: [
         [
           { q: "1. In Shang Han Lun, what is required when taking Gui Zhi Tang?", options: ["A. Drink cold water", "B. Sip warm porridge", "C. Induce sweating", "D. Avoid warm food"], ans: 1 },
-          { q: "2. In Eighteen Incompatibilities, Aconite is incompatible with?", options: ["A. Hai Zao", "B. Gua Lou & Bei Mu", "C. Xi Xin", "D. Ren Shen"], ans: 1 },
+          { q: "2. In Eighteen Incompatibilities, Aconite (Wu Tou) is incompatible with?", options: ["A. Hai Zao, Kun Bu", "B. Gua Lou, Bei Mu, Ban Xia, Bai Lian, Bai Ji", "C. Xi Xin, Shao Yao", "D. Ren Shen, Sha Shen"], ans: 1 },
           { q: "3. 'Phlegm-fluid diseases should be treated with warming herbs' highlights?", options: ["A. Yin evil needs warmth", "B. Use dry-heat herbs", "C. Stagnation of Liver", "D. Purgative method"], ans: 0 },
           { q: "4. (Guaranteed) Why are Sheng Ma and Chai Hu paired with Huang Qi in Bu Zhong Yi Qi Tang?", options: ["A. Release sweating", "B. Clear heat", "C. Raise sunken Qi", "D. Soothe Liver"], ans: 2 },
           { q: "5. At what age does a female's Chong Vessel flourish & menstruation begin?", options: ["A. Age 7 (1x7)", "B. Age 21 (3x7)", "C. Age 14 (2x7)", "D. Age 28 (4x7)"], ans: 2 }
         ],
         [
           { q: "1. Core efficacy and indication of Ma Huang Tang in Shang Han Lun is?", options: ["A. Promote sweating", "B. Harmonize Ying", "C. Warm Middle Jiao", "D. Clear Heat"], ans: 0 },
-          { q: "2. In Eighteen Incompatibilities, Licorice (Gan Cao) is incompatible with?", options: ["A. Gan Sui & Da Ji", "B. Wu Tou & Fu Zi", "C. San Leng & E Zhu", "D. Xi Xin & Shao Yao"], ans: 0 },
-          { q: "3. Triple Jiao Differentiation framework in Wen Bing Tiao Bian targets?", options: ["A. Wei-Qi-Ying-Blood", "B. Six Meridians", "C. Upper-Middle-Lower", "D. Zang-Fu Organs"], ans: 2 },
+          { q: "2. In Eighteen Incompatibilities, Licorice (Gan Cao) is incompatible with?", options: ["A. Gan Sui, Da Ji, Hai Zao, Yuan Hua", "B. Chuan Wu, Cao Wu, Fu Zi", "C. San Leng, E Zhu, Shui Zhi", "D. Xi Xin, Shao Yao, Gan Jiang"], ans: 0 },
+          { q: "3. Triple Jiao Differentiation framework in Wen Bing Tiao Bian targets?", options: ["A. Wei-Qi-Ying-Blood", "B. Six Meridians", "C. Upper, Middle, and Lower Jiao", "D. Zang-Fu Organs"], ans: 2 },
           { q: "4. (Guaranteed) Core efficacy of famous formula An Gong Niu Huang Wan is?", options: ["A. Warm Yang", "B. Soothe Liver", "C. Invigorate Blood", "D. Clear heat & open orifices"], ans: 3 },
-          { q: "5. In Su Wen Chapter 1, male kidney Qi reaches balance at age?", options: ["A. 24 (3x8)", "B. 16 (2x8)", "C. 32 (4x8)", "D. 40 (5x8)"], ans: 1 }
+          { q: "5. In Su Wen Chapter 1, male kidney Qi reaches balance at age?", options: ["A. Age 24 (3x8)", "B. Age 16 (2x8)", "C. Age 32 (4x8)", "D. Age 40 (5x8)"], ans: 1 }
         ],
         [
           { q: "1. Representative formula for 'Shaoyin disease with fever and deep pulse' in Shang Han Lun is?", options: ["A. Gui Zhi Tang", "B. Si Ni Tang", "C. Bai Hu Tang", "D. Ma Huang Fu Zi Xi Xin Tang"], ans: 3 },
-          { q: "2. In Eighteen Incompatibilities, Li Lu is incompatible with?", options: ["A. Gan Cao", "B. Wu Tou", "C. Ren Shen & Xi Xin", "D. Sulfur"], ans: 2 },
+          { q: "2. In Eighteen Incompatibilities, Li Lu is incompatible with?", options: ["A. Gan Cao, Da Ji", "B. Wu Tou, Fu Zi", "C. Ren Shen, Sha Shen, Dan Shen, Xuan Shen, Xi Xin, Shao Yao", "D. Sulfur, Mang Xiao"], ans: 2 },
           { q: "3. Purgative formula Da Cheng Qi Tang demonstrates the principle of?", options: ["A. Tonifying Yang", "B. Purging heat", "C. Harmonizing", "D. Moistening"], ans: 1 },
           { q: "4. (Guaranteed) 'Yin Peace and Yang Secretion maintains vitality' in Inner Canon explains?", options: ["A. More Yin is better", "B. More Yang is better", "C. Relative balance", "D. Separation"], ans: 2 },
           { q: "5. Famous formula Xue Fu Zhu Yu Tang was invented by Qing dynasty physician?", options: ["A. Zhang Jingyue", "B. Ye Tianshi", "C. Wang Qingren", "D. Wu Jutong"], ans: 2 }
@@ -790,6 +815,7 @@ const stagesData = {
     },
     {
       name: "🩺 Special: [TCM Body Constitution Test (33 Qs)]",
+      difficulty: "Special Test",
       desc: "Discover your unique body constitution beyond cold and heat.",
       isBodyTest: true,
       titleSuccess: "Test Completed"
@@ -805,7 +831,7 @@ let finalScore = 0;
 let playerTitle = "";
 let bodyTestHistory = [];
 let activeQuestions = [];
-let lastSetIndices = {}; // 記憶每個關卡上一次抽中的題庫編號，確保不會連續重複
+let lastSetIndices = {}; 
 
 function toggleLanguage() {
   playSound('click');
@@ -836,7 +862,12 @@ function renderStageList() {
     const card = document.createElement("div");
     card.className = "stage-card";
     card.onclick = () => startStage(idx);
-    card.innerHTML = `<div class="stage-title">${stg.name}</div><div class="stage-desc">${stg.desc}</div>`;
+    
+    card.innerHTML = `
+      <div class="stage-title">${stg.name}</div>
+      <div class="stage-difficulty">${stg.difficulty}</div>
+      <div class="stage-desc-text">${stg.desc}</div>
+    `;
     container.appendChild(card);
   });
 }
@@ -871,7 +902,6 @@ function startStage(stageIdx) {
     document.getElementById("l-5050").disabled = false;
     document.getElementById("l-phone").disabled = false;
     
-    // 防連續重複抽題機制
     const sets = stage.questionSets;
     const lastIdx = lastSetIndices[stageIdx] !== undefined ? lastSetIndices[stageIdx] : -1;
     let setIdx;
