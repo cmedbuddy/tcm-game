@@ -7,35 +7,34 @@
   <!-- 引入像素字型 -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
-    /* 修正手機端滾動問題，支援 iOS 與 Samsung/Android 順暢滑動 */
     html, body { 
-      overscroll-behavior-y: none; 
+      overscroll-behavior: none; 
+      touch-action: pan-x pan-y;
       width: 100%;
       min-height: 100%;
       background-color: #f7f4ed; 
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    body { 
       color: #3c2f2f; 
       display: flex; 
       justify-content: center; 
-      align-items: flex-start; 
+      align-items: center; 
       padding: 12px; 
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans HK", "Hiragino Sans GB", sans-serif;
     }
     
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
     #game-container { 
       width: 100%; 
       max-width: 850px; 
+      max-height: 94vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       background: #fffdf9; 
       border: 4px solid #8b5a2b; 
       border-radius: 12px; 
-      padding: 24px; 
+      padding: 20px; 
       box-shadow: 0 10px 30px rgba(92, 64, 51, 0.15); 
       position: relative; 
-      margin-bottom: 30px;
     }
 
     .header-container {
@@ -43,8 +42,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-bottom: 20px;
-      padding-top: 20px; 
+      margin-bottom: 16px;
+      padding-top: 10px; 
       position: relative;
     }
 
@@ -54,12 +53,12 @@
       justify-content: center;
       position: relative;
       width: 100%;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .game-logo {
-      width: 76px;
-      height: 76px;
+      width: 64px;
+      height: 64px;
       filter: drop-shadow(0px 4px 6px rgba(139, 90, 43, 0.25));
     }
 
@@ -84,20 +83,20 @@
     .header { 
       text-align: center; 
       color: #5c4033; 
-      font-size: 22px; 
+      font-size: 20px; 
       font-weight: bold; 
       line-height: 1.4; 
       letter-spacing: 1px;
     }
     
-    #level-select-screen { text-align: center; padding: 10px 0; }
+    #level-select-screen { text-align: center; padding: 5px 0; }
     
     .bank-bar {
       background: #f0e6d2;
       border: 2px solid #8b5a2b;
       border-radius: 8px;
       padding: 10px 16px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -110,8 +109,8 @@
       background: #fdfbf7; 
       border: 2px solid #d7c4b7; 
       border-radius: 8px; 
-      padding: 16px; 
-      margin-bottom: 14px; 
+      padding: 14px 16px; 
+      margin-bottom: 12px; 
       cursor: pointer; 
       text-align: left; 
       transition: all 0.2s ease; 
@@ -120,21 +119,20 @@
       overflow: hidden;
     }
     .stage-card:hover { border-color: #8b5a2b; background: #f7ede2; transform: translateY(-2px); }
-    .stage-title { color: #5c4033; font-size: 17px; font-weight: bold; margin-bottom: 8px; padding-right: 90px; }
-    
+    .stage-title { color: #5c4033; font-size: 16px; font-weight: bold; margin-bottom: 6px; padding-right: 80px; }
     .stage-difficulty { color: #a0522d; font-size: 13px; font-weight: bold; margin-bottom: 4px; }
-    .stage-desc-text { color: #665247; font-size: 14px; line-height: 1.5; }
+    .stage-desc-text { color: #665247; font-size: 13px; line-height: 1.4; }
 
     .stamp-passed {
       position: absolute;
-      right: 18px;
+      right: 16px;
       top: 50%;
       transform: translateY(-50%) rotate(-8deg);
       border: 3px double #b22222;
       color: #b22222;
       font-weight: bold;
-      font-size: 13px;
-      padding: 6px 10px;
+      font-size: 12px;
+      padding: 4px 8px;
       border-radius: 6px;
       background-color: rgba(255, 243, 243, 0.9);
       letter-spacing: 2px;
@@ -142,7 +140,7 @@
       user-select: none;
     }
 
-    .top-panel { display: flex; justify-content: space-between; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .top-panel { display: flex; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; align-items: center; }
     .lifelines { display: flex; gap: 10px; }
     
     .btn-pixel { 
@@ -159,82 +157,82 @@
     }
     .btn-pixel:disabled { background: #d3c5b7; color: #8c7b6c; border-color: #a8988a; cursor: not-allowed; box-shadow: none; }
     .btn-pixel:hover:not(:disabled) { background: #6f421b; }
-    .prize-info { color: #8b5a2b; font-size: 16px; font-weight: bold; }
+    .prize-info { color: #8b5a2b; font-size: 15px; font-weight: bold; }
     
     .npc-box { 
       background: #f4efe6; 
       border: 2px solid #c8b4a2; 
-      padding: 12px 16px; 
+      padding: 10px 14px; 
       border-radius: 8px; 
-      margin-bottom: 18px; 
+      margin-bottom: 14px; 
       display: flex; 
       align-items: center; 
-      gap: 14px; 
-      min-height: 70px; 
+      gap: 12px; 
+      min-height: 60px; 
     }
-    .npc-avatar { font-size: 32px; border: 2px solid #8b5a2b; padding: 6px; background: #fffdf9; border-radius: 6px; }
-    .npc-text { font-size: 15px; line-height: 1.6; color: #5c4033; font-weight: bold; }
+    .npc-avatar { font-size: 28px; border: 2px solid #8b5a2b; padding: 4px; background: #fffdf9; border-radius: 6px; }
+    .npc-text { font-size: 14px; line-height: 1.5; color: #5c4033; font-weight: bold; }
 
     .question-box { 
       background: #fdfbf7; 
       border: 2px solid #8b5a2b; 
-      padding: 20px; 
+      padding: 16px; 
       border-radius: 8px; 
-      font-size: 18px; 
+      font-size: 17px; 
       font-weight: bold; 
-      line-height: 1.6; 
-      margin-bottom: 20px; 
+      line-height: 1.5; 
+      margin-bottom: 16px; 
       color: #3c2f2f; 
       text-align: center; 
       box-shadow: inset 0 0 8px rgba(139, 90, 43, 0.05);
     }
     
-    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     @media (max-width: 650px) { .options-grid { grid-template-columns: 1fr; } }
     
     .option-btn { 
       background: #fffdf9; 
       color: #3c2f2f; 
       border: 2px solid #c8b4a2; 
-      padding: 16px; 
+      padding: 14px; 
       cursor: pointer; 
-      font-size: 15px; 
+      font-size: 14px; 
       font-weight: bold; 
       border-radius: 6px; 
       text-align: left; 
-      line-height: 1.5; 
+      line-height: 1.4; 
       transition: all 0.2s ease;
       box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
     .option-btn:hover { background: #f7ede2; border-color: #8b5a2b; color: #5c4033; }
 
-    .action-panel { display: flex; justify-content: space-between; align-items: center; }
+    .action-panel { display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; }
     .cashout-btn { background: #4a6b53; color: #fffdf9; border: 2px solid #2d4533; box-shadow: 2px 2px 0px #2d4533; }
     .cashout-btn:hover:not(:disabled) { background: #37523e; }
     .prev-btn { background: #f0e6d2; color: #5c4033; border: 2px solid #8b5a2b; box-shadow: 2px 2px 0px #8b5a2b; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; overflow-y: auto; padding: 20px; }
-    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 25px; max-width: 600px; width: 92%; text-align: center; border-radius: 12px; margin: auto; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-    .modal-title { font-size: 20px; font-weight: bold; color: #5c4033; margin-bottom: 18px; }
-    .modal-text { font-size: 15px; line-height: 1.7; margin-bottom: 18px; color: #3c2f2f; text-align: left; white-space: pre-line; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(60, 47, 47, 0.6); backdrop-filter: blur(2px); justify-content: center; align-items: center; z-index: 100; }
+    .modal-content { background: #fffdf9; border: 3px solid #8b5a2b; padding: 20px; max-width: 580px; width: 92%; text-align: center; border-radius: 12px; max-height: 90vh; overflow-y: auto; -webkit-overflow-scrolling: touch; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+    .modal-title { font-size: 18px; font-weight: bold; color: #5c4033; margin-bottom: 14px; }
+    .modal-text { font-size: 14px; line-height: 1.6; margin-bottom: 14px; color: #3c2f2f; text-align: left; white-space: pre-line; }
 
     .disclaimer-note {
-      font-size: 12px;
+      font-size: 11px;
       color: #a0522d;
       background: #f0e6d2;
       border: 1px dashed #8b5a2b;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border-radius: 6px;
-      margin-bottom: 18px;
+      margin-bottom: 14px;
       text-align: left;
     }
 
     #image-result-preview {
       display: none;
-      margin-top: 15px;
-      margin-bottom: 15px;
+      margin-top: 10px;
+      margin-bottom: 10px;
       border: 2px dashed #8b5a2b;
-      padding: 10px;
+      padding: 8px;
       background: #fdfbf7;
       border-radius: 8px;
     }
@@ -279,9 +277,9 @@
   <div id="level-select-screen">
     <div class="bank-bar">
       <span>💰 <span id="txt-bank-label">生涯累積總銀兩：</span></span>
-      <span id="bank-taels-display" style="color:#a0522d; font-size:17px;">0 兩</span>
+      <span id="bank-taels-display" style="color:#a0522d; font-size:16px;">0 兩</span>
     </div>
-    <div style="font-size: 15px; color: #8b5a2b; margin-bottom: 16px; font-weight: bold;" id="txt-select-title">請選擇考核關卡或體質自測：</div>
+    <div style="font-size: 14px; color: #8b5a2b; margin-bottom: 14px; font-weight: bold;" id="txt-select-title">請選擇考核關卡或體質自測：</div>
     <div id="stages-list"></div>
   </div>
 
@@ -306,7 +304,7 @@
     <div class="action-panel">
       <button class="btn-pixel cashout-btn" onclick="cashOut()" id="txt-cashout">💰 見好就收</button>
       <button class="btn-pixel prev-btn" onclick="prevQuestion()" id="txt-prev" style="display: none;">⬅️ 回上一題</button>
-      <div style="font-size: 14px; color: #8c7b6c; font-weight: bold;" id="level-display">關卡: 1 / 5</div>
+      <div style="font-size: 13px; color: #8c7b6c; font-weight: bold;" id="level-display">關卡: 1 / 5</div>
     </div>
   </div>
 </div>
@@ -322,20 +320,20 @@
 
     <div id="image-result-preview">
       <img id="generated-card-img" src="" alt="體質評估卡片">
-      <div style="font-size:12px; color:#8c7b6c; margin-top:6px;" id="txt-img-tip">💡 長按上方圖片即可儲存分享給朋友！</div>
+      <div style="font-size:11px; color:#8c7b6c; margin-top:5px;" id="txt-img-tip">💡 長按上方圖片即可儲存分享給朋友！</div>
     </div>
 
-    <div id="modal-buttons" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+    <div id="modal-buttons" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
       <button class="btn-pixel" onclick="showSelectScreen()" id="txt-btn-back">返回關卡選擇</button>
       <button id="next-stage-btn" class="btn-pixel" style="background:#4a6b53; border-color:#2d4533; display:none;" onclick="nextStage()"><span id="txt-btn-next">挑戰下一關 ➔</span></button>
       <button id="gen-img-btn" class="btn-pixel" style="background:#e5a93c; color:#3c2f2f; border-color:#8b5a2b; display:none;" onclick="generateResultImage()"><span id="txt-btn-genimg">📷 生成體質卡片圖片</span></button>
-      <button id="restart-test-btn" class="btn-pixel" style="background:#a0522d; color:#fffdf9; border-color:#5c4033; display:none;" onclick="restartBodyTest()"><span id="txt-btn-restart">🔄 重新測驗</span></button>
+      <button id="retake-test-btn" class="btn-pixel" style="background:#8b5a2b; color:#fffdf9; border-color:#5c4033; display:none;" onclick="startStage(5)"><span id="txt-btn-retake">🔄 重新測驗</span></button>
     </div>
-    <button class="btn-pixel" style="background:#f0e6d2; color:#5c4033; border-color:#8b5a2b; margin-top:14px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
+    <button class="btn-pixel" style="background:#f0e6d2; color:#5c4033; border-color:#8b5a2b; margin-top:12px; width: 100%;" onclick="copyResult()" id="txt-btn-share">🕊️ 複製網址飛鴿傳書給朋友</button>
   </div>
 </div>
 
-<canvas id="card-canvas" width="600" height="820" style="display:none;"></canvas>
+<canvas id="card-canvas" width="560" height="660" style="display:none;"></canvas>
 
 <script>
 let audioCtx = null;
@@ -413,7 +411,7 @@ function playSound(type) {
 let currentLang = 'zh';
 let totalBankTaels = parseInt(localStorage.getItem('tcm_total_taels') || '0');
 let passedStages = JSON.parse(localStorage.getItem('tcm_passed_stages') || '{}');
-let savedBodyResult = JSON.parse(localStorage.getItem('tcm_saved_body_result') || 'null');
+let lastSavedBodyType = localStorage.getItem('tcm_last_body_type') || null;
 
 const bodyTypeInfo = {
   "氣虛質": {
@@ -474,7 +472,7 @@ const i18n = {
     backBtn: "返回關卡選擇",
     nextBtn: "挑戰下一關 ➔",
     genImgBtn: "📷 生成體質卡片圖片",
-    restartBtn: "🔄 重新測驗",
+    retakeBtn: "🔄 重新測驗",
     shareBtn: "🕊️ 複製網址飛鴿傳書給朋友",
     prizeLabel: "目前銀兩",
     unit: "兩",
@@ -506,7 +504,7 @@ const i18n = {
     backBtn: "Level Select",
     nextBtn: "Next Level ➔",
     genImgBtn: "📷 Generate Body Card Image",
-    restartBtn: "🔄 Retake Test",
+    retakeBtn: "🔄 Retake Test",
     shareBtn: "🕊️ Copy Link & Share via Pigeon",
     prizeLabel: "Taels",
     unit: "Taels",
@@ -1099,7 +1097,7 @@ function updateStaticUI() {
   document.getElementById("txt-btn-back").innerText = t.backBtn;
   document.getElementById("txt-btn-next").innerText = t.nextBtn;
   document.getElementById("txt-btn-genimg").innerText = t.genImgBtn;
-  document.getElementById("txt-btn-restart").innerText = t.restartBtn;
+  document.getElementById("txt-btn-retake").innerText = t.retakeBtn;
   document.getElementById("txt-btn-share").innerText = t.shareBtn;
   document.getElementById("txt-img-tip").innerText = t.imgTip;
   document.getElementById("txt-disclaimer").innerText = t.disclaimer;
@@ -1115,9 +1113,11 @@ function renderStageList() {
   list.forEach((stg, idx) => {
     const card = document.createElement("div");
     card.className = "stage-card";
+    
+    // 如果是體質測試 (idx === 5)，點擊時檢查是否有歷史紀錄
     card.onclick = () => {
-      if (stg.isBodyTest && savedBodyResult) {
-        showSavedBodyResult();
+      if (stg.isBodyTest && lastSavedBodyType) {
+        showBodyTestResultModal(lastSavedBodyType);
       } else {
         startStage(idx);
       }
@@ -1126,36 +1126,23 @@ function renderStageList() {
     const isPassed = passedStages[idx] === true;
     const stampHtml = isPassed ? `<div class="stamp-passed">💮 ${i18n[currentLang].stampPassed}</div>` : "";
 
+    let descHtml = stg.desc;
+    if (stg.isBodyTest && lastSavedBodyType) {
+      const savedInfo = bodyTypeInfo[lastSavedBodyType] || bodyTypeInfo["平和質"];
+      const savedName = (currentLang === 'zh') ? lastSavedBodyType : savedInfo.nameEn;
+      descHtml = (currentLang === 'zh') 
+        ? `💡 上次鑑定結果：【${savedName}】（點擊可查看詳情或重測）` 
+        : `💡 Last result: [${savedName}] (Click to view or retake)`;
+    }
+
     card.innerHTML = `
       ${stampHtml}
       <div class="stage-title">${stg.name}</div>
       <div class="stage-difficulty">${stg.difficulty}</div>
-      <div class="stage-desc-text">${stg.desc}</div>
+      <div class="stage-desc-text">${descHtml}</div>
     `;
     container.appendChild(card);
   });
-}
-
-function showSavedBodyResult() {
-  playSound('click');
-  currentStageIndex = 5; // 體質測試關卡索引
-  lastEvaluatedType = savedBodyResult.topType;
-  
-  const info = bodyTypeInfo[lastEvaluatedType] || bodyTypeInfo["平和質"];
-  const displayTitle = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
-  const descText = (currentLang === 'zh') ? info.desc : info.descEn;
-
-  const resultMsg = (currentLang === 'zh')
-    ? `【中醫九種體質鑑定結果（已存檔）】\n\n您上次測算的主要體質傾向為：【${displayTitle}】！\n\n${descText}`
-    : `[Saved TCM Body Constitution Result]\n\nYour previous primary body type: [${displayTitle}]!\n\n${descText}`;
-    
-  endGame(true, resultMsg, displayTitle, true);
-}
-
-function restartBodyTest() {
-  localStorage.removeItem('tcm_saved_body_result');
-  savedBodyResult = null;
-  startStage(5);
 }
 
 function showSelectScreen() {
@@ -1165,7 +1152,6 @@ function showSelectScreen() {
   document.getElementById("level-select-screen").style.display = "block";
   document.getElementById("image-result-preview").style.display = "none";
   renderStageList();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function startStage(stageIdx) {
@@ -1209,7 +1195,6 @@ function startStage(stageIdx) {
   
   document.getElementById("npc-dialog").innerText = `${i18n[currentLang].npcReady} (${stage.name})`;
   loadQuestion();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function loadQuestion() {
@@ -1237,7 +1222,6 @@ function loadQuestion() {
     btn.onclick = () => checkAnswer(idx);
     container.appendChild(btn);
   });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function markStagePassed(stageIdx) {
@@ -1327,21 +1311,32 @@ function finishBodyTest() {
   }
 
   lastEvaluatedType = topType;
-  markStagePassed(currentStageIndex);
+  lastSavedBodyType = topType;
+  localStorage.setItem('tcm_last_body_type', topType);
+  markStagePassed(5);
   
-  // 記錄並儲存最新體質結果
-  savedBodyResult = { topType: topType, date: new Date().toLocaleDateString() };
-  localStorage.setItem('tcm_saved_body_result', JSON.stringify(savedBodyResult));
+  showBodyTestResultModal(topType);
+}
 
+function showBodyTestResultModal(topType) {
+  lastEvaluatedType = topType;
   const info = bodyTypeInfo[topType] || bodyTypeInfo["平和質"];
   const displayTitle = (currentLang === 'zh') ? topType : info.nameEn;
   const descText = (currentLang === 'zh') ? info.desc : info.descEn;
 
   const resultMsg = (currentLang === 'zh')
-    ? `【中醫九種體質鑑定結果】\n\n經 33 題標準量表測算，你的主要體質傾向為：【${displayTitle}】！\n\n${descText}`
-    : `[TCM 9 Body Constitution Result]\n\nBased on 33 standard questions, your primary body type is: [${displayTitle}]!\n\n${descText}`;
-    
-  endGame(true, resultMsg, displayTitle, true);
+    ? `【中醫九種體質鑑定結果】\n\n你的主要體質傾向為：【${displayTitle}】！\n\n${descText}`
+    : `[TCM 9 Body Constitution Result]\n\nYour primary body type is: [${displayTitle}]!\n\n${descText}`;
+
+  document.getElementById("modal-title").innerText = i18n[currentLang].winTitle;
+  document.getElementById("modal-text").innerText = resultMsg;
+  document.getElementById("image-result-preview").style.display = "none";
+  document.getElementById("txt-disclaimer").style.display = "block";
+  document.getElementById("gen-img-btn").style.display = "inline-block";
+  document.getElementById("retake-test-btn").style.display = "inline-block";
+  document.getElementById("next-stage-btn").style.display = "none";
+
+  document.getElementById("modal").style.display = "flex";
 }
 
 function use5050() {
@@ -1379,27 +1374,19 @@ function cashOut() {
 
 function endGame(isWin, msg, title, isFinalOrTest = false) {
   const t = i18n[currentLang];
-  const stage = stagesData[currentLang][currentStageIndex];
   finalScore = isWin ? currentPrize : lastCheckpointPrize;
   playerTitle = title;
   
   document.getElementById("modal-title").innerText = isWin ? t.winTitle : t.loseTitle;
   document.getElementById("image-result-preview").style.display = "none";
+  document.getElementById("gen-img-btn").style.display = "none";
+  document.getElementById("retake-test-btn").style.display = "none";
+  document.getElementById("txt-disclaimer").style.display = "none";
   
-  if (stage.isBodyTest || savedBodyResult) {
-    document.getElementById("modal-text").innerText = `${msg}`;
-    document.getElementById("gen-img-btn").style.display = "inline-block";
-    document.getElementById("restart-test-btn").style.display = "inline-block";
-    document.getElementById("txt-disclaimer").style.display = "block";
-  } else {
-    document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總資產: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
-    document.getElementById("gen-img-btn").style.display = "none";
-    document.getElementById("restart-test-btn").style.display = "none";
-    document.getElementById("txt-disclaimer").style.display = "none";
-  }
+  document.getElementById("modal-text").innerText = `${msg}\n\n${t.prizeLabel}: ${finalScore} ${t.unit}\n累積總資產: ${totalBankTaels} ${t.unit}\n獲得榮譽: 【${playerTitle}】`;
   
   const nextBtn = document.getElementById("next-stage-btn");
-  if (isWin && currentStageIndex < 4 && !stage.isBodyTest && !isFinalOrTest) {
+  if (isWin && currentStageIndex < 4 && !isFinalOrTest) {
     nextBtn.style.display = "inline-block";
   } else {
     nextBtn.style.display = "none";
@@ -1414,10 +1401,10 @@ function nextStage() {
   startStage(currentStageIndex + 1);
 }
 
-// 體質結果生成（已移除毛筆字與印章，改為現代高質感簡潔證書）
+// 體質結果生成（移除毛筆字與印章，設計為乾淨俐落、緊湊精簡的現代證書）
 function generateResultImage() {
   playSound('click');
-
+  
   const canvas = document.getElementById("card-canvas");
   const ctx = canvas.getContext("2d");
   
@@ -1425,75 +1412,73 @@ function generateResultImage() {
   const typeName = (currentLang === 'zh') ? lastEvaluatedType : info.nameEn;
   const descLines = (currentLang === 'zh') ? info.desc.split('\n') : info.descEn.split('\n');
 
-  // 底色：宣紙白
+  // 底色
   ctx.fillStyle = "#fdfbf7";
-  ctx.fillRect(0, 0, 600, 820);
+  ctx.fillRect(0, 0, 560, 660);
 
-  // 外框
+  // 簡潔雙線外框
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 6;
-  ctx.strokeRect(20, 20, 560, 780);
+  ctx.strokeRect(12, 12, 536, 636);
   ctx.strokeStyle = "#d7c4b7";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(30, 30, 540, 760);
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(20, 20, 520, 620);
 
   // 頂部標題
   ctx.fillStyle = "#5c4033";
-  ctx.font = "bold 24px sans-serif";
+  ctx.font = "bold 22px sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 300, 80);
+  ctx.fillText((currentLang === 'zh') ? "📜 中醫體質評估證書 📜" : "📜 TCM Body Constitution Card 📜", 280, 60);
 
-  // 體質名稱大標題區（直接以精緻現代標籤呈現，無毛筆字與印章）
+  // 體質名稱大標籤（移除毛筆字，改以精緻色塊呈現）
   ctx.fillStyle = "#f0e6d2";
-  ctx.fillRect(80, 130, 440, 70);
+  ctx.fillRect(50, 95, 460, 48);
   ctx.strokeStyle = "#8b5a2b";
   ctx.lineWidth = 2;
-  ctx.strokeRect(80, 130, 440, 70);
-
-  ctx.fillStyle = "#8b5a2b";
-  ctx.font = "bold 15px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText((currentLang === 'zh') ? "您的主要體質傾向" : "Primary Constitution", 300, 155);
+  ctx.strokeRect(50, 95, 460, 48);
 
   ctx.fillStyle = "#a0522d";
-  ctx.font = "bold 26px sans-serif";
-  ctx.fillText(typeName, 300, 185);
+  ctx.font = "bold 22px sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(`鑑定體質：${typeName}`, 280, 119);
 
   // 說明內容
   ctx.fillStyle = "#3c2f2f";
-  ctx.font = "16px sans-serif";
+  ctx.font = "15px sans-serif";
   ctx.textAlign = "left";
+  ctx.textBaseline = "alphabetic";
   
-  let startY = 245;
+  let startY = 180;
   descLines.forEach(line => {
     let words = line;
     let lineStr = "";
     for (let i = 0; i < words.length; i++) {
       let testLine = lineStr + words[i];
       let metrics = ctx.measureText(testLine);
-      if (metrics.width > 440 && i > 0) {
-        ctx.fillText(lineStr, 80, startY);
+      if (metrics.width > 460 && i > 0) {
+        ctx.fillText(lineStr, 50, startY);
         lineStr = words[i];
-        startY += 26;
+        startY += 24;
       } else {
         lineStr = testLine;
       }
     }
-    ctx.fillText(lineStr, 80, startY);
-    startY += 34;
+    ctx.fillText(lineStr, 50, startY);
+    startY += 30;
   });
 
-  // 底部專業提醒
+  // 底部專業提醒（無多餘空位）
   ctx.fillStyle = "#8c7b6c";
-  ctx.font = "13px sans-serif";
+  ctx.font = "12px sans-serif";
   ctx.textAlign = "center";
   const disclaimerMsg = (currentLang === 'zh') 
     ? "⚠️ 提示：本測試僅供養生參考，如有需要請諮詢註冊中醫師。" 
     : "⚠️ Note: For health guidance only. Consult a TCM doctor if needed.";
-  ctx.fillText(disclaimerMsg, 300, 745);
+  ctx.fillText(disclaimerMsg, 280, 595);
 
-  ctx.font = "italic 14px sans-serif";
-  ctx.fillText("《懸壺濟世：百萬問答》出品", 300, 775);
+  ctx.font = "italic 13px sans-serif";
+  ctx.fillText("《懸壺濟世：百萬問答》出品", 280, 625);
 
   const dataURL = canvas.toDataURL("image/png");
   const imgElem = document.getElementById("generated-card-img");
@@ -1504,14 +1489,13 @@ function generateResultImage() {
 function copyResult() {
   playSound('click');
   const t = i18n[currentLang];
-  const stageName = stagesData[currentLang][currentStageIndex].name;
   const currentUrl = window.location.href;
   
   let text = "";
   if (currentLang === 'zh') {
-    text = `我在《懸壺濟世：百萬問答》的【${stageName}】獲得了【${playerTitle}】！\n快來挑戰中醫知識與 33 題體質測驗：${currentUrl}`;
+    text = `我在《懸壺濟世：百萬問答》完成了 33 題中醫體質測驗，鑑定結果為【${lastSavedBodyType}】！\n快來測試你的中醫體質：${currentUrl}`;
   } else {
-    text = `I completed [${stageName}] in TCM Millionaire Quiz and earned title: 【${playerTitle}】!\nChallenge here: ${currentUrl}`;
+    text = `I completed the TCM Body Constitution Test and my result is [${lastSavedBodyType}]!\nChallenge here: ${currentUrl}`;
   }
   
   navigator.clipboard.writeText(text).then(() => {
