@@ -446,12 +446,12 @@ const bodyTypeInfo = {
   },
   "痰濕質": {
     nameEn: "Phlegm-Dampness",
-    desc: "【特徵】面部皮膚油膩、多汗且黏、口中黏膩、頭重如裹。\n【調理建議】宜健脾利濕、化痰祛濕。適合食療：茯苓、陳皮、冬瓜、赤小豆，少吃甜食與肥甘厚味。",
+    desc: "【特徵】面部皮膚油膩、多汗且黏、口中黏膩、頭重。\n【調理建議】宜健脾利濕、化痰祛濕。適合食療：茯苓、陳皮、冬瓜、赤小豆，少吃甜食與肥甘厚味。",
     descEn: "[Features] Oily facial skin, excessive sticky sweat, sticky sensation in the mouth, heavy sensation in the head.\n[Advice] Strengthen Spleen, promote diuresis, resolve phlegm, and remove dampness. Suitable dietary therapy: Poria, tangerine peel, winter melon, adzuki beans (red beans); consume fewer sweets and greasy, rich foods."
   },
   "濕熱質": {
     nameEn: "Damp-Heat",
-    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、小便短赤、性格較急躁。\n【調理建議】宜清熱利濕。適合食療：綠豆、苦瓜、薏米，少吃煎炸烤辣食物及飲酒。",
+    desc: "【特徵】面部容易生痘痘、口苦口臭、大便黏滯不爽、性格較急躁。\n【調理建議】宜清熱利濕。適合食療：綠豆、苦瓜、薏米，少吃煎炸烤辣食物及飲酒。",
     descEn: "[Features] Acne-prone face, bitter taste and halitosis in the mouth, sticky and unrefreshing stools, short and dark urine, impatient personality.\n[Advice] Clear heat and drain dampness. Suitable dietary therapy: Mung beans, bitter gourd, adlay (job's tears); consume fewer deep-fried, grilled, and spicy foods, and avoid alcohol."
   },
   "血瘀質": {
@@ -476,13 +476,12 @@ const bodyTypeInfo = {
   }
 };
 
-
 const i18n = {
   zh: {
     header: "📜 懸壺問答 📜",
     bankLabel: "生涯累積總功德：",
     selectTitle: "請選擇考核關卡或體質自測：",
-    phoneBtn: "📜 飛鴿問書",
+    phoneBtn: "🕊️ 飛鴿問書",
     cashoutBtn: "✨ 見好就收",
     prevBtn: "⬅️ 回上一題",
     backBtn: "返回關卡選擇",
@@ -497,7 +496,7 @@ const i18n = {
     npcReadyBodyTest: "少俠，請靜下心來回答。",
     npcCorrect: "答得好！順利晉級，累積功德 ",
     npc5050: "老中醫掌櫃：「施展陰陽化煞，為你排除兩個錯誤干擾！」",
-    npcPhone: "飛鴿問書：「徒兒，老夫掐指一算，此題極有可能是 ",
+    npcPhone: "🕊️ 飛鴿問書：「徒兒，老夫掐指一算，此題極有可能是 ",
     cashoutAlert: "你目前仲未有功德，先答對一題啦！",
     cashoutTitle: "明哲保身大夫",
     winTitle: "📜 考核結算 📜",
@@ -515,7 +514,7 @@ const i18n = {
     header: "📜 TCM Quiz 📜",
     bankLabel: "Total Accumulated Merit: ",
     selectTitle: "Select Quiz Level or Body Constitution Test:",
-    phoneBtn: "📜 Pigeon Letter",
+    phoneBtn: "🕊️ Pigeon Letter",
     cashoutBtn: "✨ Cash Out",
     prevBtn: "⬅️ Previous",
     backBtn: "Level Select",
@@ -530,7 +529,7 @@ const i18n = {
     npcReadyBodyTest: "Scholar, please calm your mind and answer.",
     npcCorrect: "Splendid! Correct answer! Accumulated Merit: ",
     npc5050: "Master Herbalist: 'Using Yin-Yang elimination to remove 2 wrong choices!'",
-    npcPhone: "Pigeon Letter: 'Disciple, I predict the answer is likely ",
+    npcPhone: "🕊️ Pigeon Letter: 'Disciple, I predict the answer is likely ",
     cashoutAlert: "You haven't earned any merit yet! Answer at least 1 question.",
     cashoutTitle: "Prudent Physician",
     winTitle: "📜 Exam Result 📜",
@@ -724,7 +723,7 @@ const stagesData = {
         ],
         [
           { q: "1. 十二經脈中，行於背部脊柱兩旁、分支最多、穴位最多的經脈是？", options: ["A. 足陽明胃經", "B. 足太陽膀胱經", "C. 手少陽三焦經", "D. 足少陰腎經"], ans: 1 },
-          { q: "2. 診脈時，右手寸、關、尺三部對應的臟腑依次是？", options: ["A. 心肝腎", "B. 肺脾命門", "C. 胃膽膀", "D. 肝脾心"], ans: 1 },
+          { q: "2. 診脈時，右手寸、關,尺三部對應的臟腑依次是？", options: ["A. 心肝腎", "B. 肺脾命門", "C. 胃膽膀", "D. 肝脾心"], ans: 1 },
           { q: "3. 方劑「補中益氣湯」的主治病證核心是？", options: ["A. 脾氣下陷", "B. 肝鬱血虛", "C. 熱入心包", "D. 陰虛火旺"], ans: 0 },
           { q: "4. (保底題) 方劑「君臣佐使」中，引藥直達病所或調和諸藥的稱為？", options: ["A. 君藥", "B. 臣藥", "C. 佐藥", "D. 使藥"], ans: 3 },
           { q: "5. 積於胸中、貫心脈而行呼吸、走息道以司呼吸的氣是？", options: ["A. 宗氣", "B. 衛氣", "C. 營氣", "D. 元氣"], ans: 0 }
